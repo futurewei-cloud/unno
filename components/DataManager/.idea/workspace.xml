@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="91173f1f-3dfb-4762-a24a-4158f6af33af" name="Default Changelist" comment="" />
+    <list default="true" id="91173f1f-3dfb-4762-a24a-4158f6af33af" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../JobQueueManager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../JobQueueManager/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../JobQueueManager/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../JobQueueManager/readme.txt" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +38,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DBconnectors/MINIOconnector.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1407">
@@ -44,6 +48,11 @@
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/readme.txt">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -92,6 +101,9 @@
       <replace>data</replace>
     </replaceStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -106,7 +118,6 @@
         <option value="$PROJECT_DIR$/../../tools/mysql/unno.sql" />
         <option value="$PROJECT_DIR$/src/requirements.txt" />
         <option value="$PROJECT_DIR$/src/videoprocessor/video_to_frames.py" />
-        <option value="$PROJECT_DIR$/src/readme.txt" />
         <option value="$PROJECT_DIR$/../../../system-design/WebApp-RESTful/full-stack-flask-docker.md" />
         <option value="$PROJECT_DIR$/src/DBconnectors/SQLconnector.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/annotationmanager.py" />
@@ -117,6 +128,7 @@
         <option value="$PROJECT_DIR$/src/SQLmanager/servermanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/videomanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/resultmanager.py" />
+        <option value="$PROJECT_DIR$/src/readme.txt" />
       </list>
     </option>
   </component>
@@ -126,6 +138,7 @@
     <option name="width" value="1936" />
     <option name="height" value="1176" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -143,24 +156,6 @@
               <item name="DataManager" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="DataManager" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DataManager" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="configuration" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DataManager" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DataManager" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="DBconnectors" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DataManager" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DataManager" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="SQLmanager" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -169,6 +164,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/SQLmanager" />
   </component>
   <component name="RecentsManager">
@@ -382,13 +378,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../tools/mysql/unno.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -562,6 +551,9 @@
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/readme.txt">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>
