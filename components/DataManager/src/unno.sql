@@ -53,9 +53,8 @@ CREATE TABLE IF NOT EXISTS `annotation` (
 --
 
 INSERT INTO `annotation` (`job_id`, `job_name`, `video_id`, `username`, `entity_id`, `entity_name`, `bbox`, `start_frame`, `end_frame`, `status`, `s3_location`) VALUES
-(1, 'job1', 16, 'abcd', 1, 'person1', '[1,1,10,10]', 1, 5, 'new', ''),
-(2, 'job2', 16, 'abcd', 2, 'person2', '[10,10,10,10]', 1, 15, 'new', ''),
-(3, 'job3', 16, 'abcd', 3, 'car1', '[15,15,10,10]', 1, 10, 'new', '');
+(1, 'job1', 16, 'abcd', 1, 'person1', '1,1,10,10', 1, 5, 'new', '');
+
 
 -- --------------------------------------------------------
 

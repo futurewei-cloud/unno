@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91173f1f-3dfb-4762-a24a-4158f6af33af" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/unno.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/unno.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../JobQueueManager/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../JobQueueManager/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../JobQueueManager/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../JobQueueManager/readme.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +37,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DBconnectors/MINIOconnector.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1407">
@@ -48,11 +47,6 @@
               </folding>
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/readme.txt">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -122,13 +116,13 @@
         <option value="$PROJECT_DIR$/src/DBconnectors/SQLconnector.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/annotationmanager.py" />
         <option value="$PROJECT_DIR$/src/configuration/config.py" />
-        <option value="$PROJECT_DIR$/src/unno.sql" />
         <option value="$PROJECT_DIR$/src/DBconnectors/MINIOconnector.py" />
         <option value="$PROJECT_DIR$/src/app.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/servermanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/videomanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/resultmanager.py" />
         <option value="$PROJECT_DIR$/src/readme.txt" />
+        <option value="$PROJECT_DIR$/src/unno.sql" />
       </list>
     </option>
   </component>
@@ -468,13 +462,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/unno.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="164" column="44" selection-start-line="164" selection-start-column="44" selection-end-line="164" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/SQLmanager/servermanager.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -542,6 +529,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/readme.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/unno.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="530">
+          <caret line="57" lean-forward="true" selection-start-line="57" selection-end-line="57" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/DBconnectors/MINIOconnector.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1407">
@@ -551,9 +548,6 @@
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/readme.txt">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>
