@@ -1,0 +1,3 @@
+requests
+minio
+mysql-connector-python

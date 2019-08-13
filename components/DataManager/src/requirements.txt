@@ -1,0 +1,6 @@
+requests
+minio
+flask-minio
+flask-cors
+mysql-connector-python
+opencv-python
