@@ -43,28 +43,6 @@ def check_input_api(d, lst):
     return None
 
 
-def generate_data_from_response(resp, chunk=2048):
-    for data_chunk in resp.iter_content(chunk_size=chunk):
-        yield data_chunk
-
-#
-# def serve_partial(url, range_header, mime, size=3145728):
-#     from_bytes, until_bytes = range_header.replace('bytes=', '').split('-')
-#     if not until_bytes:
-#         until_bytes = int(from_bytes) + size  # Default size is 3MB
-#
-#     # Make request to YouTube
-#     headers = {'Range': 'bytes=%s-%s' % (from_bytes, until_bytes)}
-#     r = requests.get(url, headers=headers, stream=True)
-#
-#     # Build response
-#     rv = Response(generate_data_from_response(r), 206, mimetype=mime,
-#                   direct_passthrough=True)
-#     rv.headers.add('Content-Range', r.headers.get('Content-Range'))
-#     rv.headers.add('Content-Length', r.headers['Content-Length'])
-#     return rv
-
-
 @app.route('/api/v1/video', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def video_call():
     if request.method == 'POST':
@@ -101,7 +79,7 @@ def video_call():
             )
             return response
         video = {}
-        for k,v in request.args.items():
+        for k, v in request.args.items():
             video[k] = v
         update_video(video)
         response = app.response_class(
@@ -121,7 +99,7 @@ def video_call():
         if 'video_id' in request.args:
             video_id = 'video-' + str(request.args['video_id'])
             video = {'video_id': video_id}
-            return generate_video(video) # Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
+            return Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
         elif 'username' in request.args:
             video = {'username': request.args['username']}
             return json.dumps(get_videos(video), indent=4, sort_keys=True, default=str)
@@ -182,7 +160,7 @@ def job_call():
             )
             return response
         job = {}
-        for k,v in request.args.items():
+        for k, v in request.args.items():
             job[k] = v
         update_annotation(job)
         response = app.response_class(
@@ -323,14 +301,26 @@ def result_call():
 
     elif request.method == 'GET':
         r = request.args
-        if not r or check_input_api(r, ['result_id']) is not None or check_input_api(r, ['video_id']) is not None:
+        if not r or (check_input_api(r, ['result_id']) is not None and check_input_api(r, ['video_id']) is not None):
             response = app.response_class(
                 response="Get jobs unsuccessfully",
                 status=500,
             )
             return response
 
-        return jsonify({'results': get_results(r)})
+        result = {}
+        if 'result_id' in r:
+            result['result_id'] = r['result_id']
+        if 'video_id' in r:
+            result['video_id'] = r['video_id']
+        if 'job_id' in r:
+            result['job_id'] = r['job_id']
+        if 'entity_id' in r:
+            result['entity_id'] = r['entity_id']
+        if 'frame_num' in r:
+            result['frame_num'] = r['frame_num']
+
+        return jsonify({'results': get_results(result)})
 
     elif request.method == 'DELETE':
         if not request.args or check_input_api(request.args, ['result_id']) is not None \
