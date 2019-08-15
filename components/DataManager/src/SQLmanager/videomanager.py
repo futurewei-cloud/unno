@@ -2,6 +2,10 @@ from ..DBconnectors.SQLconnector import run_single_query, run_all_query, update_
 from ..DBconnectors.MINIOconnector import make_bucket, uploader, downloader, remove_object, remove_bucket, save_frames
 from ..util import check_input_manager
 import os
+import sys
+import re
+import mimetypes
+from flask import request, send_file, Response
 
 
 def get_video(video):
@@ -90,17 +94,45 @@ def update_video(video):
 def generate_video(video):
     downloader('videos', video['video_id'])
     with open(os.path.join('/data/tmp', video['video_id']), "rb") as f:
-        for i in f:
-            chunk = i
-            yield chunk
+        return send_file_partial(f, video['video_id'])
+        # for i in f:
+        #    chunk = i
+        #    yield chunk
 
 
-if __name__ == "__main__":
-    new_video = {'video_name': 'test123.avi', 'username': 'abcd', 'format': 'avi', 'fps': 0, 'num_frames': 0}
-    add_video(new_video, os.path.join('/data/tmp', 'test.avi'))
-    print(get_video(new_video))
-    new_video = {'video_name': 'test123.avi', 'username': 'abcd', 'format': 'avi', 'fps': 10, 'num_frames': 5}
-    update_video(new_video)
-    print(get_video(new_video))
-    del_video(new_video)
-    print(get_video(new_video))
+def send_file_partial(file, filename):
+    """
+    Simple wrapper around send_file which handles HTTP 206 Partial Content
+    :param file - io.BytesIO object
+    :param filename
+    :return - flask response object
+    """
+    range_header = request.headers.get('Range', None)
+    if not range_header:
+        return send_file(file, attachment_filename=filename, conditional=True)
+
+    size = sys.getsizeof(file)
+    byte1, byte2 = 0, None
+
+    m = re.search('(\d+)-(\d*)', range_header)
+    g = m.groups()
+
+    if g[0]:
+        byte1 = int(g[0])
+    if g[1]:
+        byte2 = int(g[1])
+
+    length = size - byte1
+    if byte2 is not None:
+        length = byte2 - byte1 + 1
+
+    file.seek(byte1)
+    data = file.read(length)
+
+    rv = Response(data,
+                  206,
+                  mimetype=mimetypes.guess_type(filename)[0],
+                  direct_passthrough=True)  # "video/mp4",
+    rv.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(byte1, byte1 + length - 1, size))
+    rv.headers.add('Accept-Ranges', 'bytes')
+    return rv

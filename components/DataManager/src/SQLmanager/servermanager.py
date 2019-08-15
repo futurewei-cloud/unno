@@ -61,6 +61,3 @@ def update_server(server):
     print("server %s is updated!" % server['server_id'])
     return update_query('server', changes, conditions)
 
-
-if __name__ == "__main__":
-    new_server = {'job_name': 'abcd_job1', 'username': 'abcd', 'video_name': 'test123.avi'}

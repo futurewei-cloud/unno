@@ -15,6 +15,12 @@ app.secret_key = "super secret key"
 CORS(app)
 
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Accept-Ranges', 'bytes')
+    return response
+
+
 @app.route("/api/v1/upload")
 def upload():
     return render_template('upload.html')
@@ -35,6 +41,28 @@ def check_input_api(d, lst):
             return response
 
     return None
+
+
+def generate_data_from_response(resp, chunk=2048):
+    for data_chunk in resp.iter_content(chunk_size=chunk):
+        yield data_chunk
+
+#
+# def serve_partial(url, range_header, mime, size=3145728):
+#     from_bytes, until_bytes = range_header.replace('bytes=', '').split('-')
+#     if not until_bytes:
+#         until_bytes = int(from_bytes) + size  # Default size is 3MB
+#
+#     # Make request to YouTube
+#     headers = {'Range': 'bytes=%s-%s' % (from_bytes, until_bytes)}
+#     r = requests.get(url, headers=headers, stream=True)
+#
+#     # Build response
+#     rv = Response(generate_data_from_response(r), 206, mimetype=mime,
+#                   direct_passthrough=True)
+#     rv.headers.add('Content-Range', r.headers.get('Content-Range'))
+#     rv.headers.add('Content-Length', r.headers['Content-Length'])
+#     return rv
 
 
 @app.route('/api/v1/video', methods=['GET', 'POST', 'DELETE', 'PATCH'])
@@ -93,7 +121,7 @@ def video_call():
         if 'video_id' in request.args:
             video_id = 'video-' + str(request.args['video_id'])
             video = {'video_id': video_id}
-            return Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
+            return generate_video(video) # Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
         elif 'username' in request.args:
             video = {'username': request.args['username']}
             return json.dumps(get_videos(video), indent=4, sort_keys=True, default=str)
@@ -126,7 +154,8 @@ def video_call():
 def job_call():
     if request.method == 'POST':
         annotation = json.loads(request.data)
-        if not annotation or check_input_api(annotation, ['username', 'job_name', 'video_name']) is not None:
+        if not annotation or check_input_api(annotation, ['username', 'entity_id', 'video_id',
+                                                          'bbox', 'start_frame', 'end_frame']) is not None:
             response = app.response_class(
                 response="Insert job failed!",
                 status=500,
@@ -145,16 +174,38 @@ def job_call():
             )
         return response
 
+    elif request.method == 'PATCH':
+        if not request.args or check_input_api(request.args, ['job_id']) is not None:
+            response = app.response_class(
+                response="Modify videos unsuccessfully",
+                status=500,
+            )
+            return response
+        job = {}
+        for k,v in request.args.items():
+            job[k] = v
+        update_annotation(job)
+        response = app.response_class(
+            response="Video was modified successfully",
+            status=200,
+        )
+        return response
+
     elif request.method == 'GET':
-        if not request.args or check_input_api(request.args, ['username']) is not None:
+        if not request.args or check_input_api(request.args, ['username']) is not None \
+                or check_input_api(request.args, ['job_id']) is not None:
             response = app.response_class(
                 response="Get jobs unsuccessfully",
                 status=500,
             )
             return response
 
-        job = {'username': request.args['username']}
-        return jsonify({'jobs': get_annotations(job)})
+        if 'username' in request.args:
+            job = {'username': request.args['username']}
+            return jsonify({'jobs': get_annotations(job)})
+        elif 'job_id' in request.args:
+            job = {'job_id': request.args['job_id']}
+            return jsonify({'jobs': get_annotation(job)})
 
     elif request.method == 'DELETE':
         if not request.args or check_input_api(request.args, ['username', 'job_name']) is not None:

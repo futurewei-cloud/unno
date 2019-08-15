@@ -102,7 +102,3 @@ def update_result(result):
     print("result %s is updated!" % result['result_id'])
     return update_query('result', changes, conditions)
 
-
-if __name__ == "__main__":
-    new_result = {'job_name': 'abcd_job1', 'username': 'abcd', 'video_name': 'test123.avi'}
-    add_result(new_result, os.path.join('/data/tmp', 'test.avi'))

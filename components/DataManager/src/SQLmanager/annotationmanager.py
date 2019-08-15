@@ -20,20 +20,20 @@ def get_annotations(annotation):
 
 
 def add_annotation(annotation):
-    check_input_manager('annotation', annotation, ['username', 'job_name', 'video_id'])
+    check_input_manager('annotation', annotation, ['username', 'entity_id', 'video_id',
+                                                   'bbox', 'start_frame', 'end_frame'])
 
-    annotation['s3_location'] = annotation['username'] + '/' + annotation['job_name']
     if 'status' not in annotation:
-        annotation['status'] = 'pending'
+        annotation['status'] = 'new'
 
     key_query = "(username"
     value_query = "('%s'" % annotation['username']
 
     for k, v in annotation.items():
-        if k in ("job_name", "video_name", "s3_location", "status"):
+        if k in ("job_name", "s3_location", "status", "bbox", "entity_name"):
             key_query += "," + k
             value_query += ",'%s'" % annotation[k]
-        elif k in ("length", "num_frames"):
+        elif k in ("video_id", "entity_id", "start_frame", "end_frame"):
             key_query += "," + k
             value_query += ",%s" % annotation[k]
 
@@ -63,6 +63,3 @@ def update_annotation(annotation):
     print("Annotation %s is updated!" % annotation['job_id'])
     return update_query('annotation', changes, conditions)
 
-
-if __name__ == "__main__":
-    new_annotation = {'job_name': 'abcd_job1', 'username': 'abcd', 'video_name': 'test123.avi'}
