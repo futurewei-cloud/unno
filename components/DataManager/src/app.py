@@ -61,10 +61,10 @@ def video_call():
             video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
             video = {'video_name': video_id, 'username': username,
                      'format': video_format, 'length': 0, 'num_frames': 0}
-            add_video(video, file_name)
+            tmp_id = add_video(video, file_name)
 
             response = app.response_class(
-                response="Video was uploaded successfully",
+                json.dumps({'video_id': tmp_id}),
                 status=200,
             )
             return response
@@ -140,9 +140,10 @@ def job_call():
             )
             return response
 
-        if add_annotation(annotation):
+        job_id = add_annotation(annotation)
+        if job_id:
             response = app.response_class(
-                response="Job is queued successfully",
+                json.dumps({'job_id': job_id}),
                 status=200,
             )
         else:
@@ -221,9 +222,10 @@ def user_call():
             )
             return response
 
-        if add_user(user):
+        user_id = add_user(user)
+        if user_id:
             response = app.response_class(
-                response="Adding user successfully",
+                json.dumps({'user_id': user_id}),
                 status=200,
             )
         else:
@@ -274,7 +276,7 @@ def result_call():
     if request.method == 'POST':
         print(request.data)
         results = request.json
-        if not results or check_input_api(results, ['job_id', 'video_id',
+        if not results or check_input_api(results, ['video_id',
                                                     'entity_id', 'username']) is not None:
             response = app.response_class(
                 response="Insert result failed!",
@@ -287,16 +289,19 @@ def result_call():
                 response="Add results successfully",
                 status=200,
             )
-        elif 'frame_num' in results and 'status' in results and add_result(results):
-            response = app.response_class(
-                response="add result successfully",
-                status=200,
-            )
-        else:
-            response = app.response_class(
-                response="Insert result failed!",
-                status=500,
-            )
+            return response
+        elif 'frame_num' in results and 'status' in results:
+            result_id = add_result(results)
+            if result_id:
+                response = app.response_class(
+                    json.dumps({'result_id': result_id}),
+                    status=200,
+                )
+                return response
+        response = app.response_class(
+            response="Insert result failed!",
+            status=500,
+        )
         return response
 
     elif request.method == 'GET':

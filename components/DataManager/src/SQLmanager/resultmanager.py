@@ -25,8 +25,11 @@ def get_results(result):
 
 
 def add_result(result):
-    check_input_manager('result', result, ['job_id', 'video_id', 'frame_num',
+    check_input_manager('result', result, ['video_id', 'frame_num',
                                            'entity_id', 'username', 'status', 'bbox'])
+
+    if 'job_id' not in result:
+        result['job_id'] = 'null'
 
     key_query = "(job_id"
     value_query = "(%s" % result['job_id']

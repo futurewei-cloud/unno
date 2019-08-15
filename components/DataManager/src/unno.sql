@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 09, 2019 at 06:29 PM
+-- Generation Time: Aug 15, 2019 at 10:16 PM
 -- Server version: 5.5.22
 -- PHP Version: 5.3.10-1ubuntu3
 
@@ -46,15 +46,15 @@ CREATE TABLE IF NOT EXISTS `annotation` (
   UNIQUE KEY `video_id_3` (`video_id`,`entity_name`),
   KEY `username` (`username`),
   KEY `video_id` (`video_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `annotation`
 --
 
 INSERT INTO `annotation` (`job_id`, `job_name`, `video_id`, `username`, `entity_id`, `entity_name`, `bbox`, `start_frame`, `end_frame`, `status`, `s3_location`) VALUES
-(1, 'job1', 16, 'abcd', 1, 'person1', '1,1,10,10', 1, 5, 'new', '');
-
+(1, 'job1', 21, 'abcd', 1, 'person1', '1,1,10,10', 1, 5, 'done', ''),
+(2, 'job2', 21, 'abcd', 2, 'person2', '10,10,10,10', 1, 15, 'done', '');
 
 -- --------------------------------------------------------
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `model` (
 
 CREATE TABLE IF NOT EXISTS `result` (
   `result_id` int(11) NOT NULL AUTO_INCREMENT,
-  `job_id` int(11) NOT NULL,
+  `job_id` int(11) DEFAULT NULL,
   `video_id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `entity_id` int(11) NOT NULL,
@@ -93,7 +93,11 @@ CREATE TABLE IF NOT EXISTS `result` (
   KEY `username` (`username`),
   KEY `video_id` (`video_id`),
   KEY `job_id` (`job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=73 ;
+
+--
+-- Dumping data for table `result`
+--
 
 -- --------------------------------------------------------
 
@@ -106,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `endpoint` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`server_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `server`
@@ -154,14 +158,17 @@ CREATE TABLE IF NOT EXISTS `video` (
   PRIMARY KEY (`video_id`),
   UNIQUE KEY `video_name` (`video_name`,`username`),
   KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `video`
 --
 
 INSERT INTO `video` (`video_id`, `video_name`, `username`, `format`, `fps`, `num_frames`, `s3_location`) VALUES
-(16, 'catdog.mp4', 'abcd', 'mp4', 0, 0, '');
+(21, 'catdog.mp4', 'abcd', 'mp4', 30, 451, ''),
+(23, 'SampleVideo_1280x720_1mb.mp4', 'abcd', 'mp4', 25, 132, ''),
+(24, 'catdog1.mp4', 'abcd', 'mp4', 0, 0, ''),
+(26, 'Kid at Park.mp4', 'abcd', 'mp4', 25, 319, '');
 
 --
 -- Constraints for dumped tables
