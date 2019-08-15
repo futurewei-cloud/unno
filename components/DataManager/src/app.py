@@ -170,8 +170,8 @@ def job_call():
         return response
 
     elif request.method == 'GET':
-        if not request.args or check_input_api(request.args, ['username']) is not None \
-                or check_input_api(request.args, ['job_id']) is not None:
+        if not request.args or (check_input_api(request.args, ['username']) is not None
+                                and check_input_api(request.args, ['job_id']) is not None):
             response = app.response_class(
                 response="Get jobs unsuccessfully",
                 status=500,
@@ -323,8 +323,8 @@ def result_call():
         return jsonify({'results': get_results(result)})
 
     elif request.method == 'DELETE':
-        if not request.args or check_input_api(request.args, ['result_id']) is not None \
-                or check_input_api(request.args, ['video_id']) is not None:
+        if not request.args or (check_input_api(request.args, ['result_id']) is not None
+                                and check_input_api(request.args, ['video_id']) is not None):
             response = app.response_class(
                 response="Job was deleted unsuccessfully",
                 status=500,
