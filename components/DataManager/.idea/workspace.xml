@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="91173f1f-3dfb-4762-a24a-4158f6af33af" name="Default Changelist" comment="" />
+    <list default="true" id="91173f1f-3dfb-4762-a24a-4158f6af33af" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/SQLmanager/videomanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/SQLmanager/videomanager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -10,13 +13,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="66" column="34" selection-start-line="66" selection-start-column="34" selection-end-line="66" selection-end-column="34" />
+            <state relative-caret-position="-442">
+              <caret line="102" column="57" selection-start-line="102" selection-start-column="57" selection-end-line="102" selection-end-column="57" />
               <folding>
                 <element signature="e#0#108#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/SQLmanager/videomanager.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="268">
+              <caret line="102" lean-forward="true" selection-start-line="102" selection-end-line="102" />
+              <folding>
+                <element signature="e#0#85#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -80,10 +95,10 @@
         <option value="$PROJECT_DIR$/src/readme.txt" />
         <option value="$PROJECT_DIR$/src/SQLmanager/annotationmanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/servermanager.py" />
-        <option value="$PROJECT_DIR$/src/SQLmanager/videomanager.py" />
         <option value="$PROJECT_DIR$/src/SQLmanager/resultmanager.py" />
-        <option value="$PROJECT_DIR$/src/app.py" />
         <option value="$PROJECT_DIR$/src/unno.sql" />
+        <option value="$PROJECT_DIR$/src/app.py" />
+        <option value="$PROJECT_DIR$/src/SQLmanager/videomanager.py" />
       </list>
     </option>
   </component>
@@ -110,6 +125,12 @@
               <item name="DataManager" type="b2602c69:ProjectViewProjectNode" />
               <item name="DataManager" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DataManager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DataManager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="SQLmanager" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -184,7 +205,7 @@
     <frame x="0" y="0" width="1024" height="640" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26985744" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27494907" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info id="DB Browser" order="3" />
@@ -328,15 +349,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../../fullstack/solutions/Lesson-2/post-web-server/webserver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-410">
-          <folding>
-            <element signature="e#0#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../fullstack/solutions/Lesson-2/post-web-server/webserver.py" />
     <entry file="file://$PROJECT_DIR$/src/unno (3).sql" />
     <entry file="file://$PROJECT_DIR$/src/util.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -437,16 +450,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SQLmanager/videomanager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-324">
-          <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#85#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/unno.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="43">
@@ -466,10 +469,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="66" column="34" selection-start-line="66" selection-start-column="34" selection-end-line="66" selection-end-column="34" />
+        <state relative-caret-position="-442">
+          <caret line="102" column="57" selection-start-line="102" selection-start-column="57" selection-end-line="102" selection-end-column="57" />
           <folding>
             <element signature="e#0#108#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SQLmanager/videomanager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="102" lean-forward="true" selection-start-line="102" selection-end-line="102" />
+          <folding>
+            <element signature="e#0#85#0" expanded="true" />
           </folding>
         </state>
       </provider>

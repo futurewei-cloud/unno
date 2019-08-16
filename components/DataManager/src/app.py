@@ -99,7 +99,8 @@ def video_call():
         if 'video_id' in request.args:
             video_id = 'video-' + str(request.args['video_id'])
             video = {'video_id': video_id}
-            return Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
+            return Response(generate_video(video), direct_passthrough=True)
+            # Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
         elif 'username' in request.args:
             video = {'username': request.args['username']}
             return json.dumps(get_videos(video), indent=4, sort_keys=True, default=str)

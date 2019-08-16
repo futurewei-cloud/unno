@@ -93,11 +93,12 @@ def update_video(video):
 
 def generate_video(video):
     downloader('videos', video['video_id'])
-    with open(os.path.join('/data/tmp', video['video_id']), "rb") as f:
-        # return send_file_partial(f, video['video_id'])
-        for i in f:
-            chunk = i
-            yield chunk
+    return open(os.path.join('/data/tmp', video['video_id']), "rb")
+    # return send_file_partial(open(os.path.join('/data/tmp', video['video_id']), "rb"), video['video_id'])
+    # with open(os.path.join('/data/tmp', video['video_id']), "rb") as f:
+    #     for i in f:
+    #        chunk = i
+    #        yield chunk
 
 
 def send_file_partial(file, filename):
