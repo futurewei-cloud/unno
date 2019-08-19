@@ -132,7 +132,7 @@ def video_call():
 @app.route('/api/v1/job', methods=['GET', 'POST', 'DELETE'])
 def job_call():
     if request.method == 'POST':
-        annotation = json.loads(request.data)
+        annotation = request.json
         if not annotation or check_input_api(annotation, ['username', 'entity_id', 'video_id',
                                                           'bbox', 'start_frame', 'end_frame']) is not None:
             response = app.response_class(
@@ -172,7 +172,7 @@ def job_call():
         return response
 
     elif request.method == 'GET':
-        if not request.args or (check_input_api(request.args, ['username']) is not None
+        if not request.args or (check_input_api(request.args, ['video_id']) is not None
                                 and check_input_api(request.args, ['job_id']) is not None):
             response = app.response_class(
                 response="Get jobs unsuccessfully",
@@ -180,24 +180,24 @@ def job_call():
             )
             return response
 
-        if 'username' in request.args:
-            job = {'username': request.args['username']}
+        if 'video_id' in request.args:
+            job = {'video_id': request.args['video_id']}
             return jsonify({'jobs': get_annotations(job)})
         elif 'job_id' in request.args:
             job = {'job_id': request.args['job_id']}
             return jsonify({'jobs': get_annotation(job)})
 
     elif request.method == 'DELETE':
-        if not request.args or check_input_api(request.args, ['username', 'job_name']) is not None:
+        if not request.args or check_input_api(request.args, ['username', 'job_id']) is not None:
             response = app.response_class(
                 response="Job was deleted unsuccessfully",
                 status=500,
             )
             return response
 
-        job_name = request.args['job_name']
-        if len(job_name) > 0:
-            job = {'job_name': job_name, 'username': request.args['username']}
+        job_id = int(request.args['job_id'])
+        if job_id >= 0:
+            job = {'job_id': job_id, 'username': request.args['username']}
             del_annotation(job)
             response = app.response_class(
                 response="Job was deleted successfully",
@@ -215,7 +215,7 @@ def job_call():
 @app.route('/api/v1/user', methods=['GET', 'POST', 'DELETE'])
 def user_call():
     if request.method == 'POST':
-        user = json.loads(request.data)
+        user = request.json
         if not user or check_input_api(user, ['username', 'password', 'role']) is not None:
             response = app.response_class(
                 response="Adding user failed!",

@@ -7,15 +7,15 @@ import os
 def get_annotation(annotation):
     check_input_manager('annotation', annotation, ['job_id'])
     query = "SELECT * FROM annotation WHERE job_id='%s'" % \
-            (annotation['job_id'])
+            (str(annotation['job_id']))
     print("Annotation %s is fetched!" % annotation['job_id'])
     return run_all_query(query)
 
 
 def get_annotations(annotation):
-    check_input_manager('annotation', annotation, ['username'])
-    query = "SELECT * FROM annotation WHERE username='%s'" % (annotation['username'])
-    print("Annotation from user %s are fetched!" % annotation['username'])
+    check_input_manager('annotation', annotation, ['video_id'])
+    query = "SELECT * FROM annotation WHERE video_id='%s'" % (str(annotation['video_id']))
+    print("Annotation from user %s are fetched!" % annotation['video_id'])
     return run_all_query(query)
 
 
@@ -47,7 +47,7 @@ def add_annotation(annotation):
 def del_annotation(annotation):
     check_input_manager('annotation', annotation, ['job_id'])
     query = "DELETE FROM annotation WHERE job_id=%s" % \
-            (annotation['job_id'])
+            (str(annotation['job_id']))
     print("Annotation %s is deleted!" % annotation['job_id'])
     return run_single_query(query)
 

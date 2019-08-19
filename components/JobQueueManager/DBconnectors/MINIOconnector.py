@@ -108,9 +108,10 @@ def downloader_multiple(bucket_name, local_name):
         # print(obj.bucket_name, obj.object_name.encode('utf-8'), obj.last_modified,
         # obj.etag, obj.size, obj.content_type)
         # Get a full object and prints the original object stat information.
-        name = obj.object_name.encode('utf-8')
+        obj_name = obj.object_name.encode('utf-8')
         try:
-            minio_client.fget_object(obj.bucket_name, name, '/data/tmp/frames/' + local_name + '/' + name)
+            minio_client.fget_object(obj.bucket_name, obj_name,
+                                     os.path.join('/data/tmp/frames', local_name, obj.object_name))
         except ResponseError as err:
             print(err)
 
