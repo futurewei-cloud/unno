@@ -41,9 +41,6 @@ CREATE TABLE IF NOT EXISTS `annotation` (
   `status` varchar(20) NOT NULL,
   `s3_location` varchar(100) NOT NULL,
   PRIMARY KEY (`job_id`),
-  UNIQUE KEY `job_name` (`job_name`,`username`),
-  UNIQUE KEY `video_id_2` (`video_id`,`entity_id`),
-  UNIQUE KEY `video_id_3` (`video_id`,`entity_name`),
   KEY `username` (`username`),
   KEY `video_id` (`video_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;

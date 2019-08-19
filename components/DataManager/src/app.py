@@ -332,20 +332,20 @@ def result_call():
         if not request.args or (check_input_api(request.args, ['result_id']) is not None
                                 and check_input_api(request.args, ['video_id']) is not None):
             response = app.response_class(
-                response="Job was deleted unsuccessfully",
+                response="SQL DELETE query is not valid",
                 status=500,
             )
             return response
 
         result = request.args
-        if del_result(result):
+        if del_result(result) is not None:
             response = app.response_class(
-                response="User was deleted successfully",
+                response="Results was deleted successfully",
                 status=200,
             )
         else:
             response = app.response_class(
-                response="User was deleted unsuccessfully",
+                response="Results was deleted unsuccessfully",
                 status=500,
             )
 
