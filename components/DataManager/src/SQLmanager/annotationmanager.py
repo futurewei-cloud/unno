@@ -40,7 +40,8 @@ def add_annotation(annotation):
     key_query += ")"
     value_query += ")"
     query = "INSERT INTO annotation %s VALUES %s" % (key_query, value_query)
-    print("Annotation %s is added!" % annotation['job_name'])
+    print("Annotation %s is added! Entity: {}, Start: {}, End: {}".format(
+        annotation['entity_id'], annotation['start_frame'], annotation['end_frame']))
     return run_single_query(query)
 
 

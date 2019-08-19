@@ -133,25 +133,37 @@ def video_call():
 def job_call():
     if request.method == 'POST':
         annotation = request.json
-        if not annotation or check_input_api(annotation, ['username', 'entity_id', 'video_id',
-                                                          'bbox', 'start_frame', 'end_frame']) is not None:
+        if not annotation or check_input_api(annotation, ['start_frame', 'end_frame', 'result_id']) is not None:
             response = app.response_class(
-                response="Insert job failed!",
+                response="Insert job sql is not valid!",
                 status=500,
             )
             return response
 
+        # get result details to generate job
+        result = {'result_id': annotation.pop('result_id')}
+        result = get_results(result)[0]
+        annotation['username'] = result['username']
+        annotation['entity_id'] = result['entity_id']
+        annotation['video_id'] = result['video_id']
+        annotation['bbox'] = result['bbox']
+
+        # create new job
         job_id = add_annotation(annotation)
         if job_id:
             response = app.response_class(
                 json.dumps({'job_id': job_id}),
                 status=200,
             )
-        else:
-            response = app.response_class(
-                response="Insert job failed!",
-                status=500,
-            )
+            # update job_id in corresponding result info
+            result_update = {'job_id': job_id, 'result_id': result['result_id']}
+            if update_result(result_update) is not None:
+                return response
+
+        response = app.response_class(
+            response="Insert job failed!",
+            status=500,
+        )
         return response
 
     elif request.method == 'PATCH':
@@ -272,7 +284,7 @@ def user_call():
         return response
 
 
-@app.route('/api/v1/result', methods=['GET', 'POST', 'DELETE'])
+@app.route('/api/v1/result', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def result_call():
     if request.method == 'POST':
         print(request.data)
@@ -327,6 +339,28 @@ def result_call():
             result['frame_num'] = r['frame_num']
 
         return jsonify({'results': get_results(result)})
+
+    elif request.method == 'PATCH':
+        if not request.args or check_input_api(request.args, ['result_id']) is not None:
+            response = app.response_class(
+                response="Modify result sql is not valid",
+                status=500,
+            )
+            return response
+        result = {}
+        for k, v in request.args.items():
+            result[k] = v
+        if update_result(result) is not None:
+            response = app.response_class(
+                response="Result was modified successfully",
+                status=200,
+            )
+        else:
+            response = app.response_class(
+                response="Results was modified unsuccessfully",
+                status=500,
+            )
+        return response
 
     elif request.method == 'DELETE':
         if not request.args or (check_input_api(request.args, ['result_id']) is not None

@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `result` (
   `entity_id` int(11) NOT NULL,
   `frame_num` int(11) NOT NULL,
   `status` varchar(20) NOT NULL,
-  `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `bbox` varchar(100) NOT NULL,
   PRIMARY KEY (`result_id`),
   UNIQUE KEY `job_frame` (`job_id`,`video_id`,`entity_id`,`frame_num`),
@@ -125,7 +125,7 @@ INSERT INTO `server` (`server_id`, `endpoint`, `status`) VALUES
 CREATE TABLE IF NOT EXISTS `user` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `last_modified_time` timestamp NULL DEFAULT NULL,
+  `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `last_login_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`username`)
