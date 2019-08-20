@@ -183,8 +183,7 @@ ALTER TABLE `annotation`
 --
 ALTER TABLE `result`
   ADD CONSTRAINT `result_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
-  ADD CONSTRAINT `result_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`),
-  ADD CONSTRAINT `result_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `annotation` (`job_id`);
+  ADD CONSTRAINT `result_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
 
 --
 -- Constraints for table `video`

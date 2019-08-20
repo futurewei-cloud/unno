@@ -86,11 +86,15 @@ def update_query(db, sets, conditions):
         sql_set_query += " SET "
         if str(sets[0][1]) == 'CURRENT_TIMESTAMP':
             sql_set_query += str(sets[0][0]) + "=" + str(sets[0][1])
+        elif sets[0][1] is None:
+            sql_set_query += str(sets[0][0]) + "=NULL"
         else:
             sql_set_query += str(sets[0][0]) + "='" + str(sets[0][1]) + "'"
         for s in sets[1:]:
             if str(s[1]) == 'CURRENT_TIMESTAMP':
                 sql_set_query += ", " + str(s[0]) + "=" + str(s[1])
+            elif s[1] is None:
+                sql_set_query += ", " + str(s[0]) + "=NULL"
             else:
                 sql_set_query += ", " + str(s[0]) + "='" + str(s[1]) + "'"
 

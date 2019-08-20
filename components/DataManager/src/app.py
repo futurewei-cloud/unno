@@ -350,6 +350,12 @@ def result_call():
         result = {}
         for k, v in request.args.items():
             result[k] = v
+
+        # assure correct job_id for user generated result
+        if 'status' in result and result['status'] == 'user':
+            if 'job_id' not in result:
+                result['job_id'] = None
+
         if update_result(result) is not None:
             response = app.response_class(
                 response="Result was modified successfully",

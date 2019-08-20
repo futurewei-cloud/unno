@@ -15,9 +15,11 @@ def get_results(result):
 
         if 'job_id' in result:
             query += " AND job_id='%s'" % result['job_id']
-        elif 'entity_id' in result:
+        if 'username' in result:
+            query += " AND username='%s'" % result['username']
+        if 'entity_id' in result:
             query += " AND entity_id='%s'" % result['entity_id']
-        elif 'frame_num' in result:
+        if 'frame_num' in result:
             query += " AND frame_num='%s'" % result['frame_num']
 
         print("result from video %s are fetched!" % result['video_id'])
@@ -53,18 +55,30 @@ def add_result(result):
 def add_results(results):
     check_input_manager('results', results, ['job_id', 'video_id', 'entity_id',
                                              'username', 'tracking_results', 'server_id'])
-    result = {'job_id': results['job_id'], 'video_id': results['video_id'],
-              'entity_id': results['entity_id'], 'username': results['username'], 'status': 'auto'}
+
+    result_meta = {'video_id': results['video_id'], 'entity_id': results['entity_id'], 'username': results['username']}
+
     for k, v in results['tracking_results'].items():
-        result['bbox'] = v
-        result['frame_num'] = k
-        if add_result(result) is None:
-            tmp = {'job_id': result['job_id'], 'video_id': result['video_id'],
-                   'entity_id': result['entity_id'], 'frame_num': result['frame_num'], 'status': 'auto'}
-            result_id = get_results(tmp)
-            if result_id and len(result_id) == 1:
-                tmp = {'result_id': result_id[0], 'bbox': result['bbox']}
-                update_result(tmp)
+        result_info = {'frame_num': k}
+        result_info.update(result_meta)
+
+        # check if existing related result
+        existing_result = get_results(result_info)
+        if existing_result is not None and len(existing_result) > 0:
+            existing_id = existing_result[0]['result_id']
+            if existing_result[0]['status'] == 'auto':
+                # update by overriding with latest result
+                result = {'bbox': v, 'job_id': results['job_id'], 'status': 'auto', 'result_id': existing_id}
+                result.update(result_info)
+                update_result(result)
+            else:
+                # skip, not to override human generated result
+                continue
+        else:
+            # add new result
+            result = {'bbox': v, 'job_id': results['job_id'], 'status': 'auto'}
+            result.update(result_info)
+            add_result(result)
 
     annotation = {'job_id': results['job_id'], 'status': 'done'}
     update_annotation(annotation)
