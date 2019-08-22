@@ -99,8 +99,7 @@ def video_call():
         if 'video_id' in request.args:
             video_id = 'video-' + str(request.args['video_id'])
             video = {'video_id': video_id}
-            return Response(generate_video(video), direct_passthrough=True)
-            # Response(stream_with_context(generate_video(video)), mimetype="video/mp4")
+            return generate_video(video, request.headers)
         elif 'username' in request.args:
             video = {'username': request.args['username']}
             return json.dumps(get_videos(video), indent=4, sort_keys=True, default=str)
@@ -129,7 +128,8 @@ def video_call():
         return response
 
 
-@app.route('/api/v1/job', methods=['GET', 'POST', 'DELETE'])
+#@app.route('/api/v1/job', methods=['GET', 'POST', 'DELETE'])
+@app.route('/api/v1/job', methods=['GET', 'POST'])  # disable delete at this time
 def job_call():
     if request.method == 'POST':
         annotation = request.json
