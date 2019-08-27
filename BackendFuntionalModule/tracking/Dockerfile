@@ -19,7 +19,7 @@ WORKDIR /app
 RUN git clone https://github.com/STVIR/pysot.git
 WORKDIR /app/pysot
 RUN python setup.py build_ext --inplace
-COPY ./data/model/ /app/pysot/experiments/
+COPY ./model/ /app/pysot/experiments/
 
 ## set flask service
 RUN pip install flask requests
