@@ -25,7 +25,6 @@ COPY ./model/ /app/pysot/experiments/
 RUN pip install flask requests
 WORKDIR /app/tracking
 COPY tracker.py /app/tracking/
-COPY run_tracking.py /app/tracking/
 COPY app.py /app/tracking/
 RUN chmod a+x app.py
 
