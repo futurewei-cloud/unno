@@ -78,6 +78,7 @@ def sot_tracking():
     # post result to saving api
     retry_num = RETRY
     headers = {'content-type': 'application/json'}
+    r = None
     while retry_num > 0:
         try:
             r = requests.post(url=save_result_api, data=json.dumps(response), headers=headers, timeout=TIMEOUT_SEC)
@@ -96,7 +97,9 @@ def sot_tracking():
         else:
             break
 
-    if r.status_code != requests.codes.ok:
+    if r is None:
+        return 'saving tracking result failed, saving service is not responding...'
+    elif r.status_code != requests.codes.ok:
         return 'saving tracking result failed', r.status_code
 
     return jsonify(response), 200
