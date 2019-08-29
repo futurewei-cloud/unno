@@ -85,15 +85,15 @@ def sot_tracking():
         except requests.Timeout:
             # sending results timeout, re-try
             retry_num -= 1
-            pass
+            continue
         except requests.ConnectionError:
             # target api is down, re-try
             retry_num -= 1
-            pass
+            continue
         if r.status_code != requests.codes.ok:
             # sending results failed, re-try
             retry_num -= 1
-            pass
+            continue
         else:
             break
 

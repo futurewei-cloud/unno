@@ -11,6 +11,7 @@ def forward_job(url, job):
     headers = {'content-type': 'application/json'}
     response = requests.post(url, data=json.dumps(job), headers=headers)
     print(response.content)
+    # TODO: clean up if API call failed with code other than 200
     return response
 
 
