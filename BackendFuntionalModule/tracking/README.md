@@ -5,7 +5,7 @@ With given image and corresponding target location,
 tracking results upon an image set will be generated automatically 
 and passed to a specified storage endpoint for data persistence.
 
-#####Get started
+##### Get started
 All dependencies are built into a Docker environment. 
 Build and run the docker image to start the service. 
 [NOTE: model files should be downloaded and saved to `model` folder,
@@ -18,7 +18,7 @@ $ docker build -t IMG_NAME .
 $docker run --runtime=nvidia --ipc="host" -e NVIDIA_VISIBLE_DEVICES=GPU_ID -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ IMG_NAME
 ```
 
-#####API
+##### API
 * http://HOSTNAME/tracking/api/sot ['POST']
 
   NOTE:  
@@ -53,7 +53,7 @@ $docker run --runtime=nvidia --ipc="host" -e NVIDIA_VISIBLE_DEVICES=GPU_ID -d -p
   }
   ```
  
- #####Model
+ ##### Model
  Tracking model is commonly supported with necessary changes. 
  Currently, [PySOT](https://github.com/STVIR/pysot) is wrapped as backend model.
  

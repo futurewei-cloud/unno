@@ -95,9 +95,12 @@ def uploader_multiple(bucket_name, local, file_type='.jpg'):
 
 def downloader(bucket_name, file_name):
     try:
-        minio_client.fget_object(bucket_name, file_name, os.path.join('/data/tmp', file_name))
+        downloaded_file = os.path.join('/data/tmp', file_name)
+        minio_client.fget_object(bucket_name, file_name, downloaded_file)
+        return downloaded_file
     except ResponseError as err:
         print(err)
+        return None
 
 
 def downloader_multiple(bucket_name, local_name):

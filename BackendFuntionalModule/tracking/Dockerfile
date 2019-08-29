@@ -19,13 +19,12 @@ WORKDIR /app
 RUN git clone https://github.com/STVIR/pysot.git
 WORKDIR /app/pysot
 RUN python setup.py build_ext --inplace
-COPY ./data/model/ /app/pysot/experiments/
+COPY ./model/ /app/pysot/experiments/
 
 ## set flask service
 RUN pip install flask requests
 WORKDIR /app/tracking
 COPY tracker.py /app/tracking/
-COPY run_tracking.py /app/tracking/
 COPY app.py /app/tracking/
 RUN chmod a+x app.py
 
