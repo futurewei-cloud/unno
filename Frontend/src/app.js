@@ -1,0 +1,144 @@
+import { Container, DrawerMenu, Header, Heading, HEADING_LEVELS, Label, locale, theme, WINDOW } from 'hafgufa';
+import { HUNDRED_PERCENT, Thickness } from 'type-enforcer';
+import api from './api';
+import './app.less';
+import EditView from './EditView';
+import MainMenu from './MainMenu';
+import SettingsView from './SettingsView';
+
+const MAIN_CONTAINER = Symbol();
+const EDIT_VIEW = Symbol();
+const HEADER = Symbol();
+const resize = Symbol();
+const supportedLanguages = {
+	English: 'en-US',
+	Chinese: 'zh-ch'
+};
+
+const mimeTypes = {
+	'mp4': 'video/mp4',
+	'avi': 'video/x-msvideo'
+};
+
+class App {
+	constructor() {
+		const self = this;
+
+		self[MAIN_CONTAINER] = new Container({
+			container: document.body,
+			height: HUNDRED_PERCENT,
+			margin: '3rem 0 0',
+			onResize() {
+				self[resize]();
+			}
+		});
+
+		theme
+			.path('[name].[env].min.css')
+			.themes(['hud_01.dark', 'hud_01.light'])
+			.theme('hud_01.dark');
+
+		locale
+			.onLanguageChange(function() {
+				this.load('localization/common', 'localization/main')
+					.then(() => {
+						self.buildEditView();
+						self.buildHeader();
+					});
+			})
+			.languages(supportedLanguages);
+	}
+
+	[resize]() {
+		const self = this;
+		const padding = new Thickness(WINDOW.getComputedStyle(self[MAIN_CONTAINER].element()).padding);
+
+		self[EDIT_VIEW].width(self[MAIN_CONTAINER].borderWidth() - padding.horizontal);
+	}
+
+	buildHeader() {
+		const self = this;
+
+		if (self[HEADER]) {
+			self[HEADER].remove();
+		}
+
+		self[HEADER] = new Header({
+			container: document.body,
+			content: [{
+				control: DrawerMenu,
+				menuContainer: self[MAIN_CONTAINER].element(),
+				headerControl: MainMenu,
+				headerSettings: {
+					height: '100%',
+					onSelect(video) {
+						if (self[EDIT_VIEW].videoId() !== video.video_id) {
+							const sep = video.video_name.lastIndexOf('.');
+
+							self[EDIT_VIEW]
+								.source(api.getVideoLink(video.video_id))
+								.title(video.video_name.substring(0, sep))
+								.ext(video.video_name.substring(sep + 1))
+								.videoId(video.video_id)
+								.fps(video.fps)
+								.duration(video.duration);
+						}
+					},
+					onDelete(video) {
+						if (video.video_id === self[EDIT_VIEW].videoId()) {
+							self[EDIT_VIEW].source('')
+								.title('-')
+								.videoId('');
+						}
+					}
+				},
+				onMenuSlide() {
+					self[resize]();
+				}
+			}, {
+				control: Heading,
+				level: HEADING_LEVELS.ONE,
+				icon: ';',
+				title: locale.get('appTitle'),
+				subTitle: '&nbsp;'
+			}, {
+				control: Label,
+				content: locale.get('appSubTitle').replace(' ', '<br>'),
+				classes: 'main-sub-title'
+			}, {
+				control: DrawerMenu,
+				isMenuOpen: false,
+				menuContainer: self[MAIN_CONTAINER].element(),
+				icon: 'cog',
+				label: locale.get('settings'),
+				drawerDock: 'right',
+				addClass: 'align-right',
+				headerControl: SettingsView,
+				headerSettings: {
+					height: '100%'
+				},
+				onMenuSlide() {
+					self[resize]();
+				}
+			}]
+		});
+	}
+
+	buildEditView() {
+		const self = this;
+
+		if (self[EDIT_VIEW]) {
+			self[EDIT_VIEW].remove();
+		}
+
+		self[EDIT_VIEW] = new EditView({
+			container: self[MAIN_CONTAINER],
+			height: '100%',
+			onEditTitle(title) {
+				api.patchVideo(self[EDIT_VIEW].videoId(), title + '.' + self[EDIT_VIEW].ext());
+			}
+		});
+	}
+}
+
+new App();

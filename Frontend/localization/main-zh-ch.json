@@ -1,0 +1,16 @@
+{
+	"settings": "设置",
+	"appTitle": "UNNO",
+	"appSubTitle": "Video Annotator",
+	"videoLength": "长度",
+	"videoExtension": "延期",
+	"annotations": "注解",
+	"loading": "装载",
+	"uploadNewVideo": "上传新视频",
+	"theme": "主题",
+	"language": "语言",
+	"dark": "暗",
+	"light": "光",
+	"english": "英语",
+	"chinese": "中文"
+}

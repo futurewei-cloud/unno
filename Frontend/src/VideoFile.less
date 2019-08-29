@@ -1,0 +1,55 @@
+.video-file {
+	margin: 0 0 0.6rem 0;
+	cursor: pointer;
+
+	> div {
+		min-height: 3rem;
+		padding: 0 0.25rem 0;
+	}
+
+	&:hover {
+		@groupBackgroundHoverColor: fadein(@groupBackgroundColor, 3%);
+
+		background: top/100% 50% no-repeat linear-gradient(135deg, transparent 0.6rem, @groupBorderColor 0.6rem, @groupBorderColor 0.65rem, @groupBackgroundHoverColor 0.65rem), bottom/100% 50% no-repeat linear-gradient(315deg, transparent 0.6rem, @groupBorderColor 0.6rem, @groupBorderColor 0.65rem, @groupBackgroundHoverColor 0.65rem), radial-gradient(at top center, fade(@reflectionColor, 10%), fade(@reflectionColor, 4%) 30%, fade(@reflectionColor, 0%) 65%)
+	}
+
+	.description {
+		margin: 0 0 0.2rem;
+
+		.title-container {
+			color: @secondaryFontColor;
+		}
+	}
+
+	#extensionId {
+		> div {
+			background: fade(@secondaryFontColor, 30%);
+			border-radius: 0.25rem;
+			color: @backgroundColor;
+			padding-bottom: 0.1rem;
+			margin-bottom: -0.1rem;
+		}
+	}
+
+	&.selected {
+		@groupSelectedBackgroundColor: fade(@highlightColor, 10%);
+		@groupSelectedBorderColor: fade(@highlightColor, 80%);
+
+		background: top/100% 50% no-repeat linear-gradient(135deg, transparent 0.6rem, @groupSelectedBorderColor 0.6rem, @groupSelectedBorderColor 0.65rem, @groupSelectedBackgroundColor 0.65rem), bottom/100% 50% no-repeat linear-gradient(315deg, transparent 0.6rem, @groupSelectedBorderColor 0.6rem, @groupSelectedBorderColor 0.65rem, @groupSelectedBackgroundColor 0.65rem), radial-gradient(at top center, fade(@reflectionColor, 10%), fade(@reflectionColor, 4%) 30%, fade(@reflectionColor, 0%) 65%);
+
+		&:after, &:before {
+			border-color: @groupSelectedBorderColor;
+		}
+
+		&:hover {
+			@groupSelectedHoverBackgroundColor: fade(@highlightColor, 20%);
+			@groupSelectedHoverBorderColor: @highlightColor;
+
+			background: top/100% 50% no-repeat linear-gradient(135deg, transparent 0.6rem, @groupSelectedHoverBorderColor 0.6rem, @groupSelectedHoverBorderColor 0.65rem, @groupSelectedHoverBackgroundColor 0.65rem), bottom/100% 50% no-repeat linear-gradient(315deg, transparent 0.6rem, @groupSelectedHoverBorderColor 0.6rem, @groupSelectedHoverBorderColor 0.65rem, @groupSelectedHoverBackgroundColor 0.65rem), radial-gradient(at top center, fade(@reflectionColor, 10%), fade(@reflectionColor, 4%) 30%, fade(@reflectionColor, 0%) 65%);
+
+			&:after, &:before {
+				border-color: @groupSelectedHoverBorderColor;
+			}
+		}
+	}
+}

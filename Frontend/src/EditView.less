@@ -1,0 +1,78 @@
+@videoControlBackgroundColor: rgba(255, 255, 255, 0.1);
+
+.edit-view {
+	> .first-view {
+		text-align: center;
+		font-size: 0;
+
+		> .split-view {
+			display: inline-block;
+		}
+	}
+
+	video {
+		border-radius: 0.5rem;
+		background: fade(@fontColor, 10%);
+	}
+
+	.time-line {
+		position: absolute;
+		top: 0;
+	}
+
+	.timeline-slider {
+		position: absolute;
+		top: 0;
+		pointer-events: none;
+
+		.track {
+			background: transparent;
+			height: 100%;
+			margin: 0;
+
+			&:after {
+				box-shadow: none;
+			}
+		}
+
+		.range {
+			opacity: 0.1;
+			height: 100%;
+			margin: 0;
+			border-radius: 0.75rem;
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+
+			&:after {
+				box-shadow: none;
+			}
+		}
+
+		.form-button {
+			height: 100%;
+			border-radius: 0.75rem;
+			pointer-events: all;
+
+			&:before {
+				content: '';
+				position: absolute;
+				height: 100%;
+				top: 0;
+				left: 0.72rem;
+				border-left: 1px dashed rgba(255, 255, 255, 0.15);
+			}
+		}
+	}
+
+	.resizer {
+		&:after {
+			background: none;
+		}
+	}
+}
+
+.toast-wrapper {
+	.toast.not-inline.predict-button {
+		background: linear-gradient(darken(@highlightColor, 20), darken(@highlightColor, 30));
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"settings": "Settings",
+	"appTitle": "UNNO",
+	"appSubTitle": "Video Annotator",
+	"videoLength": "Length",
+	"videoExtension": "Ext",
+	"fps": "fps",
+	"annotations": "Annotations",
+	"loading": "Loading",
+	"uploadNewVideo": "Upload New Video",
+	"theme": "Theme",
+	"language": "Language",
+	"dark": "Dark",
+	"light": "Light",
+	"english": "English",
+	"chinese": "Chinese"
+}
