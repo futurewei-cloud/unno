@@ -1,5 +1,5 @@
-import { Container, DrawerMenu, Header, Heading, HEADING_LEVELS, Label, locale, theme, WINDOW } from 'hafgufa';
-import { HUNDRED_PERCENT, Thickness } from 'type-enforcer';
+import { Container, DrawerMenu, Header, Heading, HEADING_LEVELS, Label, locale, theme } from 'hafgufa';
+import { HUNDRED_PERCENT } from 'type-enforcer';
 import api from './api';
 import './app.less';
 import EditView from './EditView';
@@ -9,7 +9,6 @@ import SettingsView from './SettingsView';
 const MAIN_CONTAINER = Symbol();
 const EDIT_VIEW = Symbol();
 const HEADER = Symbol();
-const resize = Symbol();
 const supportedLanguages = {
 	English: 'en-US',
 	Chinese: 'zh-ch'
@@ -27,10 +26,7 @@ class App {
 		self[MAIN_CONTAINER] = new Container({
 			container: document.body,
 			height: HUNDRED_PERCENT,
-			margin: '3rem 0 0',
-			onResize() {
-				self[resize]();
-			}
+			margin: '3rem 0 0'
 		});
 
 		theme
@@ -49,13 +45,6 @@ class App {
 			.languages(supportedLanguages);
 	}
 
-	[resize]() {
-		const self = this;
-		const padding = new Thickness(WINDOW.getComputedStyle(self[MAIN_CONTAINER].element()).padding);
-
-		self[EDIT_VIEW].width(self[MAIN_CONTAINER].borderWidth() - padding.horizontal);
-	}
-
 	buildHeader() {
 		const self = this;
 
@@ -70,7 +59,7 @@ class App {
 				menuContainer: self[MAIN_CONTAINER].element(),
 				headerControl: MainMenu,
 				headerSettings: {
-					height: '100%',
+					height: HUNDRED_PERCENT,
 					onSelect(video) {
 						if (self[EDIT_VIEW].videoId() !== video.video_id) {
 							const sep = video.video_name.lastIndexOf('.');
@@ -91,9 +80,6 @@ class App {
 								.videoId('');
 						}
 					}
-				},
-				onMenuSlide() {
-					self[resize]();
 				}
 			}, {
 				control: Heading,
@@ -116,9 +102,6 @@ class App {
 				headerControl: SettingsView,
 				headerSettings: {
 					height: '100%'
-				},
-				onMenuSlide() {
-					self[resize]();
 				}
 			}]
 		});

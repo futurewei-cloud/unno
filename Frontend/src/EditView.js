@@ -1,7 +1,7 @@
-import { clear, delay, throttle } from 'async-agent';
-import { Slider, softDelete, SplitView, Timeline, toast, Video } from 'hafgufa';
+import { clear, throttle } from 'async-agent';
+import { BLOCK, Container, INLINE_BLOCK, Slider, softDelete, SplitView, Timeline, toast, Video } from 'hafgufa';
 import moment from 'moment';
-import { method, PIXELS } from 'type-enforcer';
+import { HUNDRED_PERCENT, method, PIXELS } from 'type-enforcer';
 import Annotator from './Annotator';
 import api from './api';
 import './EditView.less';
@@ -10,6 +10,7 @@ import VideoControls from './VideoControls';
 const INTERVAL_ID = Symbol();
 const ANNOTATIONS = Symbol();
 const ONE_FRAME = Symbol();
+const VIDEO_PLAYER = Symbol();
 const VIDEO_WRAPPER = Symbol();
 const VIDEO = Symbol();
 const VIDEO_CONTROLS = Symbol();
@@ -22,7 +23,6 @@ const JOBS = Symbol();
 const AVAILABLE_VIDEO_HEIGHT = Symbol();
 const AVAILABLE_VIDEO_WIDTH = Symbol();
 
-const measureAvailableVideoSize = Symbol();
 const layoutVideo = Symbol();
 const checkJobs = Symbol();
 const buildVideo = Symbol();
@@ -47,7 +47,6 @@ export default class EditView extends SplitView {
 		super(settings);
 
 		const self = this;
-
 		self.addClass('edit-view');
 
 		self[ANNOTATIONS] = [];
@@ -55,13 +54,6 @@ export default class EditView extends SplitView {
 
 		self[buildVideo]();
 		self[buildTimeline]();
-	}
-
-	[measureAvailableVideoSize]() {
-		const self = this;
-
-		self[AVAILABLE_VIDEO_HEIGHT] = self.firstView().borderHeight();
-		self[AVAILABLE_VIDEO_WIDTH] = self.firstView().borderWidth();
 	}
 
 	[layoutVideo]() {
@@ -79,28 +71,34 @@ export default class EditView extends SplitView {
 		if (self[VIDEO_PROPORTIONS] > availableProportions) {
 			const newHeight = (self[AVAILABLE_VIDEO_WIDTH] / self[VIDEO_PROPORTIONS]) + self[VIDEO_CONTROLS_HEIGHT];
 
+			self[VIDEO_WRAPPER]
+				.css('display', BLOCK);
 			self[VIDEO]
 				.height('auto')
 				.width('100%');
-			self[VIDEO_WRAPPER]
+			self[VIDEO_PLAYER]
 				.width('100%')
 				.height(newHeight)
 				.css({
 					'margin-top': (self[AVAILABLE_VIDEO_HEIGHT] - newHeight) / 2 + PIXELS
-				});
+				})
+				.resize();
 		}
 		else {
 			const newWidth = (self[AVAILABLE_VIDEO_HEIGHT] - self[VIDEO_CONTROLS_HEIGHT]) * self[VIDEO_PROPORTIONS];
 
+			self[VIDEO_WRAPPER]
+				.css('display', INLINE_BLOCK);
 			self[VIDEO]
 				.height('100%')
 				.width('auto');
-			self[VIDEO_WRAPPER]
+			self[VIDEO_PLAYER]
 				.width(newWidth)
 				.height('100%')
 				.css({
 					'margin-top': 0 + PIXELS
-				});
+				})
+				.resize();
 		}
 	}
 
@@ -108,45 +106,39 @@ export default class EditView extends SplitView {
 		const self = this;
 
 		self.firstView()
-			.onResize(() => {
-				self[measureAvailableVideoSize]();
+			.onResize((width, height) => {
+				self[AVAILABLE_VIDEO_HEIGHT] = height;
+				self[AVAILABLE_VIDEO_WIDTH] = width;
+				self[layoutVideo]();
 			});
 
-		self[VIDEO_WRAPPER] = new SplitView({
+		self[VIDEO_PLAYER] = new SplitView({
 			container: self.firstView(),
 			width: 'auto',
 			minHeight: '6rem',
 			minWidth: '28rem',
 			splitOffset: '-3rem',
-			orientation: SplitView.ORIENTATION.ROWS,
-			onResize() {
-				delay(() => {
-					// const videoWidth = self[VIDEO].borderWidth();
-					// const isAligned = videoWidth === self[VIDEO_WRAPPER].borderWidth();
-					// const isMinWidth = self[VIDEO_WRAPPER].borderWidth() === self[VIDEO_WRAPPER].minWidth().toPixels(true);
-					//
-					// self[ANNOTATOR].width(videoWidth);
-					//
-					// if (!isAligned && !isMinWidth) {
-					// 	self[VIDEO_WRAPPER].resize();
-					// }
-					self[layoutVideo]();
-				}, 100);
-			}
+			orientation: SplitView.ORIENTATION.ROWS
+		});
+
+		self[VIDEO_WRAPPER] = new Container({
+			container: self[VIDEO_PLAYER].firstView(),
+			height: HUNDRED_PERCENT
 		});
 
 		self[VIDEO] = new Video({
-			container: self[VIDEO_WRAPPER].firstView(),
+			container: self[VIDEO_WRAPPER],
 			showControls: false,
-			height: '100%',
+			height: HUNDRED_PERCENT,
 			width: 'auto',
 			attr: {
 				crossorigin: 'anonymous'
 			},
 			onReady(duration) {
 				self[VIDEO_PROPORTIONS] = null;
-				self[VIDEO_WRAPPER].isWorking(false).resize();
-				self[VIDEO_CONTROLS].resize();
+				self[VIDEO_PLAYER].isWorking(false);
+
+				self[layoutVideo]();
 			},
 			onTimeUpdate(currentTime) {
 				self[setCurrentTime](currentTime);
@@ -161,7 +153,7 @@ export default class EditView extends SplitView {
 			},
 			onError(error) {
 				clear(self[INTERVAL_ID]);
-				self[VIDEO_WRAPPER].isWorking(false).resize();
+				self[VIDEO_PLAYER].isWorking(false).resize();
 				toast.error({
 					title: 'Error loading video',
 					subTitle: `code: ${error.code} - ${error.message}`
@@ -173,7 +165,7 @@ export default class EditView extends SplitView {
 		});
 
 		self[VIDEO_CONTROLS] = new VideoControls({
-			container: self[VIDEO_WRAPPER].secondView(),
+			container: self[VIDEO_PLAYER].secondView(),
 			video: self[VIDEO],
 			onEditTitle(title) {
 				self.onEditTitle()(title);
@@ -181,14 +173,14 @@ export default class EditView extends SplitView {
 		});
 
 		self[ANNOTATOR] = new Annotator({
-			container: self[VIDEO_WRAPPER].firstView(),
-			onAdd(annotation) {
+			container: self[VIDEO_WRAPPER],
+			onAdd(bbox) {
 				const currentTime = self[SLIDER].value()[0] / 1000;
 				const currentFrame = Math.round(currentTime * self.fps());
 
-				annotation = {
+				const annotation = {
 					frame: currentFrame,
-					bbox: annotation.bbox(),
+					bbox: bbox,
 					entityId: Math.round(Math.random() * 10000),
 					jobId: null
 				};
@@ -333,7 +325,7 @@ export default class EditView extends SplitView {
 		const self = this;
 
 		if (source) {
-			this[VIDEO_WRAPPER].isWorking(true);
+			this[VIDEO_PLAYER].isWorking(true);
 		}
 
 		self[VIDEO].sources([source]);

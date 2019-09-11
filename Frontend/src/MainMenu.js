@@ -12,7 +12,7 @@ const uploadVideo = Symbol();
 
 export default class MainMenu extends SplitView {
 	constructor(settings) {
-		super({
+		settings = {
 			...settings,
 			orientation: SplitView.ORIENTATION.ROWS,
 			height: '100%',
@@ -30,7 +30,9 @@ export default class MainMenu extends SplitView {
 					self[uploadVideo](data, this);
 				}
 			}]
-		});
+		};
+
+		super(settings);
 
 		const self = this;
 		self.isWorking(true);

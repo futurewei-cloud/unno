@@ -33,7 +33,7 @@ export default class SettingsView extends Container {
 					id: 'hud_01.dark'
 				}],
 				onChange(value) {
-					theme.theme(value.value);
+					theme.theme(value);
 				}
 			}, {
 				control: GroupedButtons,
@@ -44,7 +44,7 @@ export default class SettingsView extends Container {
 				isSelectable: true,
 				value: locale.language(),
 				onChange(value) {
-					locale.language(value.value);
+					locale.language(value);
 				}
 			}]
 		}]);
