@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `last_login_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_login_time` timestamp NULL,
   `role` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
