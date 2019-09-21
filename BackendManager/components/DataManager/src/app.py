@@ -3,6 +3,7 @@ from .SQLmanager.videomanager import add_video, generate_video, get_videos, del_
 from .SQLmanager.annotationmanager import add_annotation, get_annotation, get_annotations, \
     del_annotation, update_annotation
 from .SQLmanager.resultmanager import add_result, add_results, get_results, del_result, update_result
+from .SQLmanager.categorymanager import add_category, get_category, get_categoris, del_category, update_category
 from .SQLmanager.usermanager import add_user, get_user, del_user, update_user
 import os
 import json
@@ -337,6 +338,8 @@ def result_call():
             result['entity_id'] = r['entity_id']
         if 'frame_num' in r:
             result['frame_num'] = r['frame_num']
+        if 'cat_id' in r:
+            result['cat_id'] = r['cat_id']
 
         return jsonify({'results': get_results(result)})
 
@@ -386,6 +389,92 @@ def result_call():
         else:
             response = app.response_class(
                 response="Results was deleted unsuccessfully",
+                status=500,
+            )
+
+        return response
+
+
+@app.route('/api/v1/category', methods=['GET', 'POST', 'DELETE', 'PATCH'])
+def category_call():
+    if request.method == 'POST':
+        cat = request.json
+        if not cat or check_input_api(cat, ['name']) is not None:
+            response = app.response_class(
+                response="Insert category failed!",
+                status=500,
+            )
+            return response
+
+        cat_id = add_category(cat)
+        if cat_id:
+            response = app.response_class(
+                json.dumps({'cat_id': cat_id}),
+                status=200,
+            )
+            return response
+        else:
+            response = app.response_class(
+                response="Insert category failed!",
+                status=500,
+            )
+        return response
+
+    elif request.method == 'GET':
+        r = request.args
+        if not r:
+            return jsonify({'category': get_categoris()})
+        if check_input_api(r, ['cat_id']) is None:
+            return jsonify({'category': get_category(r['cat_id'])})
+        if check_input_api(r, ['sup_cat_name']) is None:
+            return jsonify({'category': get_categoris(sup_cat=r['sup_cat_name'])})
+
+        response = app.response_class(
+            response="Get category failed!",
+            status=500,
+        )
+        return response
+
+    elif request.method == 'PATCH':
+        cat = request.json
+        if not cat or check_input_api(cat, ['cat_id']) is not None:
+            response = app.response_class(
+                response="Modify category sql is not valid",
+                status=500,
+            )
+            return response
+
+        if update_category(cat) is not None:
+            response = app.response_class(
+                response="Category was modified successfully",
+                status=200,
+            )
+        else:
+            response = app.response_class(
+                response="Category was modified unsuccessfully",
+                status=500,
+            )
+        return response
+
+    elif request.method == 'DELETE':
+        if not request.args or (check_input_api(request.args, ['cat_id']) is not None
+                                and check_input_api(request.args, ['name']) is not None
+                                and check_input_api(request.args, ['sup_cat_name']) is not None):
+            response = app.response_class(
+                response="Category SQL DELETE query is not valid",
+                status=500,
+            )
+            return response
+
+        cat = request.args
+        if del_category(cat) is not None:
+            response = app.response_class(
+                response="Category was deleted successfully",
+                status=200,
+            )
+        else:
+            response = app.response_class(
+                response="Category was deleted unsuccessfully",
                 status=500,
             )
 

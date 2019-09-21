@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2019 at 10:16 PM
+-- Generation Time: Sep 20, 2019 at 11:57 PM
 -- Server version: 5.5.22
 -- PHP Version: 5.3.10-1ubuntu3
 
@@ -43,18 +43,36 @@ CREATE TABLE IF NOT EXISTS `annotation` (
   PRIMARY KEY (`job_id`),
   KEY `username` (`username`),
   KEY `video_id` (`video_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --
 -- Dumping data for table `annotation`
 --
 
-INSERT INTO `annotation` (`job_id`, `job_name`, `video_id`, `username`, `entity_id`, `entity_name`, `bbox`, `start_frame`, `end_frame`, `status`, `s3_location`) VALUES
-(1, 'job1', 21, 'abcd', 1, 'person1', '1,1,10,10', 1, 5, 'done', ''),
-(2, 'job2', 21, 'abcd', 2, 'person2', '10,10,10,10', 1, 15, 'done', '');
-
 -- --------------------------------------------------------
 
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE IF NOT EXISTS `category` (
+  `cat_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(1024) NOT NULL,
+  `sup_cat_name` varchar(1024) NOT NULL,
+  PRIMARY KEY (`cat_id`),
+  UNIQUE KEY `name` (`name`(255))
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`cat_id`, `name`, `sup_cat_name`) VALUES
+(1, 'person', 'person'),
+(2, 'bicycle', 'vehicle'),
+(3, 'car', 'vehicle');
+
+-- ---------------------------------------------------------
 --
 -- Table structure for table `model`
 --
@@ -81,6 +99,7 @@ CREATE TABLE IF NOT EXISTS `result` (
   `video_id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `entity_id` int(11) NOT NULL,
+  `cat_id` int(11) DEFAULT NULL,
   `frame_num` int(11) NOT NULL,
   `status` varchar(20) NOT NULL,
   `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -89,8 +108,9 @@ CREATE TABLE IF NOT EXISTS `result` (
   UNIQUE KEY `job_frame` (`job_id`,`video_id`,`entity_id`,`frame_num`),
   KEY `username` (`username`),
   KEY `video_id` (`video_id`),
-  KEY `job_id` (`job_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=73 ;
+  KEY `job_id` (`job_id`),
+  KEY `cat_id` (`cat_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --
 -- Dumping data for table `result`
@@ -164,7 +184,6 @@ CREATE TABLE IF NOT EXISTS `video` (
 INSERT INTO `video` (`video_id`, `video_name`, `username`, `format`, `fps`, `num_frames`, `s3_location`) VALUES
 (21, 'catdog.mp4', 'abcd', 'mp4', 30, 451, ''),
 (23, 'SampleVideo_1280x720_1mb.mp4', 'abcd', 'mp4', 25, 132, ''),
-(24, 'catdog1.mp4', 'abcd', 'mp4', 0, 0, ''),
 (26, 'Kid at Park.mp4', 'abcd', 'mp4', 25, 319, '');
 
 --
