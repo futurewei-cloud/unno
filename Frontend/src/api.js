@@ -68,11 +68,11 @@ const api = {
 		formData.append('video', data.name);
 
 		axios.post(BASE_URL + VIDEO, formData, {
-				withCredentials: false,
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
-			})
+			withCredentials: false,
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		})
 			.then(resolve);
 	}), undefined, 'Error uploading video', true),
 
@@ -90,13 +90,24 @@ const api = {
 	addAnnotation: callAjax((videoId, frameNum, entityId, bbox) => ajax.post(BASE_URL + ANNOTATIONS, {
 		username: username,
 		video_id: videoId,
-		entity_id: Math.round(Math.random() * 10000),
+		entity_id: entityId,
 		frame_num: frameNum,
 		bbox: bbox,
 		status: 'user'
 	}, {
 		withCredentials: false
 	}), undefined, 'Error adding annotation'),
+
+	patchAnnotation: callAjax((videoId, resultId, bbox) => axios.patch(BASE_URL + ANNOTATIONS, {}, {
+		withCredentials: false,
+		params: {
+			username: username,
+			video_id: videoId,
+			result_id: resultId,
+			bbox: bbox,
+			status: 'user'
+		}
+	}), undefined, 'Error patching annotation'),
 
 	deleteAnnotation: callAjax((id) => ajax.delete(BASE_URL + ANNOTATIONS, {
 		withCredentials: false,

@@ -17,7 +17,7 @@ export default class VideoControls extends SplitView {
 			orientation: SplitView.ORIENTATION.COLUMNS,
 			firstViewContent: {
 				control: SplitView,
-				ID: 'controlWrapper',
+				id: 'controlWrapper',
 				splitOffset: '9rem',
 				orientation: SplitView.ORIENTATION.COLUMNS,
 				css: {
@@ -25,7 +25,7 @@ export default class VideoControls extends SplitView {
 				},
 				firstViewContent: [{
 					control: Button,
-					ID: 'prevFrameButton',
+					id: 'prevFrameButton',
 					icon: STEP_BACK_ICON,
 					classes: 'icon-button video-button',
 					onClick() {
@@ -33,7 +33,7 @@ export default class VideoControls extends SplitView {
 					}
 				}, {
 					control: Button,
-					ID: 'playPauseButton',
+					id: 'playPauseButton',
 					icon: PLAY_ICON,
 					classes: 'icon-button video-button play-pause',
 					onClick() {
@@ -46,7 +46,7 @@ export default class VideoControls extends SplitView {
 					}
 				}, {
 					control: Button,
-					ID: 'nextFrameButton',
+					id: 'nextFrameButton',
 					icon: STEP_FORWARD_ICON,
 					classes: 'icon-button video-button',
 					onClick() {
@@ -55,7 +55,7 @@ export default class VideoControls extends SplitView {
 				}],
 				secondViewContent: {
 					control: TextInput,
-					ID: 'titleControl',
+					id: 'titleControl',
 					isActionButtonEnabled: false,
 					actionButtonIcon: '',
 					width: '100%',

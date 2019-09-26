@@ -84,7 +84,7 @@ class App {
 			}, {
 				control: Heading,
 				level: HEADING_LEVELS.ONE,
-				icon: ';',
+				icon: ':',
 				title: locale.get('appTitle'),
 				subTitle: '&nbsp;'
 			}, {

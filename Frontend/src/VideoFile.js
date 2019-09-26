@@ -26,14 +26,14 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 			.width('100%')
 			.onClick(() => self.onSelect().call(self))
 			.contextMenu([{
-				ID: 'select',
+				id: 'select',
 				title: 'Select',
 				icon: EDIT_ICON,
 				onSelect() {
 					self.onSelect().call(self);
 				}
 			}, {
-				ID: 'delete',
+				id: 'delete',
 				title: 'Delete',
 				icon: DELETE_ICON,
 				onSelect() {
@@ -57,28 +57,28 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 			.content([{
 				control: Description,
 				singleLine: true,
-				ID: LENGTH,
+				id: LENGTH,
 				title: locale.get('videoLength') + ':',
 				width: '60%',
 				value: '-'
 			}, {
 				control: Description,
 				singleLine: true,
-				ID: EXTENSION,
+				id: EXTENSION,
 				title: locale.get('videoExtension') + ':',
 				width: '39%',
 				value: extension
 			}, {
 				control: Description,
 				singleLine: true,
-				ID: ANNOTATIONS,
+				id: ANNOTATIONS,
 				title: locale.get('annotations') + ':',
 				width: '60%',
 				value: '-'
 			}, {
 				control: Description,
 				singleLine: true,
-				ID: FPS,
+				id: FPS,
 				title: locale.get('fps') + ':',
 				width: '39%',
 				value: '-'

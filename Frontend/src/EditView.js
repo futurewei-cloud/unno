@@ -1,8 +1,7 @@
 import { clear, throttle } from 'async-agent';
-import { BLOCK, Container, INLINE_BLOCK, Slider, softDelete, SplitView, Timeline, toast, Video } from 'hafgufa';
+import { BLOCK, Div, INLINE_BLOCK, Slider, softDelete, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import moment from 'moment';
-import { HUNDRED_PERCENT, method, PIXELS } from 'type-enforcer';
-import Annotator from './Annotator';
+import { HUNDRED_PERCENT, method, PIXELS, Point } from 'type-enforcer';
 import api from './api';
 import './EditView.less';
 import VideoControls from './VideoControls';
@@ -31,8 +30,20 @@ const runPrediction = Symbol();
 const updateAnnotationDisplay = Symbol();
 const getAnnotations = Symbol();
 const setCurrentTime = Symbol();
+const getCurrentFrame = Symbol();
 
 const JOB_CHECK_DELAY = 2000;
+
+const boundsFromBbox = (bbox) => {
+	bbox = bbox.split(',')
+		.map(parseFloat);
+
+	return [new Point(bbox[0], bbox[1]), new Point(bbox[0] + bbox[2], bbox[1] + bbox[3])];
+};
+
+const bboxFromBounds = (bounds) => {
+	return [bounds[0].x, bounds[0].y, bounds[1].x - bounds[0].x, bounds[1].y - bounds[0].y].join(',');
+};
 
 export default class EditView extends SplitView {
 	constructor(settings = {}) {
@@ -100,6 +111,8 @@ export default class EditView extends SplitView {
 				})
 				.resize();
 		}
+
+		self[VIDEO_WRAPPER].resize(true);
 	}
 
 	[buildVideo]() {
@@ -121,7 +134,7 @@ export default class EditView extends SplitView {
 			orientation: SplitView.ORIENTATION.ROWS
 		});
 
-		self[VIDEO_WRAPPER] = new Container({
+		self[VIDEO_WRAPPER] = new Div({
 			container: self[VIDEO_PLAYER].firstView(),
 			height: HUNDRED_PERCENT
 		});
@@ -172,28 +185,41 @@ export default class EditView extends SplitView {
 			}
 		});
 
-		self[ANNOTATOR] = new Annotator({
+		self[ANNOTATOR] = new VectorEditor({
 			container: self[VIDEO_WRAPPER],
-			onAdd(bbox) {
-				const currentTime = self[SLIDER].value()[0] / 1000;
-				const currentFrame = Math.round(currentTime * self.fps());
-
+			onAdd(id, bounds) {
 				const annotation = {
-					frame: currentFrame,
-					bbox: bbox,
+					frame: self[getCurrentFrame](),
+					bbox: bboxFromBounds(bounds),
 					entityId: Math.round(Math.random() * 10000),
+					vectorEditorId: id,
 					jobId: null
 				};
 
 				self[ANNOTATIONS].push(annotation);
 
-				api.addAnnotation(self.videoId(), currentFrame, annotation.entityId, annotation.bbox)
-					.then((result) => {
-						annotation.resultId = result.result_id;
-						self[updateAnnotationDisplay]();
-					});
+				if (self.videoId()) {
+					api.addAnnotation(self.videoId(), annotation.frame, annotation.entityId, annotation.bbox)
+						.then((result) => {
+							annotation.resultId = result.result_id;
+							self[updateAnnotationDisplay]();
+						});
+				}
 			},
-			onDeleteAnnotation(resultId) {
+			onChange(id, bounds) {
+				self[ANNOTATIONS].some((annotation) => {
+					if (annotation.resultId === parseInt(id) || annotation.vectorEditorId === id) {
+						annotation.bbox = bboxFromBounds(bounds);
+
+						if (annotation.resultId) {
+							api.patchAnnotation(self.videoId(), annotation.resultId, annotation.bbox);
+						}
+
+						return true;
+					}
+				});
+			},
+			onDeleteShape(resultId) {
 				softDelete({
 					title: 'Annotation deleted',
 					value: self[ANNOTATIONS].find((item) => item.resultId === resultId),
@@ -210,7 +236,7 @@ export default class EditView extends SplitView {
 					}
 				});
 			},
-			onDeleteAllAnnotations() {
+			onDeleteAllShapes() {
 				softDelete({
 					title: 'All annotations deleted',
 					value: self[ANNOTATIONS],
@@ -233,6 +259,11 @@ export default class EditView extends SplitView {
 	[setCurrentTime](currentTime) {
 		this[SLIDER].value([currentTime * 1000]);
 		this[updateAnnotationDisplay]();
+	}
+
+	[getCurrentFrame]() {
+		const currentTime = this[SLIDER].value()[0] / 1000;
+		return Math.round(currentTime * this.fps());
 	}
 
 	[buildTimeline]() {
@@ -298,14 +329,17 @@ export default class EditView extends SplitView {
 
 	[updateAnnotationDisplay]() {
 		const self = this;
-		const currentTime = self[SLIDER].value()[0] / 1000;
-		const currentFrame = Math.round(currentTime * self.fps());
-		const frameAnnotations = self[ANNOTATIONS].filter((annotation) => annotation.frame === currentFrame);
+		const frameAnnotations = self[ANNOTATIONS].filter((annotation) => annotation.frame === self[getCurrentFrame]());
 		const predictableAnnotations = frameAnnotations.filter((annotation) => annotation.jobId === null);
 
 		toast.clear();
 
-		self[ANNOTATOR].value(frameAnnotations);
+		self[ANNOTATOR].value(frameAnnotations.map((annotation) => {
+			return {
+				id: annotation.resultId.toString(),
+				bounds: boundsFromBbox(annotation.bbox)
+			};
+		}));
 
 		if (predictableAnnotations.length) {
 			toast.info({
@@ -325,12 +359,12 @@ export default class EditView extends SplitView {
 		const self = this;
 
 		if (source) {
-			this[VIDEO_PLAYER].isWorking(true);
+			self[VIDEO_PLAYER].isWorking(true);
 		}
 
 		self[VIDEO].sources([source]);
 
-		return this;
+		return self;
 	}
 }
 
