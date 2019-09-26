@@ -17,7 +17,9 @@ def get_video(video):
 
 def get_videos(video):
     check_input_manager('video', video, ['username'])
-    query = "SELECT * FROM video WHERE username='%s'" % (video['username'])
+    #query = "SELECT * FROM video WHERE username='%s'" % (video['username'])
+    query = "SELECT video.*, COUNT(DISTINCT result.entity_id) AS entity_num FROM video LEFT OUTER JOIN result on" \
+            " video.video_id=result.video_id AND video.username='%s' GROUP BY video.video_id" % (video['username'])
     print("Videos from user %s are fetched!" % video['username'])
     return run_all_query(query)
 
