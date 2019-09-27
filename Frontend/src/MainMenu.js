@@ -52,11 +52,19 @@ export default class MainMenu extends SplitView {
 	[uploadVideo](data, filePicker) {
 		const self = this;
 
-		self.isWorking(true);
+		filePicker.isWorking(true);
 
-		api.uploadVideo(data)
+		api.uploadVideo(data, (progressEvent) => {
+			if (progressEvent.loaded < progressEvent.total) {
+				filePicker.subTitle(Math.round((progressEvent.loaded / progressEvent.total) * 100) + '%');
+			}
+			else {
+				filePicker.subTitle(locale.get('processing'));
+			}
+		})
 			.then(() => {
-				filePicker.value([]);
+				filePicker.value([]).subTitle('').isWorking(false);
+				self.isWorking(true);
 				self[loadVideos]();
 			});
 	}

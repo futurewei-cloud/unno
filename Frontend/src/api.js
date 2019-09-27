@@ -61,7 +61,7 @@ const api = {
 		}
 	}), undefined, 'Error deleting video', true),
 
-	uploadVideo: callAjax((data) => new Promise((resolve) => {
+	uploadVideo: callAjax((data, onUploadProgress) => new Promise((resolve) => {
 		const formData = new FormData();
 		formData.append('file', data.file);
 		formData.append('user', username);
@@ -71,6 +71,9 @@ const api = {
 			withCredentials: false,
 			headers: {
 				'Content-Type': 'multipart/form-data'
+			},
+			onUploadProgress(progressEvent) {
+				onUploadProgress(progressEvent);
 			}
 		})
 			.then(resolve);
