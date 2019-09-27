@@ -60,10 +60,10 @@ export default class VideoControls extends SplitView {
 					actionButtonIcon: '',
 					width: '100%',
 					onBlur(textInput) {
-						self[updateTitle](textInput.value());
+						self[updateTitle](this.value());
 					},
 					onEnter(textInput) {
-						self[updateTitle](textInput.value());
+						self[updateTitle](this.value());
 					}
 				}
 			},
