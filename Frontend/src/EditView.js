@@ -281,7 +281,8 @@ export default class EditView extends SplitView {
 			container: self.secondView(),
 			height: '100%',
 			padding: '0 0.75rem',
-			duration: 10000
+			duration: 10000,
+			canZoom: false
 		});
 		self[SLIDER] = new Slider({
 			container: self.secondView(),
