@@ -17,16 +17,14 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			title: 'Unno'
 		}),
-		new CopyPlugin([
-			{
-				from: 'node_modules/hafgufa/localization/common-en-us.json',
-				to: 'localization/common-en-us.json'
-			},
-			{
-				from: 'localization/*.json',
-				to: ''
-			}
-		]),
+		new CopyPlugin([{
+			context: 'node_modules/hafgufa/',
+			from: 'localization/*.json',
+			to: ''
+		}, {
+			from: 'localization/*.json',
+			to: ''
+		}]),
 		new ThemesPlugin({
 			themesPath: './node_modules/hafgufa/src/ui/themes/hud_01',
 			themes: {
@@ -47,15 +45,13 @@ module.exports = {
 		new WebpackMildCompile()
 	],
 	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				exclude: /node_modules\/(?!hafgufa)/,
-				use: {
-					loader: 'babel-loader'
-				}
+		rules: [{
+			test: /\.js$/,
+			exclude: /node_modules\/(?!hafgufa)/,
+			use: {
+				loader: 'babel-loader'
 			}
-		]
+		}]
 	},
 	stats: {
 		colors: true
