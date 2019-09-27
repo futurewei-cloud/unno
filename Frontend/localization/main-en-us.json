@@ -5,7 +5,7 @@
 	"videoLength": "Length",
 	"videoExtension": "Ext",
 	"fps": "fps",
-	"annotations": "Annotations",
+	"entities": "Entities",
 	"loading": "Loading",
 	"uploadNewVideo": "Upload New Video",
 	"theme": "Theme",

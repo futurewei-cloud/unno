@@ -61,6 +61,8 @@ class App {
 				headerSettings: {
 					height: HUNDRED_PERCENT,
 					onSelect(video) {
+						const videoFile = this;
+
 						if (self[EDIT_VIEW].videoId() !== video.video_id) {
 							const sep = video.video_name.lastIndexOf('.');
 
@@ -70,7 +72,10 @@ class App {
 								.ext(video.video_name.substring(sep + 1))
 								.videoId(video.video_id)
 								.fps(video.fps)
-								.duration(video.duration);
+								.duration(video.duration)
+								.onEntitiesChange((entities) => {
+									videoFile.entities(entities);
+								});
 						}
 					},
 					onDelete(video) {

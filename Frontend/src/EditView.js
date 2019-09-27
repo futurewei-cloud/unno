@@ -1,6 +1,8 @@
 import { clear, throttle } from 'async-agent';
 import { BLOCK, Div, INLINE_BLOCK, Slider, softDelete, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { Collection, List } from 'hord';
 import moment from 'moment';
+import { pull } from 'object-agent';
 import { HUNDRED_PERCENT, method, PIXELS, Point } from 'type-enforcer';
 import api from './api';
 import './EditView.less';
@@ -28,6 +30,7 @@ const buildVideo = Symbol();
 const buildTimeline = Symbol();
 const runPrediction = Symbol();
 const updateAnnotationDisplay = Symbol();
+const logEntitiesChange = Symbol();
 const getAnnotations = Symbol();
 const setCurrentTime = Symbol();
 const getCurrentFrame = Symbol();
@@ -60,7 +63,7 @@ export default class EditView extends SplitView {
 		const self = this;
 		self.addClass('edit-view');
 
-		self[ANNOTATIONS] = [];
+		self[ANNOTATIONS] = new Collection();
 		self[JOBS] = [];
 
 		self[buildVideo]();
@@ -197,6 +200,7 @@ export default class EditView extends SplitView {
 				};
 
 				self[ANNOTATIONS].push(annotation);
+				self[logEntitiesChange]();
 
 				if (self.videoId()) {
 					api.addAnnotation(self.videoId(), annotation.frame, annotation.entityId, annotation.bbox)
@@ -222,14 +226,16 @@ export default class EditView extends SplitView {
 			onDeleteShape(resultId) {
 				softDelete({
 					title: 'Annotation deleted',
-					value: self[ANNOTATIONS].find((item) => item.resultId === resultId),
+					value: self[ANNOTATIONS].find({resultId: resultId}),
 					onDo() {
-						self[ANNOTATIONS] = self[ANNOTATIONS].filter((item) => item.resultId !== resultId);
+						self[ANNOTATIONS] = self[ANNOTATIONS].filter({resultId: {$ne: resultId}});
 						self[updateAnnotationDisplay]();
+						self[logEntitiesChange]();
 					},
 					onUndo(value) {
 						self[ANNOTATIONS].push(value);
 						self[updateAnnotationDisplay]();
+						self[logEntitiesChange]();
 					},
 					onCommit() {
 						api.deleteAnnotation(resultId);
@@ -243,10 +249,12 @@ export default class EditView extends SplitView {
 					onDo() {
 						self[ANNOTATIONS].length = 0;
 						self[ANNOTATOR].value([]);
+						self[logEntitiesChange]();
 					},
 					onUndo(value) {
 						self[ANNOTATIONS] = value;
 						self[updateAnnotationDisplay]();
+						self[logEntitiesChange]();
 					},
 					onCommit() {
 						api.deleteAnnotations(self.videoId());
@@ -314,17 +322,24 @@ export default class EditView extends SplitView {
 
 		return api.getAnnotations(self.videoId())
 			.then((results) => {
-				self[ANNOTATIONS] = results.results.map((result) => {
-					return {
+				self[ANNOTATIONS].length = 0;
+				results.results.forEach((result) => {
+					self[ANNOTATIONS].push({
 						frame: result.frame_num,
 						bbox: result.bbox,
 						entityId: result.entity_id,
 						resultId: result.result_id,
 						jobId: result.job_id
-					};
+					});
 				});
 				self[updateAnnotationDisplay]();
 			});
+	}
+
+	[logEntitiesChange]() {
+		const self = this;
+
+		self.onEntitiesChange()(new List(pull(self[ANNOTATIONS], 'entityId')).unique().length);
 	}
 
 	[updateAnnotationDisplay]() {
@@ -336,7 +351,7 @@ export default class EditView extends SplitView {
 
 		self[ANNOTATOR].value(frameAnnotations.map((annotation) => {
 			return {
-				id: annotation.resultId.toString(),
+				id: annotation.resultId ? annotation.resultId.toString() : annotation.vectorEditorId,
 				bounds: boundsFromBbox(annotation.bbox)
 			};
 		}));
@@ -448,5 +463,6 @@ Object.assign(EditView.prototype, {
 			}
 		}
 	}),
-	onEditTitle: method.function()
+	onEditTitle: method.function(),
+	onEntitiesChange: method.function()
 });

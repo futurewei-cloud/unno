@@ -1,4 +1,14 @@
-import { ContextMenuMixin, Control, DELETE_ICON, Description, EDIT_ICON, Group, locale, OnClickMixin, VIDEO_FILE_ICON } from 'hafgufa';
+import {
+	ContextMenuMixin,
+	Control,
+	DELETE_ICON,
+	Description,
+	EDIT_ICON,
+	Group,
+	locale,
+	OnClickMixin,
+	VIDEO_FILE_ICON
+} from 'hafgufa';
 import moment from 'moment';
 import { applySettings, method } from 'type-enforcer';
 import './VideoFile.less';
@@ -72,7 +82,7 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 				control: Description,
 				singleLine: true,
 				id: ANNOTATIONS,
-				title: locale.get('annotations') + ':',
+				title: locale.get('entities') + ':',
 				width: '60%',
 				value: '-'
 			}, {
@@ -95,11 +105,11 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 		}
 	}
 
-	annotations(annotations) {
+	entities(entities) {
 		const description = this[GROUP].get(ANNOTATIONS);
 
 		if (description) {
-			description.value(annotations + '');
+			description.value(entities + '');
 		}
 	}
 

@@ -67,25 +67,25 @@ export default class MainMenu extends SplitView {
 		self.firstView().content(self[DATA].map((video) => {
 			return {
 				control: VideoFile,
+				id: video.video_id.toString(),
 				title: video.video_name,
 				length: video.duration,
 				fps: video.fps,
-				annotations: 0,
-				classes: video.isSelected ? 'selected' : '',
+				entities: video.entity_num || 0,
 				onSelect() {
 					self.firstView().each((control) => {
 						control.removeClass('selected');
 					});
 
-					self.onSelect()(video);
+					self.onSelect().call(this, video);
 					this.classes('selected', true);
-					self[CURRENT_VIDEO] = video.video_id;
+					self[CURRENT_VIDEO] = this.id();
 				},
 				onDelete() {
 					self.isWorking(true);
 					api.deleteVideo(video.video_id)
 						.then(() => {
-							self.onDelete()(video);
+							self.onDelete().call(self, video);
 						});
 				}
 			};
@@ -110,7 +110,7 @@ export default class MainMenu extends SplitView {
 				self[updateVideoView]();
 
 				if (self[DATA].length) {
-					self.onSelect()(self[DATA][0]);
+					self.get(self[CURRENT_VIDEO] || self[DATA][0].video_id.toString()).click();
 				}
 			});
 	}
