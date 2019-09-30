@@ -8,6 +8,9 @@ $ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
 ```
 
+- Configure backend endpoint:
+  In `src/api.js`, fill in backend endpoit at `const BASE_URL = `
+
 - Navigate to this directory (unno/Frontend) in a command prompt
 - Run 'npm install'
 - Then...
