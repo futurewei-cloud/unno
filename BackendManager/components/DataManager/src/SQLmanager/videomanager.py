@@ -58,9 +58,9 @@ def add_video(video, file_location):
         del_video(video)
         return
 
-    num_frames, fps = save_frames(video_id, file_location)
+    num_frames, fps, v_width, v_height = save_frames(video_id, file_location)
     if num_frames > 0:
-        video = {'video_id': video_num, 'fps': fps, 'num_frames': num_frames}
+        video = {'video_id': video_num, 'fps': fps, 'num_frames': num_frames, 'width': v_width, 'height': v_height}
         update_video(video)
     else:
         print("Upload frames failed!")

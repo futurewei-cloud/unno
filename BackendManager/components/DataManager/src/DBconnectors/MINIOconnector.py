@@ -145,6 +145,10 @@ def save_frames(bucket_name, file_name):
     fps = vid.get(cv2.CAP_PROP_FPS)
 
     success, image = vid.read()
+    v_width = 0
+    v_height = 0
+    if image is not None:
+        v_height, v_width, _ = image.shape
     count = 0
     while success:
         img_name = "frame%d.jpg" % count
@@ -158,7 +162,7 @@ def save_frames(bucket_name, file_name):
             print(err)
             return None
 
-    return count, fps
+    return count, fps, v_width, v_height
 
 
 if __name__ == "__main__":

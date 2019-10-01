@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `category` (
   `sup_cat_name` varchar(1024) NOT NULL,
   PRIMARY KEY (`cat_id`),
   UNIQUE KEY `name` (`name`(255))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=80 ;
 
 --
 -- Dumping data for table `category`
@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `server` (
   `endpoint` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`server_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `server`
@@ -248,20 +248,18 @@ CREATE TABLE IF NOT EXISTS `video` (
   `format` varchar(100) NOT NULL,
   `fps` int(11) NOT NULL,
   `num_frames` int(11) NOT NULL,
+  `width` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
   `s3_location` varchar(100) NOT NULL,
   PRIMARY KEY (`video_id`),
   UNIQUE KEY `video_name` (`video_name`,`username`),
   KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
+
 
 --
 -- Dumping data for table `video`
 --
-
-INSERT INTO `video` (`video_id`, `video_name`, `username`, `format`, `fps`, `num_frames`, `s3_location`) VALUES
-(21, 'catdog.mp4', 'abcd', 'mp4', 30, 451, ''),
-(23, 'SampleVideo_1280x720_1mb.mp4', 'abcd', 'mp4', 25, 132, ''),
-(26, 'Kid at Park.mp4', 'abcd', 'mp4', 25, 319, '');
 
 --
 -- Constraints for dumped tables
