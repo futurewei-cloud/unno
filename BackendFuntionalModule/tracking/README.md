@@ -15,7 +15,7 @@ Build and run the docker image to start the service.
 $ docker build -t IMG_NAME .
 
 # run service in docker
-$docker run --runtime=nvidia --ipc="host" -e NVIDIA_VISIBLE_DEVICES=GPU_ID -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ IMG_NAME
+$docker run --gpus '"device=GPU_ID"' --ipc="host" -e NVIDIA_VISIBLE_DEVICES=GPU_ID -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ IMG_NAME
 ```
 
 ##### API
