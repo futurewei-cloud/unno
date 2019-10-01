@@ -1,4 +1,4 @@
-from configuration.config import SQLConfig
+from configuration.config import SQLConfig, ServiceConfig
 from SQLmanager.jobmanager import get_job, update_job
 from DBconnectors.SQLconnector import connect, close
 from DBconnectors.MINIOconnector import downloader_multiple
@@ -55,7 +55,7 @@ def main():
             update_job(connection, cursor, 'server', sets, conditions)
 
             job['server_id'] = server['server_id']
-            job['result_api'] = 'http://10.145.83.34:5011/api/v1/result'
+            job['result_api'] = ServiceConfig.result_api
             forward_job(server['endpoint'], job)
 
         close(connection, cursor)

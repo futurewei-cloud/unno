@@ -1,5 +1,5 @@
 class SQLConfig:
-    host = '10.145.83.34'
+    host = '10.175.20.126'
     port = 49162
     db = 'unno'
     username = 'root'
@@ -7,8 +7,8 @@ class SQLConfig:
 
 
 class MinioConfig:
-    host = '10.145.83.34:9000'
-    username = 'bigdata'
+    host = '10.175.20.126:9000'
+    username = 'unno'
     pw = 'abcd1234'
 
 

@@ -95,7 +95,7 @@ def uploader_multiple(bucket_name, local, file_type='.jpg'):
 
 def downloader(bucket_name, file_name):
     try:
-        minio_client.fget_object(bucket_name, file_name, os.path.join('/data/tmp', file_name))
+        minio_client.fget_object(bucket_name, file_name, os.path.join('/tmp', file_name))
     except ResponseError as err:
         print(err)
 
@@ -111,7 +111,7 @@ def downloader_multiple(bucket_name, local_name):
         obj_name = obj.object_name.encode('utf-8')
         try:
             minio_client.fget_object(obj.bucket_name, obj_name,
-                                     os.path.join('/data/tmp/frames', local_name, obj.object_name))
+                                     os.path.join('/tmp/frames', local_name, obj.object_name))
         except ResponseError as err:
             print(err)
 
@@ -139,12 +139,12 @@ def save_results(bucket_name, file_name, results):
 def save_frames(bucket_name, file_name):
     make_bucket(bucket_name)
 
-    vid = cv2.VideoCapture(os.path.join('/data/tmp', file_name))
+    vid = cv2.VideoCapture(os.path.join('/tmp', file_name))
     success, image = vid.read()
     count = 0
     while success:
         img_name = "frame%d.jpg" % count
-        local = os.path.join('/data/tmp', img_name)
+        local = os.path.join('/tmp', img_name)
         cv2.imwrite(local, image)  # save frame as JPEG file
         success, image = vid.read()
         count += 1

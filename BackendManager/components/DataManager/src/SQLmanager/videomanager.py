@@ -52,7 +52,7 @@ def add_video(video, file_location):
         del_video(video)
         return
 
-    if not uploader(bucket_name, video_id, os.path.join('/data/tmp', file_location)):
+    if not uploader(bucket_name, video_id, os.path.join('/tmp', file_location)):
         print("Upload video failed!")
         video = {'video_id': video_id}
         del_video(video)

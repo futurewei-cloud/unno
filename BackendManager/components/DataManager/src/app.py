@@ -56,7 +56,7 @@ def video_call():
             print('No selected file')
             return redirect(request.url)
         if file and allowed_file(file_name):
-            file.save(os.path.join('/data/tmp', file_name))
+            file.save(os.path.join('/tmp', file_name))
             username = request.form['user']
             video_format = file_name.split('.')[-1]
             video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
