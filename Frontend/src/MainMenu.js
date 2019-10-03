@@ -75,11 +75,12 @@ export default class MainMenu extends SplitView {
 		self.firstView().content(self[DATA].map((video) => {
 			return {
 				control: VideoFile,
-				id: video.video_id.toString(),
-				title: video.video_name,
+				id: video.id.toString(),
+				title: video.name,
+				ext: video.ext,
 				length: video.duration,
 				fps: video.fps,
-				entities: video.entity_num || 0,
+				entities: video.entities,
 				onSelect() {
 					self.firstView().each((control) => {
 						control.removeClass('selected');
@@ -87,11 +88,11 @@ export default class MainMenu extends SplitView {
 
 					self.onSelect().call(this, video);
 					this.classes('selected', true);
-					self[CURRENT_VIDEO] = this.id();
+					self[CURRENT_VIDEO] = video.id;
 				},
 				onDelete() {
 					self.isWorking(true);
-					api.deleteVideo(video.video_id)
+					api.deleteVideo(video.id)
 						.then(() => {
 							self.onDelete().call(self, video);
 						});
@@ -108,17 +109,11 @@ export default class MainMenu extends SplitView {
 		return api.getVideos()
 			.then((videos) => {
 				self.isWorking(false);
-				self[DATA] = videos.map((video, index) => {
-					return {
-						...video,
-						duration: Math.round((video.num_frames / video.fps) * 1000),
-						isSelected: (self[CURRENT_VIDEO] === undefined && index === 0) || (self[CURRENT_VIDEO] === video.video_id)
-					};
-				});
+				self[DATA] = videos;
 				self[updateVideoView]();
 
 				if (self[DATA].length) {
-					self.get(self[CURRENT_VIDEO] || self[DATA][0].video_id.toString()).click();
+					self.get(self[CURRENT_VIDEO] || self[DATA][0].id.toString()).click();
 				}
 			});
 	}

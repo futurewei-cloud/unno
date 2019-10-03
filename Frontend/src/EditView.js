@@ -38,8 +38,7 @@ const getCurrentFrame = Symbol();
 const JOB_CHECK_DELAY = 2000;
 
 const boundsFromBbox = (bbox) => {
-	bbox = bbox.split(',')
-		.map(parseFloat);
+	bbox = bbox.split(',').map(parseFloat);
 
 	return [new Point(bbox[0], bbox[1]), new Point(bbox[0] + bbox[2], bbox[1] + bbox[3])];
 };
@@ -323,16 +322,7 @@ export default class EditView extends SplitView {
 
 		return api.getAnnotations(self.videoId())
 			.then((results) => {
-				self[ANNOTATIONS].length = 0;
-				results.results.forEach((result) => {
-					self[ANNOTATIONS].push({
-						frame: result.frame_num,
-						bbox: result.bbox,
-						entityId: result.entity_id,
-						resultId: result.result_id,
-						jobId: result.job_id
-					});
-				});
+				self[ANNOTATIONS] = results;
 				self[updateAnnotationDisplay]();
 			});
 	}
@@ -391,7 +381,7 @@ Object.assign(EditView.prototype, {
 		self[JOBS].forEach((job) => {
 			api.getAnnotationJob(job.id)
 				.then((results) => {
-					results = results.jobs[0];
+					results = results[0];
 
 					if (results.status !== job.status) {
 						job.status = results.status;
@@ -448,10 +438,10 @@ Object.assign(EditView.prototype, {
 						return api.getAnnotationJobs(videoId);
 					})
 					.then((results) => {
-						results.jobs.forEach((job) => {
+						results.forEach((job) => {
 							if (job.status !== 'done') {
 								self[JOBS].push({
-									id: job.job_id,
+									id: job.id,
 									status: job.status
 								});
 							}

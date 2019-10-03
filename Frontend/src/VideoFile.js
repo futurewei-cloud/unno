@@ -56,11 +56,6 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 	}
 
 	title(title) {
-		const sep = title.lastIndexOf('.');
-		const extension = sep === -1 ? '-' : title.substring(title.lastIndexOf('.') + 1);
-
-		title = sep === -1 ? title : title.substring(0, title.lastIndexOf('.'));
-
 		this[GROUP]
 			.headingIcon(VIDEO_FILE_ICON)
 			.title(title)
@@ -77,7 +72,7 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 				id: EXTENSION,
 				title: locale.get('videoExtension') + ':',
 				width: '39%',
-				value: extension
+				value: '-'
 			}, {
 				control: Description,
 				singleLine: true,
@@ -95,6 +90,14 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 			}]);
 
 		this.isWorking(false);
+	}
+
+	ext(ext) {
+		const description = this[GROUP].get(EXTENSION);
+
+		if (description) {
+			description.value(ext);
+		}
 	}
 
 	length(length) {

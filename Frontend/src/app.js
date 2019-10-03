@@ -63,14 +63,12 @@ class App {
 					onSelect(video) {
 						const videoFile = this;
 
-						if (self[EDIT_VIEW].videoId() !== video.video_id) {
-							const sep = video.video_name.lastIndexOf('.');
-
+						if (self[EDIT_VIEW].videoId() !== video.id) {
 							self[EDIT_VIEW]
-								.source(api.getVideoLink(video.video_id))
-								.title(video.video_name.substring(0, sep))
-								.ext(video.video_name.substring(sep + 1))
-								.videoId(video.video_id)
+								.source(api.getVideoLink(video.id))
+								.title(video.name)
+								.ext(video.ext)
+								.videoId(video.id)
 								.fps(video.fps)
 								.duration(video.duration)
 								.onEntitiesChange((entities) => {
@@ -79,7 +77,7 @@ class App {
 						}
 					},
 					onDelete(video) {
-						if (video.video_id === self[EDIT_VIEW].videoId()) {
+						if (video.id === self[EDIT_VIEW].videoId()) {
 							self[EDIT_VIEW].source('')
 								.title('-')
 								.videoId('');
