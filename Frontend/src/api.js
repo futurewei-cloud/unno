@@ -4,7 +4,7 @@ import { clone } from 'object-agent';
 import { method } from 'type-enforcer';
 
 let username = 'abcd';
-const BASE_URL = 'http://10.145.83.34:5011/api/v1';
+const BASE_URL = 'http://10.175.20.126:5011/api/v1';
 const VIDEO = '/video';
 const ANNOTATIONS = '/result';
 const ANNOTATION_JOBS = '/job';
