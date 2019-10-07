@@ -1,5 +1,5 @@
 import { Container, DrawerMenu, Header, Heading, HEADING_LEVELS, Label, locale, theme } from 'hafgufa';
-import { HUNDRED_PERCENT } from 'type-enforcer';
+import { AUTO, HUNDRED_PERCENT } from 'type-enforcer';
 import api from './api';
 import './app.less';
 import EditView from './EditView';
@@ -87,6 +87,7 @@ class App {
 			}, {
 				control: Heading,
 				level: HEADING_LEVELS.ONE,
+				width: AUTO,
 				icon: ':',
 				title: locale.get('appTitle'),
 				subTitle: '&nbsp;'
