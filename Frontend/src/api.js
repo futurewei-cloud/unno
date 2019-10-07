@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ajax, toast } from 'hafgufa';
 import { clone } from 'object-agent';
-import { method } from 'type-enforcer';
+import { isArray, method } from 'type-enforcer';
 
 let username = 'abcd';
 const BASE_URL = 'http://10.175.20.126:5011/api/v1';
@@ -20,8 +20,13 @@ const callAjax = (settings) => (...args) => {
 					output = output[settings.resultKey];
 				}
 
-				if (output && output.map && settings.map) {
-					result = output.map(settings.map);
+				if (settings.map) {
+					if (isArray(output)) {
+						result = output.map(settings.map);
+					}
+					else {
+						result = settings.map(output);
+					}
 				}
 				else {
 					result = output;
@@ -43,7 +48,13 @@ const callAjax = (settings) => (...args) => {
 };
 
 const api = {
+	onChange: method.queue(),
+
 	// ********** VIDEO
+
+	getVideoLink(id) {
+		return BASE_URL + VIDEO + '?video_id=' + id;
+	},
 
 	getVideos: callAjax({
 		call() {
@@ -72,10 +83,6 @@ const api = {
 			};
 		}
 	}),
-
-	getVideoLink(id) {
-		return BASE_URL + VIDEO + '?video_id=' + id;
-	},
 
 	patchVideo: callAjax({
 		call(id, title) {
@@ -128,8 +135,6 @@ const api = {
 		triggerChange: true
 	}),
 
-	onChange: method.queue(),
-
 	// ********** RESULTS
 
 	getAnnotations: callAjax({
@@ -170,7 +175,10 @@ const api = {
 				withCredentials: false
 			});
 		},
-		errorTitle: 'Error adding annotation'
+		errorTitle: 'Error adding annotation',
+		map(result) {
+			return result.result_id;
+		}
 	}),
 
 	patchAnnotation: callAjax({
@@ -265,7 +273,10 @@ const api = {
 				withCredentials: false
 			});
 		},
-		errorTitle: 'Error adding prediction job'
+		errorTitle: 'Error adding prediction job',
+		map(result) {
+			return result.job_id;
+		}
 	}),
 
 	deleteAnnotationJob: callAjax({

@@ -1,15 +1,13 @@
 import { clear, throttle } from 'async-agent';
-import { BLOCK, Div, INLINE_BLOCK, Slider, softDelete, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
-import { Collection, List } from 'hord';
+import { BLOCK, Div, INLINE_BLOCK, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import moment from 'moment';
-import { pull } from 'object-agent';
-import { HUNDRED_PERCENT, method, PIXELS, Point } from 'type-enforcer';
-import api from './api';
+import { HUNDRED_PERCENT, method, PIXELS } from 'type-enforcer';
+import AnnotationManager from './AnnotationManager';
 import './EditView.less';
 import VideoControls from './VideoControls';
 
 const INTERVAL_ID = Symbol();
-const ANNOTATIONS = Symbol();
+const ANNOTATION_MANAGER = Symbol();
 const ONE_FRAME = Symbol();
 const VIDEO_PLAYER = Symbol();
 const VIDEO_WRAPPER = Symbol();
@@ -20,32 +18,15 @@ const VIDEO_PROPORTIONS = Symbol();
 const ANNOTATOR = Symbol();
 const SLIDER = Symbol();
 const TIMELINE = Symbol();
-const JOBS = Symbol();
 const AVAILABLE_VIDEO_HEIGHT = Symbol();
 const AVAILABLE_VIDEO_WIDTH = Symbol();
 
 const layoutVideo = Symbol();
-const checkJobs = Symbol();
 const buildVideo = Symbol();
 const buildTimeline = Symbol();
-const runPrediction = Symbol();
 const updateAnnotationDisplay = Symbol();
-const logEntitiesChange = Symbol();
-const getAnnotations = Symbol();
 const setCurrentTime = Symbol();
 const getCurrentFrame = Symbol();
-
-const JOB_CHECK_DELAY = 2000;
-
-const boundsFromBbox = (bbox) => {
-	bbox = bbox.split(',').map(parseFloat);
-
-	return [new Point(bbox[0], bbox[1]), new Point(bbox[0] + bbox[2], bbox[1] + bbox[3])];
-};
-
-const bboxFromBounds = (bounds) => {
-	return [bounds[0].x, bounds[0].y, bounds[1].x - bounds[0].x, bounds[1].y - bounds[0].y].join(',');
-};
 
 export default class EditView extends SplitView {
 	constructor(settings = {}) {
@@ -62,8 +43,17 @@ export default class EditView extends SplitView {
 		const self = this;
 		self.addClass('edit-view');
 
-		self[ANNOTATIONS] = new Collection();
-		self[JOBS] = [];
+		self[ANNOTATION_MANAGER] = new AnnotationManager({
+			onLoad() {
+				self[TIMELINE].isWorking(false);
+			},
+			onChange() {
+				self[updateAnnotationDisplay]();
+			},
+			onEntitiesChange(...args) {
+				self.onEntitiesChange()(...args);
+			}
+		});
 
 		self[buildVideo]();
 		self[buildTimeline]();
@@ -190,75 +180,16 @@ export default class EditView extends SplitView {
 		self[ANNOTATOR] = new VectorEditor({
 			container: self[VIDEO_WRAPPER],
 			onAdd(id, bounds) {
-				const annotation = {
-					frame: self[getCurrentFrame](),
-					bbox: bboxFromBounds(bounds),
-					entityId: Math.round(Math.random() * 10000),
-					vectorEditorId: id,
-					jobId: null
-				};
-
-				self[ANNOTATIONS].push(annotation);
-				self[logEntitiesChange]();
-
-				if (self.videoId()) {
-					api.addAnnotation(self.videoId(), annotation.frame, annotation.entityId, annotation.bbox)
-						.then((result) => {
-							annotation.resultId = result.result_id;
-							self[updateAnnotationDisplay]();
-						});
-				}
+				self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), bounds, id);
 			},
 			onChange(id, bounds) {
-				self[ANNOTATIONS].some((annotation) => {
-					if (annotation.resultId === parseInt(id) || annotation.vectorEditorId === id) {
-						annotation.bbox = bboxFromBounds(bounds);
-
-						if (annotation.resultId) {
-							api.patchAnnotation(self.videoId(), annotation.resultId, annotation.bbox);
-						}
-
-						return true;
-					}
-				});
+				self[ANNOTATION_MANAGER].changeBounds(id, bounds);
 			},
 			onDeleteShape(resultId) {
-				softDelete({
-					title: 'Annotation deleted',
-					value: self[ANNOTATIONS].find({resultId: resultId}),
-					onDo() {
-						self[ANNOTATIONS] = self[ANNOTATIONS].filter({resultId: {$ne: resultId}});
-						self[updateAnnotationDisplay]();
-						self[logEntitiesChange]();
-					},
-					onUndo(value) {
-						self[ANNOTATIONS].push(value);
-						self[updateAnnotationDisplay]();
-						self[logEntitiesChange]();
-					},
-					onCommit() {
-						api.deleteAnnotation(resultId);
-					}
-				});
+				self[ANNOTATION_MANAGER].delete(resultId);
 			},
 			onDeleteAllShapes() {
-				softDelete({
-					title: 'All annotations deleted',
-					value: self[ANNOTATIONS],
-					onDo() {
-						self[ANNOTATIONS].length = 0;
-						self[ANNOTATOR].value([]);
-						self[logEntitiesChange]();
-					},
-					onUndo(value) {
-						self[ANNOTATIONS] = value;
-						self[updateAnnotationDisplay]();
-						self[logEntitiesChange]();
-					},
-					onCommit() {
-						api.deleteAnnotations(self.videoId());
-					}
-				});
+				self[ANNOTATION_MANAGER].deleteAll();
 			}
 		});
 	}
@@ -299,53 +230,14 @@ export default class EditView extends SplitView {
 		});
 	}
 
-	[runPrediction](annotations) {
-		const self = this;
-
-		annotations.forEach((annotation) => {
-			api.addAnnotationJob(annotation.frame, annotation.frame + 60, annotation.resultId)
-				.then((result) => {
-					if (result) {
-						self[JOBS].push({
-							id: result.job_id,
-							status: 'new'
-						});
-
-						self[checkJobs]();
-					}
-				});
-		});
-	}
-
-	[getAnnotations]() {
-		const self = this;
-
-		return api.getAnnotations(self.videoId())
-			.then((results) => {
-				self[ANNOTATIONS] = results;
-				self[updateAnnotationDisplay]();
-			});
-	}
-
-	[logEntitiesChange]() {
-		const self = this;
-
-		self.onEntitiesChange()(new List(pull(self[ANNOTATIONS], 'entityId')).unique().length);
-	}
-
 	[updateAnnotationDisplay]() {
 		const self = this;
-		const frameAnnotations = self[ANNOTATIONS].filter((annotation) => annotation.frame === self[getCurrentFrame]());
+		const frameAnnotations = self[ANNOTATION_MANAGER].getAnnotationsForFrame(self[getCurrentFrame]());
 		const predictableAnnotations = frameAnnotations.filter((annotation) => annotation.jobId === null);
 
 		toast.clear();
 
-		self[ANNOTATOR].value(frameAnnotations.map((annotation) => {
-			return {
-				id: annotation.resultId ? annotation.resultId.toString() : annotation.vectorEditorId,
-				bounds: boundsFromBbox(annotation.bbox)
-			};
-		}));
+		self[ANNOTATOR].value(frameAnnotations);
 
 		if (predictableAnnotations.length) {
 			toast.info({
@@ -355,7 +247,9 @@ export default class EditView extends SplitView {
 				icon: '',
 				class: 'predict-button',
 				onClick() {
-					self[runPrediction](predictableAnnotations);
+					predictableAnnotations.forEach((annotation) => {
+						self[ANNOTATION_MANAGER].predict(annotation);
+					});
 				}
 			});
 		}
@@ -375,34 +269,6 @@ export default class EditView extends SplitView {
 }
 
 Object.assign(EditView.prototype, {
-	[checkJobs]: throttle(function() {
-		const self = this;
-
-		self[JOBS].forEach((job) => {
-			api.getAnnotationJob(job.id)
-				.then((results) => {
-					results = results[0];
-
-					if (results.status !== job.status) {
-						job.status = results.status;
-					}
-
-					if (results.status === 'done') {
-						self[getAnnotations]();
-
-						self[JOBS] = self[JOBS].filter((item) => {
-							item.id !== job.id;
-						});
-					}
-
-					if (self[JOBS].length) {
-						self[checkJobs]();
-					}
-				});
-		});
-	}, JOB_CHECK_DELAY, {
-		leading: false
-	}),
 	title: method.string({
 		set(title) {
 			this[VIDEO_CONTROLS].title(title);
@@ -430,27 +296,7 @@ Object.assign(EditView.prototype, {
 
 			if (videoId !== -1) {
 				self[TIMELINE].isWorking(true);
-				self[ANNOTATIONS].length = 0;
-				self[ANNOTATOR].value([]);
-				self[getAnnotations]()
-					.then(() => {
-						self[TIMELINE].isWorking(false);
-						return api.getAnnotationJobs(videoId);
-					})
-					.then((results) => {
-						results.forEach((job) => {
-							if (job.status !== 'done') {
-								self[JOBS].push({
-									id: job.id,
-									status: job.status
-								});
-							}
-						});
-
-						if (self[JOBS].length) {
-							self[checkJobs]();
-						}
-					});
+				self[ANNOTATION_MANAGER].videoId(videoId);
 			}
 		}
 	}),
