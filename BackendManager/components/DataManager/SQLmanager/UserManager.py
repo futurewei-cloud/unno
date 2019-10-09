@@ -1,6 +1,6 @@
-from ..DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
-from ..DBconnectors.MINIOconnector import make_bucket, remove_bucket
-from ..util import check_input_manager
+from DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
+from DBconnectors.MINIOconnector import make_bucket, remove_bucket
+from util import check_input_manager
 
 
 def get_user(user):
@@ -59,10 +59,10 @@ def update_user(user):
 
 
 if __name__ == "__main__":
-    new_user = {'username': 'Fan', 'password': 'Fan123', 'role': 'admin'}
+    new_user = {'username': 'A1', 'password': 'A123', 'role': 'admin'}
     add_user(new_user)
     print(get_user(new_user))
-    new_user = {'username': 'Fan', 'password': 'Fan123', 'role': 'user'}
+    new_user = {'username': 'B2', 'password': 'B123', 'role': 'user'}
     update_user(new_user)
     print(get_user(new_user))
     del_user(new_user)

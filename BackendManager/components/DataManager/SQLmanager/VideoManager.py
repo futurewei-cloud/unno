@@ -1,6 +1,6 @@
-from ..DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
-from ..DBconnectors.MINIOconnector import make_bucket, uploader, downloader, remove_object, remove_bucket, save_frames
-from ..util import check_input_manager
+from DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
+from DBconnectors.MINIOconnector import make_bucket, uploader, downloader, remove_object, remove_bucket, save_frames
+from util import check_input_manager
 import os
 import sys
 import re
@@ -10,7 +10,7 @@ from flask import request, send_file, Response
 
 def get_video(video):
     check_input_manager('video', video, ['video_id'])
-    query = "SELECT * FROM video WHERE video_id='%s'" % (video['video_id'])
+    query = "SELECT * FROM video WHERE status != 'deleted' AND video_id='%s'" % (video['video_id'])
     print("Video %s is fetched!" % video['video_id'])
     return run_all_query(query)
 
@@ -18,20 +18,20 @@ def get_video(video):
 def get_videos(video):
     check_input_manager('video', video, ['username'])
     #query = "SELECT * FROM video WHERE username='%s'" % (video['username'])
-    query = "SELECT video.*, COUNT(DISTINCT result.entity_id) AS entity_num FROM video LEFT OUTER JOIN result on" \
-            " video.video_id=result.video_id AND video.username='%s' GROUP BY video.video_id" % (video['username'])
+    query = "SELECT * FROM (SELECT video.*, COUNT(DISTINCT annotation.entity_id) AS entity_num FROM video \
+     LEFT OUTER JOIN annotation ON video.video_id=annotation.video_id AND video.username='%s' GROUP BY video.video_id) \
+     AS v WHERE v.status!='deleted'" % (video['username'])
     print("Videos from user %s are fetched!" % video['username'])
     return run_all_query(query)
 
 
-def add_video(video, file_location):
+def add_video(video, file_full_location):
     check_input_manager('video', video, ['username', 'video_name', 'format'])
-    # video['s3_location'] = video['username'] + '/' + video['video_name']
     key_query = "(username"
     value_query = "('%s'" % video['username']
 
     for k, v in video.items():
-        if k in ("video_name", "format", "s3_location"):
+        if k in ("video_name", "format", "status"):
             key_query += "," + k
             value_query += ",'%s'" % video[k]
         elif k in ("fps", "num_frames"):
@@ -52,13 +52,13 @@ def add_video(video, file_location):
         del_video(video)
         return
 
-    if not uploader(bucket_name, video_id, os.path.join('/tmp', file_location)):
+    if not uploader(bucket_name, video_id, file_full_location):
         print("Upload video failed!")
         video = {'video_id': video_id}
         del_video(video)
         return
 
-    num_frames, fps, v_width, v_height = save_frames(video_id, file_location)
+    num_frames, fps, v_width, v_height = save_frames(video_id, file_full_location)
     if num_frames > 0:
         video = {'video_id': video_num, 'fps': fps, 'num_frames': num_frames, 'width': v_width, 'height': v_height}
         update_video(video)
@@ -73,12 +73,20 @@ def add_video(video, file_location):
 
 def del_video(video):
     check_input_manager('video', video, ['video_id'])
-    video_id = 'video-' + str(video['video_id'])
-    remove_object('videos', video_id)
-    remove_bucket(video_id)
-    query = "DELETE FROM video WHERE video_id=%s" % (video['video_id'])
+
+    # TODO: handle video file and related annotation clean up offline&separately
+    #video_id = 'video-' + str(video['video_id'])
+    #remove_object('videos', video_id)
+    #remove_bucket(video_id)
+    #query = "DELETE FROM video WHERE video_id=%s" % (video['video_id']
+    #return run_single_query(query)
+
+    # DONOT physically delete video file, but mark specific video as 'deleted'
+    conditions = [('video_id', video['video_id'])]
+    changes = [('status', 'deleted')]
+
     print("Video %s is deleted!" % video['video_id'])
-    return run_single_query(query)
+    return update_query('video', changes, conditions)
 
 
 def update_video(video):
@@ -94,8 +102,13 @@ def update_video(video):
 
 
 def generate_video(video, request_headers):
+    local_cache = '/tmp/unno_server_video_cache'
+    if not os.path.exists(local_cache):
+        os.mkdir(local_cache)
+
     # prepare video file
-    video_file = downloader('videos', video['video_id'])
+    target_file = os.path.join(local_cache, video['video_id'])
+    video_file = downloader('videos', target_file)
 
     # parse query
     q_start, q_end = get_range(request_headers)

@@ -1,8 +1,4 @@
-from ..DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
-from .annotationmanager import update_annotation
-from .servermanager import update_server
-from ..util import check_input_manager
-import os
+from DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
 
 
 def get_category(cat_id):

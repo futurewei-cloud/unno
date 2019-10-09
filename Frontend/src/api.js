@@ -4,9 +4,9 @@ import { clone } from 'object-agent';
 import { isArray, method } from 'type-enforcer';
 
 let username = 'abcd';
-const BASE_URL = 'http://10.175.20.126:5011/api/v1';
+const BASE_URL = 'http://10.145.83.34:5011/api/v1';
 const VIDEO = '/video';
-const ANNOTATIONS = '/result';
+const ANNOTATIONS = '/annotation';
 const ANNOTATION_JOBS = '/job';
 const CATEGORIES = '/category';
 
@@ -135,7 +135,7 @@ const api = {
 		triggerChange: true
 	}),
 
-	// ********** RESULTS
+	// ********** ANNOTATIONS
 
 	getAnnotations: callAjax({
 		call(videoId) {
@@ -148,7 +148,7 @@ const api = {
 		},
 		default: [],
 		errorTitle: 'Error loading annotations',
-		resultKey: 'results',
+		resultKey: 'annotations',
 		map(annotation) {
 			return {
 				bbox: annotation.bbox,
@@ -156,7 +156,7 @@ const api = {
 				entityId: annotation.entity_id,
 				frame: annotation.frame_num,
 				jobId: annotation.job_id,
-				resultId: annotation.result_id,
+				resultId: annotation.annotation_id,
 				status: annotation.status
 			};
 		}
@@ -177,7 +177,7 @@ const api = {
 		},
 		errorTitle: 'Error adding annotation',
 		map(result) {
-			return result.result_id;
+			return result.annotation_id;
 		}
 	}),
 
@@ -188,7 +188,7 @@ const api = {
 				params: {
 					username: username,
 					video_id: videoId,
-					result_id: resultId,
+					annotation_id: resultId,
 					bbox: bbox,
 					status: 'user'
 				}
@@ -202,7 +202,7 @@ const api = {
 			return ajax.delete(BASE_URL + ANNOTATIONS, {
 				withCredentials: false,
 				params: {
-					result_id: id
+					annotation_id: id
 				}
 			});
 		},
@@ -268,7 +268,7 @@ const api = {
 			return ajax.post(BASE_URL + ANNOTATION_JOBS, {
 				start_frame: startFrame,
 				end_frame: endFrame,
-				result_id: resultId
+				annotation_id: resultId
 			}, {
 				withCredentials: false
 			});

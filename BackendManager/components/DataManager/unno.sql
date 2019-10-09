@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 20, 2019 at 11:57 PM
+-- Generation Time: Oct 01, 2019 at 10:50 PM
 -- Server version: 5.5.22
 -- PHP Version: 5.3.10-1ubuntu3
 
@@ -29,25 +29,24 @@ USE `unno`;
 --
 
 CREATE TABLE IF NOT EXISTS `annotation` (
-  `job_id` int(11) NOT NULL AUTO_INCREMENT,
-  `job_name` varchar(100) NOT NULL,
+  `annotation_id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) DEFAULT NULL,
   `video_id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `entity_id` int(11) NOT NULL,
-  `entity_name` varchar(100) NOT NULL,
-  `bbox` varchar(100) NOT NULL,
-  `start_frame` int(11) NOT NULL,
-  `end_frame` int(11) NOT NULL,
+  `entity_desc` varchar(256) DEFAULT NULL,
+  `cat_id` int(11) NOT NULL DEFAULT '0',
+  `frame_num` int(11) NOT NULL,
   `status` varchar(20) NOT NULL,
-  `s3_location` varchar(100) NOT NULL,
-  PRIMARY KEY (`job_id`),
+  `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `bbox` varchar(256) NOT NULL,
+  PRIMARY KEY (`annotation_id`),
+  UNIQUE KEY `job_frame` (`job_id`,`video_id`,`entity_id`,`frame_num`),
   KEY `username` (`username`),
-  KEY `video_id` (`video_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
-
---
--- Dumping data for table `annotation`
---
+  KEY `video_id` (`video_id`),
+  KEY `job_id` (`job_id`),
+  KEY `cat_id` (`cat_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -68,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `category` (
 --
 
 INSERT INTO `category` (`cat_id`, `name`, `sup_cat_name`) VALUES
+(0, '', ''),
 (1, 'person', 'person'),
 (2, 'bicycle', 'vehicle'),
 (3, 'car', 'vehicle'),
@@ -149,69 +149,47 @@ INSERT INTO `category` (`cat_id`, `name`, `sup_cat_name`) VALUES
 (79, 'hair drier', 'indoor'),
 (80, 'toothbrush', 'indoor');
 
--- ---------------------------------------------------------
---
--- Table structure for table `model`
---
-
-CREATE TABLE IF NOT EXISTS `model` (
-  `model_name` varchar(100) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `framework` varchar(100) NOT NULL,
-  `version` int(11) NOT NULL,
-  `description` varchar(100) NOT NULL,
-  PRIMARY KEY (`model_name`),
-  KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `result`
+-- Table structure for table `function`
 --
 
-CREATE TABLE IF NOT EXISTS `result` (
-  `result_id` int(11) NOT NULL AUTO_INCREMENT,
-  `job_id` int(11) DEFAULT NULL,
-  `video_id` int(11) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `entity_id` int(11) NOT NULL,
-  `cat_id` int(11) DEFAULT NULL,
-  `frame_num` int(11) NOT NULL,
-  `status` varchar(20) NOT NULL,
-  `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `bbox` varchar(100) NOT NULL,
-  PRIMARY KEY (`result_id`),
-  UNIQUE KEY `job_frame` (`job_id`,`video_id`,`entity_id`,`frame_num`),
-  KEY `username` (`username`),
-  KEY `video_id` (`video_id`),
-  KEY `job_id` (`job_id`),
-  KEY `cat_id` (`cat_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
-
---
--- Dumping data for table `result`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `server`
---
-
-CREATE TABLE IF NOT EXISTS `server` (
+CREATE TABLE IF NOT EXISTS `function` (
   `server_id` int(11) NOT NULL AUTO_INCREMENT,
   `endpoint` varchar(100) NOT NULL,
   `status` int(11) NOT NULL,
+  `desc` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`server_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `server`
+-- Dumping data for table `function`
 --
 
-INSERT INTO `server` (`server_id`, `endpoint`, `status`) VALUES
-(1, 'http://10.145.83.34:8899/tracking/api/sot', 0);
+INSERT INTO `function` (`server_id`, `endpoint`, `status`, `desc`) VALUES
+(1, 'http://10.145.83.34:8899/tracking/api/sot', 0, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `job`
+--
+
+CREATE TABLE IF NOT EXISTS `job` (
+  `job_id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_name` varchar(100) DEFAULT NULL,
+  `video_id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `entity_id` int(11) NOT NULL,
+  `bbox` varchar(256) NOT NULL,
+  `start_frame` int(11) NOT NULL,
+  `end_frame` int(11) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  PRIMARY KEY (`job_id`),
+  KEY `username` (`username`),
+  KEY `video_id` (`video_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
 
@@ -223,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `last_login_time` timestamp NULL,
+  `last_login_time` timestamp NULL DEFAULT NULL,
   `role` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -250,16 +228,11 @@ CREATE TABLE IF NOT EXISTS `video` (
   `num_frames` int(11) NOT NULL,
   `width` int(11) DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
-  `s3_location` varchar(100) NOT NULL,
+  `status` varchar(64) NOT NULL DEFAULT 'normal',
   PRIMARY KEY (`video_id`),
   UNIQUE KEY `video_name` (`video_name`,`username`),
   KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
-
-
---
--- Dumping data for table `video`
---
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 --
 -- Constraints for dumped tables
@@ -269,15 +242,16 @@ CREATE TABLE IF NOT EXISTS `video` (
 -- Constraints for table `annotation`
 --
 ALTER TABLE `annotation`
+  ADD CONSTRAINT `annotation_ibfk_3` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`) ON DELETE NO ACTION,
   ADD CONSTRAINT `annotation_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
   ADD CONSTRAINT `annotation_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
 
 --
--- Constraints for table `result`
+-- Constraints for table `job`
 --
-ALTER TABLE `result`
-  ADD CONSTRAINT `result_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
-  ADD CONSTRAINT `result_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
+ALTER TABLE `job`
+  ADD CONSTRAINT `job_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
+  ADD CONSTRAINT `job_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
 
 --
 -- Constraints for table `video`

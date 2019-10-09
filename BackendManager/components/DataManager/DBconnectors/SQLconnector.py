@@ -1,5 +1,5 @@
 import mysql.connector
-from ..configuration.config import SQLConfig
+from configuration.config import SQLConfig
 
 
 def connect(host, port, database, user, password):

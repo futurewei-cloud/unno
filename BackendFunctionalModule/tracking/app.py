@@ -8,15 +8,17 @@ import json
 # init the server
 app = Flask('tracking')
 
+
+# function module configuration
+data_root = '/data'
+service_port = 8899
+TIMEOUT_SEC = 2  # time-out in seconds for sending out results
+RETRY = 3  # re-try times for sending out results
+
 # tracker parameters
 config_file = '/app/pysot/experiments/siamrpn_mobilev2_l234_dwxcorr/config.yaml'
 model_file = '/app/pysot/experiments/siamrpn_mobilev2_l234_dwxcorr/model.pth'
 tracker = SOTTracker(config_file, model_file)
-
-data_root = '/data'
-
-TIMEOUT_SEC = 2  # time-out in seconds for sending out results
-RETRY = 3  # re-try times for sending out results
 
 
 @app.route('/')
@@ -106,4 +108,4 @@ def sot_tracking():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8899, debug=False)
+    app.run(host='0.0.0.0', port=service_port, debug=False)

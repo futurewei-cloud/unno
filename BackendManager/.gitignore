@@ -1,1 +1,4 @@
 FrontendProd/
+*.pyc
+.DS_Store
+.idea

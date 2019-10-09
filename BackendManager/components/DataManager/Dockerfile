@@ -8,7 +8,7 @@ RUN apt-get install -y --fix-missing python2.7-dev \
     libxrender-dev \
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
 
-COPY . /root/src
+COPY src /root/src
 
 RUN cd /root/src && \
     pip install -r requirements.txt

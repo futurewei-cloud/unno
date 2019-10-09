@@ -1,5 +1,5 @@
 from configuration.config import SQLConfig, ServiceConfig
-from SQLmanager.jobmanager import get_job, update_job
+from SQLmanager.JobManager import get_job, update_job
 from DBconnectors.SQLconnector import connect, close
 from DBconnectors.MINIOconnector import downloader_multiple
 import time
@@ -20,7 +20,7 @@ def main():
     while True:
         connection, cursor = connect(SQLConfig.host, SQLConfig.port, SQLConfig.db, SQLConfig.username, SQLConfig.pw)
 
-        sql_query = "SELECT * FROM annotation WHERE status='new'"
+        sql_query = "SELECT * FROM job WHERE status='new'"
         jobs = get_job(sql_query, connection, cursor)
 
         if jobs is None or len(jobs) == 0:
@@ -28,7 +28,7 @@ def main():
             time.sleep(3)
             continue
 
-        sql_query = "SELECT * FROM server WHERE status=0"
+        sql_query = "SELECT * FROM function WHERE status=0"
         servers = get_job(sql_query, connection, cursor)
 
         if servers is None or len(servers) == 0:
@@ -48,11 +48,11 @@ def main():
 
             sets = [('status', 'pending')]
             conditions = [('job_id', job['job_id'])]
-            update_job(connection, cursor, 'annotation', sets, conditions)
+            update_job(connection, cursor, 'job', sets, conditions)
 
             sets = [('status', 1)]
             conditions = [('server_id', server['server_id'])]
-            update_job(connection, cursor, 'server', sets, conditions)
+            update_job(connection, cursor, 'function', sets, conditions)
 
             job['server_id'] = server['server_id']
             job['result_api'] = ServiceConfig.result_api

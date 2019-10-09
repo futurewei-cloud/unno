@@ -1,5 +1,4 @@
 import mysql.connector
-from DBconnectors.SQLconnector import connect
 
 
 def get_job(sql_query, connection, cursor):
@@ -65,12 +64,3 @@ def update_job(connection, cursor, db, sets, conditions):
     except mysql.connector.Error as error:
         connection.rollback()  # rollback if any exception occured
         print("Failed updating server {}".format(error))
-
-
-if __name__ == "__main__":
-    connection, cursor = connect('localhost','job_queue','root','root')
-
-    if connection and cursor:
-        sql_query =  "SELECT * FROM waitlist WHERE (processing_time < CURRENT_TIMESTAMP - INTERVAL 1 MINUTE ) OR (processing_time IS NULL) LIMIT 3"
-
-        get_job(sql_query, connection, cursor)
