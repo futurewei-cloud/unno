@@ -64,10 +64,10 @@ def add_annotations(results):
         # check if existing related annotation
         existing_anno = get_annotations(anno_info)
         if existing_anno is not None and len(existing_anno) > 0:
-            existing_id = existing_anno[0]['result_id']
+            existing_id = existing_anno[0]['annotation_id']
             if existing_anno[0]['status'] == 'auto':
                 # update by overriding with latest annotation
-                anno = {'bbox': v, 'job_id': results['job_id'], 'status': 'auto', 'result_id': existing_id}
+                anno = {'bbox': v, 'job_id': results['job_id'], 'status': 'auto', 'annotation_id': existing_id}
                 anno.update(anno_info)
                 update_annotation(anno)
             else:
@@ -82,7 +82,7 @@ def add_annotations(results):
     job = {'job_id': results['job_id'], 'status': 'done'}
     update_job(job)
     # update function server state
-    server = {'id': results['server_id'], 'status': 0}
+    server = {'server_id': results['server_id'], 'status': 0}
     update_server(server)
     return True
 

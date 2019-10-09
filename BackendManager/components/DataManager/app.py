@@ -49,20 +49,21 @@ def video_call():
         if 'file' not in request.files:
             print('No file part')
             return redirect(request.url)
-        file = request.files['file']
-        file_name = file.filename
+        video_file = request.files['file']
+        file_name = video_file.filename
         if file_name == '':
             print('No selected file')
             return redirect(request.url)
-        if file and allowed_file(file_name):
-            file.save(os.path.join('/tmp', file_name))
+        if video_file and allowed_file(file_name):
+            local_tmp_file = os.path.join('/tmp', file_name)
+            video_file.save(local_tmp_file)
             username = request.form['user']
             video_format = file_name.split('.')[-1]
             video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
             video = {'video_name': video_id, 'username': username,
                      'format': video_format, 'length': 0, 'num_frames': 0}
-            tmp_id = add_video(video, file_name)
-            os.remove(os.path.join('/tmp', file_name))  # clean up uploaded file
+            tmp_id = add_video(video, local_tmp_file)
+            os.remove(local_tmp_file)  # clean up uploaded file
 
             response = app.response_class(
                 json.dumps({'video_id': tmp_id}),

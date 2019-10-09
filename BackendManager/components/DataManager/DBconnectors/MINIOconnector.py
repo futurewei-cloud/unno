@@ -4,6 +4,7 @@ from configuration.config import MinioConfig
 import os
 import cv2
 import datetime
+import shutil
 
 
 def get_minio_client(api, access_key, secret_key):
@@ -117,7 +118,7 @@ def save_frames(bucket_name, fullpath_filename):
         except ResponseError as err:
             print(err)
             return None
-    os.removedirs(tmp_folder)  # clean up frames
+    shutil.rmtree(tmp_folder)  # clean up frames
 
     return count, fps, v_width, v_height
 
