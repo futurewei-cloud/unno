@@ -41,7 +41,7 @@ def add_category(cat):
 
 def del_category(cat):
     if 'cat_id' in cat:
-        query = "DELETE FROM category WHERE cat_id=" % cat['cat_id']
+        query = "DELETE FROM category WHERE cat_id='%s'" % cat['cat_id']
         print("cat_id %s is deleted!" % cat['cat_id'])
     elif 'name' in cat:
         query = "DELETE FROM category WHERE name='%s'" % cat['name']

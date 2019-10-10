@@ -34,8 +34,6 @@ CREATE TABLE IF NOT EXISTS `annotation` (
   `video_id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `entity_id` int(11) NOT NULL,
-  `entity_desc` varchar(256) DEFAULT NULL,
-  `cat_id` int(11) NOT NULL DEFAULT '0',
   `frame_num` int(11) NOT NULL,
   `status` varchar(20) NOT NULL,
   `last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -45,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `annotation` (
   KEY `username` (`username`),
   KEY `video_id` (`video_id`),
   KEY `job_id` (`job_id`),
-  KEY `cat_id` (`cat_id`)
+  KEY `entity_id` (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 -- --------------------------------------------------------
@@ -150,6 +148,21 @@ INSERT INTO `category` (`cat_id`, `name`, `sup_cat_name`) VALUES
 (80, 'toothbrush', 'indoor');
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `entity`
+--
+
+CREATE TABLE IF NOT EXISTS `entity` (
+  `entity_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) DEFAULT NULL,
+  `cat_id` int(11) NOT NULL DEFAULT '0',
+  `video_id` int(11) NOT NULL,
+  PRIMARY KEY (`entity_id`),
+  KEY `cat_id` (`cat_id`),
+  KEY `video_id` (`video_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `function`
@@ -241,9 +254,15 @@ CREATE TABLE IF NOT EXISTS `video` (
 -- Constraints for table `annotation`
 --
 ALTER TABLE `annotation`
-  ADD CONSTRAINT `annotation_ibfk_3` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`) ON DELETE NO ACTION,
   ADD CONSTRAINT `annotation_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
   ADD CONSTRAINT `annotation_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
+
+--
+-- Constraints for table `entity`
+--
+ALTER TABLE `entity`
+  ADD CONSTRAINT `entity_ibfk_3` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `entity_ibfk_1` FOREIGN KEY (`cat_id`) REFERENCES `category` (`cat_id`) ON DELETE NO ACTION;
 
 --
 -- Constraints for table `job`
@@ -257,6 +276,7 @@ ALTER TABLE `job`
 --
 ALTER TABLE `video`
   ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

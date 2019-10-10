@@ -4,6 +4,7 @@ from SQLmanager.JobManager import add_job, get_job, get_jobs, del_job, update_jo
 from SQLmanager.AnnotationManager import add_annotation, add_annotations, get_annotations, del_annotation, update_annotation
 from SQLmanager.CategoryManager import add_category, get_category, get_categoris, del_category, update_category
 from SQLmanager.UserManager import add_user, get_user, del_user, update_user
+from SQLmanager.EntityManager import add_entity, get_entities, get_entity, del_entity, update_entity
 import os
 import json
 from flask_cors import CORS
@@ -476,6 +477,87 @@ def category_call():
         else:
             response = app.response_class(
                 response="Delete category failed",
+                status=500,
+            )
+
+        return response
+
+
+@app.route('/api/v1/entity', methods=['GET', 'POST', 'DELETE', 'PATCH'])
+def entity_call():
+    if request.method == 'POST':
+        entity = request.json
+        if not entity or check_input_api(entity, ['video_id']) is not None:
+            response = app.response_class(
+                response="New entity generation failed! video_id not provided",
+                status=500,
+            )
+            return response
+
+        entity_id = add_entity(entity['video_id'])
+        if entity_id:
+            response = app.response_class(
+                json.dumps({'entity_id': entity_id}),
+                status=200,
+            )
+            return response
+        else:
+            response = app.response_class(
+                response="New entity generation failed! Internal error",
+                status=500,
+            )
+        return response
+
+    elif request.method == 'GET':
+        r = request.args
+        if not r or check_input_api(r, ['video_id']) is not None:
+            response = app.response_class(
+                response="Get entity failed! video_id not provided",
+                status=500,
+            )
+            return response
+        else:
+            return jsonify({'entity': get_entities(r['video_id'])})
+
+    elif request.method == 'PATCH':
+        entity = request.json
+        if not entity or check_input_api(entity, ['entity_id']) is not None:
+            response = app.response_class(
+                response="Modify entity query is not valid",
+                status=500,
+            )
+            return response
+
+        if update_entity(entity) is not None:
+            response = app.response_class(
+                response="Entity was modified successfully",
+                status=200,
+            )
+        else:
+            response = app.response_class(
+                response="Modify entity failed",
+                status=500,
+            )
+        return response
+
+    elif request.method == 'DELETE':
+        if not request.args or (check_input_api(request.args, ['entity_id']) is not None
+                                and check_input_api(request.args, ['video_id']) is not None):
+            response = app.response_class(
+                response="Entity DELETE query is not valid",
+                status=500,
+            )
+            return response
+
+        entity = request.args
+        if del_entity(entity) is not None:
+            response = app.response_class(
+                response="Entity was deleted successfully",
+                status=200,
+            )
+        else:
+            response = app.response_class(
+                response="Delete entity failed",
                 status=500,
             )
 
