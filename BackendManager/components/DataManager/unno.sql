@@ -230,7 +230,6 @@ CREATE TABLE IF NOT EXISTS `video` (
   `height` int(11) DEFAULT NULL,
   `status` varchar(64) NOT NULL DEFAULT 'normal',
   PRIMARY KEY (`video_id`),
-  UNIQUE KEY `video_name` (`video_name`,`username`),
   KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
