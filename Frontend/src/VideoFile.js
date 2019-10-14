@@ -34,13 +34,13 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 		self[GROUP] = group;
 		self
 			.width('100%')
-			.onClick(() => self.onSelect().call(self))
+			.onClick(() => self.onSelect()())
 			.contextMenu([{
 				id: 'select',
 				title: 'Select',
 				icon: EDIT_ICON,
 				onSelect() {
-					self.onSelect().call(self);
+					self.onSelect()();
 				}
 			}, {
 				id: 'delete',

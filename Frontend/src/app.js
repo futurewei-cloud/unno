@@ -60,9 +60,7 @@ class App {
 				headerControl: MainMenu,
 				headerSettings: {
 					height: HUNDRED_PERCENT,
-					onSelect(video) {
-						const videoFile = this;
-
+					onSelect(video, videoFile) {
 						if (self[EDIT_VIEW].videoId() !== video.id) {
 							self[EDIT_VIEW]
 								.source(api.getVideoLink(video.id))

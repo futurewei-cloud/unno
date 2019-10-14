@@ -86,7 +86,7 @@ export default class MainMenu extends SplitView {
 						control.removeClass('selected');
 					});
 
-					self.onSelect().call(this, video);
+					self.onSelect()(video, this);
 					this.classes('selected', true);
 					self[CURRENT_VIDEO] = video.id;
 				},
@@ -94,7 +94,7 @@ export default class MainMenu extends SplitView {
 					self.isWorking(true);
 					api.deleteVideo(video.id)
 						.then(() => {
-							self.onDelete().call(self, video);
+							self.onDelete()(video);
 						});
 				}
 			};

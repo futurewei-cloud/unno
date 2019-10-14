@@ -40,15 +40,15 @@ export default class AnnotationManager {
 		return api.getAnnotations(self.videoId())
 			.then((results) => {
 				self[ANNOTATIONS] = results;
-				self.onLoad().call(self);
-				self.onChange().call(self);
+				self.onLoad()();
+				self.onChange()();
 			});
 	}
 
 	[logEntitiesChange]() {
 		const self = this;
 
-		self.onChange().call(self);
+		self.onChange()();
 		self.onEntitiesChange()(new List(pull(self[ANNOTATIONS], 'entityId')).unique().length);
 	}
 
@@ -69,7 +69,7 @@ export default class AnnotationManager {
 			api.addAnnotation(self.videoId(), annotation.frame, annotation.entityId, annotation.bbox)
 				.then((resultId) => {
 					annotation.resultId = resultId;
-					self.onChange().call(self);
+					self.onChange()();
 				});
 		}
 	}
@@ -191,7 +191,7 @@ Object.assign(AnnotationManager.prototype, {
 			const self = this;
 
 			self[ANNOTATIONS].length = 0;
-			self.onChange().call(self);
+			self.onChange()();
 
 			self[getAnnotations]()
 				.then(() => {
