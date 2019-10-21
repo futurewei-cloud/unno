@@ -20,5 +20,5 @@ Mysql-docker:
 Minio:
 
 	docker pull minio/minio
-	docker run -p 9000:9000 --name minio1 -e "MINIO_ACCESS_KEY=wenjiangfan" -e "MINIO_SECRET_KEY=wenjiangfan" -v /mnt/data:/data -v /mnt/config:/root/.minio minio/minio server /data
+	docker run -d -p 9000:9000 --name minio1 -e "MINIO_ACCESS_KEY=wenjiangfan" -e "MINIO_SECRET_KEY=wenjiangfan" -v /mnt/data:/data -v /mnt/config:/root/.minio minio/minio server /data
 
