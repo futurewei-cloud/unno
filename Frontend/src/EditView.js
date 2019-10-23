@@ -290,7 +290,7 @@ Object.assign(EditView.prototype, {
 			this[SLIDER].max(duration);
 		}
 	}),
-	videoId: method.integer({
+	videoId: method.string({
 		set(videoId) {
 			const self = this;
 

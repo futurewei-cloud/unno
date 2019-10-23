@@ -10,6 +10,9 @@ const ANNOTATIONS = '/annotation';
 const ANNOTATION_JOBS = '/job';
 const CATEGORIES = '/category';
 
+const idIn = (id) => id !== null ? id + '' : id;
+const idOut = (id) => (id || id === 0) ? parseInt(id) : undefined;
+
 const callAjax = (settings) => (...args) => {
 	return new Promise((resolve) => {
 		let result;
@@ -71,7 +74,7 @@ const api = {
 			const sep = video.video_name.lastIndexOf('.');
 
 			return {
-				id: video.video_id,
+				id: idIn(video.video_id),
 				name: sep === -1 ? video.video_name : video.video_name.substring(0, sep),
 				ext: sep === -1 ? '-' : video.video_name.substring(sep + 1),
 				entities: video.entity_num || 0,
@@ -89,7 +92,7 @@ const api = {
 			return axios.patch(BASE_URL + VIDEO, {}, {
 				withCredentials: false,
 				params: {
-					video_id: id,
+					video_id: idOut(id),
 					video_name: title
 				}
 			});
@@ -103,7 +106,7 @@ const api = {
 			return ajax.delete(BASE_URL + VIDEO, {
 				withCredentials: false,
 				params: {
-					video_id: id
+					video_id: idOut(id)
 				}
 			});
 		},
@@ -120,14 +123,14 @@ const api = {
 				formData.append('video', data.name);
 
 				axios.post(BASE_URL + VIDEO, formData, {
-					withCredentials: false,
-					headers: {
-						'Content-Type': 'multipart/form-data'
-					},
-					onUploadProgress(progressEvent) {
-						onUploadProgress(progressEvent);
-					}
-				})
+						withCredentials: false,
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						},
+						onUploadProgress(progressEvent) {
+							onUploadProgress(progressEvent);
+						}
+					})
 					.then(resolve);
 			});
 		},
@@ -142,7 +145,7 @@ const api = {
 			return ajax.get(BASE_URL + ANNOTATIONS, {
 				withCredentials: false,
 				params: {
-					video_id: videoId
+					video_id: idOut(videoId)
 				}
 			});
 		},
@@ -153,10 +156,10 @@ const api = {
 			return {
 				bbox: annotation.bbox,
 				category: annotation.cat_id,
-				entityId: annotation.entity_id,
+				entityId: idIn(annotation.entity_id),
 				frame: annotation.frame_num,
-				jobId: annotation.job_id,
-				resultId: annotation.annotation_id,
+				jobId: idIn(annotation.job_id),
+				resultId: idIn(annotation.annotation_id),
 				status: annotation.status
 			};
 		}
@@ -166,8 +169,8 @@ const api = {
 		call(videoId, frameNum, entityId, bbox) {
 			return ajax.post(BASE_URL + ANNOTATIONS, {
 				username: username,
-				video_id: videoId,
-				entity_id: entityId,
+				video_id: idOut(videoId),
+				entity_id: idOut(entityId),
 				frame_num: frameNum,
 				bbox: bbox,
 				status: 'user'
@@ -177,7 +180,7 @@ const api = {
 		},
 		errorTitle: 'Error adding annotation',
 		map(result) {
-			return result.annotation_id;
+			return idIn(result.annotation_id);
 		}
 	}),
 
@@ -187,8 +190,8 @@ const api = {
 				withCredentials: false,
 				params: {
 					username: username,
-					video_id: videoId,
-					annotation_id: resultId,
+					video_id: idOut(videoId),
+					annotation_id: idOut(resultId),
 					bbox: bbox,
 					status: 'user'
 				}
@@ -202,7 +205,7 @@ const api = {
 			return ajax.delete(BASE_URL + ANNOTATIONS, {
 				withCredentials: false,
 				params: {
-					annotation_id: id
+					annotation_id: idOut(id)
 				}
 			});
 		},
@@ -214,7 +217,7 @@ const api = {
 			return ajax.delete(BASE_URL + ANNOTATIONS, {
 				withCredentials: false,
 				params: {
-					video_id: id
+					video_id: idOut(id)
 				}
 			});
 		},
@@ -228,7 +231,7 @@ const api = {
 			return ajax.get(BASE_URL + ANNOTATION_JOBS, {
 				withCredentials: false,
 				params: {
-					video_id: videoId
+					video_id: idOut(videoId)
 				}
 			});
 		},
@@ -237,7 +240,7 @@ const api = {
 		resultKey: 'jobs',
 		map(job) {
 			return {
-				id: job.job_id,
+				id: idIn(job.job_id),
 				status: job.status
 			};
 		}
@@ -248,7 +251,7 @@ const api = {
 			return ajax.get(BASE_URL + ANNOTATION_JOBS, {
 				withCredentials: false,
 				params: {
-					job_id: id
+					job_id: idOut(id)
 				}
 			});
 		},
@@ -257,7 +260,7 @@ const api = {
 		resultKey: 'jobs',
 		map(job) {
 			return {
-				id: job.job_id,
+				id: idIn(job.job_id),
 				status: job.status
 			};
 		}
@@ -275,7 +278,7 @@ const api = {
 		},
 		errorTitle: 'Error adding prediction job',
 		map(result) {
-			return result.job_id;
+			return idIn(result.job_id);
 		}
 	}),
 
@@ -285,7 +288,7 @@ const api = {
 				withCredentials: false,
 				params: {
 					username: username,
-					job_id: id
+					job_id: idOut(id)
 				}
 			});
 		},
@@ -306,7 +309,7 @@ const api = {
 		resultKey: 'category',
 		map(category) {
 			return {
-				id: category.cat_id,
+				id: idIn(category.cat_id),
 				name: category.name,
 				parent: category.sup_cat_name
 			};

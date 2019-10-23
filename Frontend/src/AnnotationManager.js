@@ -186,7 +186,7 @@ Object.assign(AnnotationManager.prototype, {
 	}, JOB_CHECK_DELAY, {
 		leading: false
 	}),
-	videoId: method.integer({
+	videoId: method.string({
 		set(videoId) {
 			const self = this;
 
