@@ -98,11 +98,6 @@ export default class VideoControls extends SplitView {
 
 		const self = this;
 		self.addClass('video-controls');
-		self[VIDEO] = settings.video;
-
-		self[VIDEO]
-			.onPlay(() => self[updateControls](false))
-			.onPause(() => self[updateControls](true));
 	}
 
 	[updateControls](isPaused) {
@@ -122,6 +117,16 @@ export default class VideoControls extends SplitView {
 			self.onEditTitle()(value);
 			self.title(value);
 		}
+	}
+
+	video(video) {
+		const self = this;
+
+		self[VIDEO] = video;
+
+		self[VIDEO]
+			.onPlay(() => self[updateControls](false))
+			.onPause(() => self[updateControls](true));
 	}
 }
 

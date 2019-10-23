@@ -4,15 +4,46 @@
 	> .first-view {
 		text-align: center;
 		font-size: 0;
+	}
 
-		> .split-view {
-			display: inline-block;
+	.video-player {
+		display: inline-block;
+		min-height: 6rem;
+		min-width: 28rem;
+	}
+
+	.video-wrapper {
+		height: 100%;
+		display: inline-block;
+
+		> .first-view {
+			overflow: hidden;
 		}
 	}
 
 	video {
 		border-radius: 0.5rem;
 		background: fade(@fontColor, 10%);
+		width: 100%;
+		height: auto;
+	}
+
+	&.vertical {
+		.video-player {
+			position: absolute;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+		}
+
+		video {
+			width: auto;
+			height: 100%;
+		}
+
+		.video-wrapper {
+			display: block;
+		}
 	}
 
 	.time-line {
