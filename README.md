@@ -37,7 +37,7 @@ Customized AI capability can be instantiated as specific AI Functionality module
 * UX Frontend: web based user interface to manage data and conduct annotating process.
 
 ## Get Started
-To run the system, both backend and frontend module should be started. 
+To run the system, both backend and frontend modules should be started. 
 * Follow [database service instructions
 ](BackendManager/README.md) to set up fundamental data infrastructure first.
 * Then start the [data manager service](BackendManager/components/DataManager/README.md), and each of the AI 
