@@ -1,6 +1,8 @@
 import { clear, throttle } from 'async-agent';
 import { Div, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { List } from 'hord';
 import moment from 'moment';
+import { pull } from 'object-agent';
 import { HUNDRED_PERCENT, method } from 'type-enforcer';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';
@@ -48,8 +50,8 @@ export default class EditView extends SplitView {
 			onChange() {
 				self[updateAnnotationDisplay]();
 			},
-			onEntitiesChange(...args) {
-				self.onEntitiesChange()(...args);
+			onEntitiesChange(entities) {
+				self.onEntitiesChange()(new List(pull(entities, 'id')).unique().length);
 			}
 		});
 

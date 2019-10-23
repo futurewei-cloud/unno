@@ -9,6 +9,7 @@ const VIDEO = '/video';
 const ANNOTATIONS = '/annotation';
 const ANNOTATION_JOBS = '/job';
 const CATEGORIES = '/category';
+const ENTITY = '/entity';
 
 const idIn = (id) => id !== null ? id + '' : id;
 const idOut = (id) => (id || id === 0) ? parseInt(id) : undefined;
@@ -155,7 +156,6 @@ const api = {
 		map(annotation) {
 			return {
 				bbox: annotation.bbox,
-				category: annotation.cat_id,
 				entityId: idIn(annotation.entity_id),
 				frame: annotation.frame_num,
 				jobId: idIn(annotation.job_id),
@@ -185,13 +185,14 @@ const api = {
 	}),
 
 	patchAnnotation: callAjax({
-		call(videoId, resultId, bbox) {
+		call(videoId, resultId, bbox, entityId) {
 			return axios.patch(BASE_URL + ANNOTATIONS, {}, {
 				withCredentials: false,
 				params: {
 					username: username,
 					video_id: idOut(videoId),
 					annotation_id: idOut(resultId),
+					entity_id: idOut(entityId),
 					bbox: bbox,
 					status: 'user'
 				}
@@ -299,9 +300,12 @@ const api = {
 	// ********** CATEGORIES
 
 	getCategories: callAjax({
-		call() {
+		call(videoId) {
 			return ajax.get(BASE_URL + CATEGORIES, {
-				withCredentials: false
+				withCredentials: false,
+				params: {
+					video_id: idOut(videoId)
+				}
 			});
 		},
 		default: [],
@@ -313,6 +317,44 @@ const api = {
 				name: category.name,
 				parent: category.sup_cat_name
 			};
+		}
+	}),
+
+	// ********** Entities
+
+	getEntities: callAjax({
+		call(videoId) {
+			return ajax.get(BASE_URL + ENTITY, {
+				withCredentials: false,
+				params: {
+					video_id: videoId
+				}
+			});
+		},
+		default: [],
+		errorTitle: 'Error loading entities',
+		resultKey: 'entity',
+		map(entity) {
+			return {
+				id: idIn(entity.entity_id),
+				videoId: idIn(entity.video_id),
+				name: entity.name,
+				category: idIn(entity.cat_id)
+			};
+		}
+	}),
+
+	addEntity: callAjax({
+		call(videoId) {
+			return ajax.post(BASE_URL + ENTITY, {
+				video_id: idOut(videoId)
+			}, {
+				withCredentials: false
+			});
+		},
+		errorTitle: 'Error adding entity',
+		map(result) {
+			return idIn(result.entity_id);
 		}
 	})
 

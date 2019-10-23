@@ -1,7 +1,6 @@
 import { throttle } from 'async-agent';
 import { softDelete } from 'hafgufa';
-import { Collection, List } from 'hord';
-import { pull } from 'object-agent';
+import { Collection, compare } from 'hord';
 import { applySettings, method, Point } from 'type-enforcer';
 import api from './api';
 
@@ -18,8 +17,11 @@ const bboxFromBounds = (bounds) => {
 };
 
 const ANNOTATIONS = Symbol();
+const CATEGORIES = Symbol();
+const ENTITIES = Symbol();
 const JOBS = Symbol();
 
+const getAnnotation = Symbol();
 const checkJobs = Symbol();
 const getAnnotations = Symbol();
 const logEntitiesChange = Symbol();
@@ -28,7 +30,31 @@ export default class AnnotationManager {
 	constructor(settings) {
 		const self = this;
 
-		self[ANNOTATIONS] = new Collection();
+		self[ANNOTATIONS] = new Collection()
+			.model({
+				resultId: {
+					type: String,
+					index: true
+				},
+				localId: {
+					type: String,
+					index: true
+				},
+				'*': '*'
+			});
+		self[ENTITIES] = new Collection()
+			.model({
+				id: {
+					type: String,
+					index: true
+				},
+				category: {
+					type: [String, null],
+					index: true
+				},
+				name: [String, null],
+				videoId: String
+			});
 		self[JOBS] = [];
 
 		applySettings(self, settings);
@@ -39,55 +65,70 @@ export default class AnnotationManager {
 
 		return api.getAnnotations(self.videoId())
 			.then((results) => {
-				self[ANNOTATIONS] = results;
-				self.onLoad()();
-				self.onChange()();
+				self[ANNOTATIONS].length = 0;
+				self[ANNOTATIONS] = self[ANNOTATIONS].concat(results);
+				self.onLoad().trigger();
+				self.onChange().trigger();
 			});
+	}
+
+	[getAnnotation](id) {
+		return this[ANNOTATIONS].find({resultId: id}) || this[ANNOTATIONS].find({localId: id});
 	}
 
 	[logEntitiesChange]() {
 		const self = this;
 
-		self.onChange()();
-		self.onEntitiesChange()(new List(pull(self[ANNOTATIONS], 'entityId')).unique().length);
+		self.onChange().trigger();
+		self.onEntitiesChange().trigger(null, [self[ENTITIES]]);
 	}
 
 	add(frame, bounds, id) {
 		const self = this;
-		const annotation = {
-			frame: frame,
-			bbox: bboxFromBounds(bounds),
-			entityId: Math.round(Math.random() * 10000),
-			localId: id,
-			jobId: null
-		};
-
-		self[ANNOTATIONS].push(annotation);
-		self[logEntitiesChange]();
+		let annotation;
 
 		if (self.videoId()) {
-			api.addAnnotation(self.videoId(), annotation.frame, annotation.entityId, annotation.bbox)
+			api.addEntity(self.videoId())
+				.then((entityId) => {
+					self[ENTITIES].push({
+						id: entityId,
+						videoId: self.videoId(),
+						name: null,
+						category: '0'
+					});
+					self[ENTITIES].sort(compare('name', 'id'));
+
+					annotation = {
+						frame: frame,
+						bbox: bboxFromBounds(bounds),
+						entityId: entityId,
+						localId: id,
+						jobId: null
+					};
+
+					self[ANNOTATIONS].push(annotation);
+					self[logEntitiesChange]();
+
+					return api.addAnnotation(self.videoId(), frame, entityId, annotation.bbox);
+				})
 				.then((resultId) => {
 					annotation.resultId = resultId;
-					self.onChange()();
+					self.onChange().trigger();
 				});
 		}
 	}
 
 	changeBounds(id, bounds) {
 		const self = this;
+		const annotation = self[getAnnotation](id);
 
-		self[ANNOTATIONS].some((annotation) => {
-			if (annotation.resultId === parseInt(id) || annotation.localId === id) {
-				annotation.bbox = bboxFromBounds(bounds);
+		if (annotation) {
+			annotation.bbox = bboxFromBounds(bounds);
 
-				if (annotation.resultId) {
-					api.patchAnnotation(self.videoId(), annotation.resultId, annotation.bbox);
-				}
-
-				return true;
+			if (annotation.resultId) {
+				api.patchAnnotation(self.videoId(), annotation.resultId, annotation.bbox, annotation.entityId);
 			}
-		});
+		}
 	}
 
 	getAnnotationsForFrame(frame) {
@@ -160,7 +201,6 @@ export default class AnnotationManager {
 				});
 		}
 	}
-
 }
 
 Object.assign(AnnotationManager.prototype, {
@@ -195,9 +235,21 @@ Object.assign(AnnotationManager.prototype, {
 			const self = this;
 
 			self[ANNOTATIONS].length = 0;
-			self.onChange()();
+			self.onChange().trigger();
 
-			self[getAnnotations]()
+			api.getCategories()
+				.then((categories) => {
+					self[CATEGORIES] = categories.filter((category) => Boolean(category.name)).sort(compare('name'));
+
+					return api.getEntities(videoId);
+				})
+				.then((entities) => {
+					self[ENTITIES].length = 0;
+					self[ENTITIES] = self[ENTITIES].concat(entities.sort(compare('name', 'id')));
+					self.onEntitiesChange().trigger(null, [self[ENTITIES]]);
+
+					return self[getAnnotations]();
+				})
 				.then(() => {
 					return api.getAnnotationJobs(videoId);
 				})
@@ -207,7 +259,7 @@ Object.assign(AnnotationManager.prototype, {
 				});
 		}
 	}),
-	onLoad: method.function(),
-	onChange: method.function(),
-	onEntitiesChange: method.function()
+	onLoad: method.queue(),
+	onChange: method.queue(),
+	onEntitiesChange: method.queue()
 });
