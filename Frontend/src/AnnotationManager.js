@@ -142,21 +142,25 @@ export default class AnnotationManager {
 		});
 	}
 
-	predict(annotation) {
+	predict(id) {
 		const self = this;
+		const annotation = self[getAnnotation](id);
 
-		api.addAnnotationJob(annotation.frame, annotation.frame + 60, annotation.resultId)
-			.then((jobId) => {
-				if (jobId) {
-					self[JOBS].push({
-						id: jobId,
-						status: 'new'
-					});
+		if (annotation) {
+			api.addAnnotationJob(annotation.frame, annotation.frame + 60, annotation.resultId)
+				.then((jobId) => {
+					if (jobId) {
+						self[JOBS].push({
+							id: jobId,
+							status: 'new'
+						});
 
-					self[checkJobs]();
-				}
-			});
+						self[checkJobs]();
+					}
+				});
+		}
 	}
+
 }
 
 Object.assign(AnnotationManager.prototype, {

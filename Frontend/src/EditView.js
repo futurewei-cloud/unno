@@ -227,26 +227,8 @@ export default class EditView extends SplitView {
 	[updateAnnotationDisplay]() {
 		const self = this;
 		const frameAnnotations = self[ANNOTATION_MANAGER].getAnnotationsForFrame(self[getCurrentFrame]());
-		const predictableAnnotations = frameAnnotations.filter((annotation) => annotation.jobId === null);
-
-		toast.clear();
 
 		self[VIDEO_PLAYER].get('annotator').value(frameAnnotations);
-
-		if (predictableAnnotations.length) {
-			toast.info({
-				title: 'Predict',
-				subTitle: 'Run the predictor for all boxes in this frame',
-				duration: null,
-				icon: '',
-				class: 'predict-button',
-				onClick() {
-					predictableAnnotations.forEach((annotation) => {
-						self[ANNOTATION_MANAGER].predict(annotation);
-					});
-				}
-			});
-		}
 	}
 
 	source(source) {
