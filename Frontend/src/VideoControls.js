@@ -71,7 +71,9 @@ export default class VideoControls extends SplitView {
 				control: Button,
 				icon: VOLUME_ICON,
 				classes: 'icon-button video-button',
-				onClick(button) {
+				onClick() {
+					const button = this;
+					
 					if (button.icon() === VOLUME_ICON) {
 						button.icon(MUTED_ICON);
 						self[VIDEO].muted(true);
