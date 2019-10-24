@@ -1,0 +1,21 @@
+.annotation-list-item {
+	background: fade(@fontColor, 5%);
+	transition: background 0.2s ease-out;
+	padding: 0 0.5rem 0 1rem;
+
+	.action-button {
+		float: right;
+	}
+
+	&:nth-of-type(even) {
+		background: fade(@fontColor, 10%);
+	}
+
+	&.highlight, &:hover {
+		background: fade(@highlightColor, 20%);
+
+		&:nth-of-type(even) {
+			background: fade(@highlightColor, 25%);
+		}
+	}
+}

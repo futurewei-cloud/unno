@@ -1,9 +1,10 @@
 import { clear, throttle } from 'async-agent';
-import { Div, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import { List } from 'hord';
 import moment from 'moment';
 import { pull } from 'object-agent';
 import { HUNDRED_PERCENT, method } from 'type-enforcer';
+import AnnotationListView from './AnnotationListView';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';
 import VideoControls from './VideoControls';
@@ -151,13 +152,15 @@ export default class EditView extends SplitView {
 					},
 					onChange(id, bounds) {
 						self[ANNOTATION_MANAGER].changeBounds(id, bounds);
-
 					},
-					onDeleteShape(resultId) {
-						self[ANNOTATION_MANAGER].delete(resultId);
+					onDeleteShape(id) {
+						self[ANNOTATION_MANAGER].delete(id);
 					},
 					onDeleteAllShapes() {
 						self[ANNOTATION_MANAGER].deleteAll();
+					},
+					onHighlight(id) {
+						self[VIDEO_PLAYER].get('annotationList').highlight(id);
 					}
 				}],
 				secondViewContent: {
@@ -169,12 +172,16 @@ export default class EditView extends SplitView {
 				}
 			},
 			secondViewContent: {
-				control: Div,
+				control: AnnotationListView,
 				id: 'annotationList',
 				width: HUNDRED_PERCENT,
 				height: HUNDRED_PERCENT,
 				padding: '0',
-				margin: '0'
+				margin: '0',
+				annotationManager: self[ANNOTATION_MANAGER],
+				onMouseEnter(id) {
+					self[VIDEO_PLAYER].get('annotator').highlight(id);
+				}
 			}
 		});
 
@@ -231,6 +238,7 @@ export default class EditView extends SplitView {
 		const frameAnnotations = self[ANNOTATION_MANAGER].getAnnotationsForFrame(self[getCurrentFrame]());
 
 		self[VIDEO_PLAYER].get('annotator').value(frameAnnotations);
+		self[VIDEO_PLAYER].get('annotationList').value(frameAnnotations);
 	}
 
 	source(source) {

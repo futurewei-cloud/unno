@@ -159,7 +159,7 @@ const api = {
 				entityId: idIn(annotation.entity_id),
 				frame: annotation.frame_num,
 				jobId: idIn(annotation.job_id),
-				resultId: idIn(annotation.annotation_id),
+				id: idIn(annotation.annotation_id),
 				status: annotation.status
 			};
 		}
@@ -185,13 +185,13 @@ const api = {
 	}),
 
 	patchAnnotation: callAjax({
-		call(videoId, resultId, bbox, entityId) {
+		call(videoId, id, bbox, entityId) {
 			return axios.patch(BASE_URL + ANNOTATIONS, {}, {
 				withCredentials: false,
 				params: {
 					username: username,
 					video_id: idOut(videoId),
-					annotation_id: idOut(resultId),
+					annotation_id: idOut(id),
 					entity_id: idOut(entityId),
 					bbox: bbox,
 					status: 'user'
@@ -268,11 +268,11 @@ const api = {
 	}),
 
 	addAnnotationJob: callAjax({
-		call(startFrame, endFrame, resultId) {
+		call(startFrame, endFrame, annotationId) {
 			return ajax.post(BASE_URL + ANNOTATION_JOBS, {
 				start_frame: startFrame,
 				end_frame: endFrame,
-				annotation_id: resultId
+				annotation_id: annotationId
 			}, {
 				withCredentials: false
 			});
@@ -356,6 +356,32 @@ const api = {
 		map(result) {
 			return idIn(result.entity_id);
 		}
+	}),
+
+	patchEntity: callAjax({
+		call(entity) {
+			return axios.patch(BASE_URL + ENTITY, {
+				entity_id: idOut(entity.id),
+				video_id: idOut(entity.videoId),
+				name: entity.name,
+				cat_id: idOut(entity.category)
+			}, {
+				withCredentials: false
+			});
+		},
+		errorTitle: 'Error patching entity'
+	}),
+
+	deleteEntity: callAjax({
+		call(id) {
+			return ajax.delete(BASE_URL + ENTITY, {
+				withCredentials: false,
+				params: {
+					entity_id: idOut(id)
+				}
+			});
+		},
+		errorTitle: 'Error deleting entity'
 	})
 
 };

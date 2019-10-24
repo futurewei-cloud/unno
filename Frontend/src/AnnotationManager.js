@@ -1,6 +1,7 @@
 import { throttle } from 'async-agent';
 import { softDelete } from 'hafgufa';
 import { Collection, compare } from 'hord';
+import { forOwn } from 'object-agent';
 import { applySettings, method, Point } from 'type-enforcer';
 import api from './api';
 
@@ -22,9 +23,11 @@ const ENTITIES = Symbol();
 const JOBS = Symbol();
 
 const getAnnotation = Symbol();
+const getEntity = Symbol();
 const checkJobs = Symbol();
 const getAnnotations = Symbol();
 const logEntitiesChange = Symbol();
+const cleanEntities = Symbol();
 
 export default class AnnotationManager {
 	constructor(settings) {
@@ -32,11 +35,15 @@ export default class AnnotationManager {
 
 		self[ANNOTATIONS] = new Collection()
 			.model({
-				resultId: {
+				id: {
 					type: String,
 					index: true
 				},
 				localId: {
+					type: String,
+					index: true
+				},
+				entityId: {
 					type: String,
 					index: true
 				},
@@ -73,7 +80,11 @@ export default class AnnotationManager {
 	}
 
 	[getAnnotation](id) {
-		return this[ANNOTATIONS].find({resultId: id}) || this[ANNOTATIONS].find({localId: id});
+		return this[ANNOTATIONS].find({id: id}) || this[ANNOTATIONS].find({localId: id});
+	}
+
+	[getEntity](id) {
+		return this[ENTITIES].find({id: id});
 	}
 
 	[logEntitiesChange]() {
@@ -81,6 +92,22 @@ export default class AnnotationManager {
 
 		self.onChange().trigger();
 		self.onEntitiesChange().trigger(null, [self[ENTITIES]]);
+	}
+
+	[cleanEntities]() {
+		const self = this;
+		const abandonedEntities = [];
+
+		self[ENTITIES].forEach((entity) => {
+			if (!self[ANNOTATIONS].find({entityId: entity.id})) {
+				abandonedEntities.push(entity.id);
+			}
+		});
+
+		abandonedEntities.forEach((id) => {
+			api.deleteEntity(id);
+			self[ENTITIES].splice(self[ENTITIES].indexOf({id: id}), 1);
+		});
 	}
 
 	add(frame, bounds, id) {
@@ -111,8 +138,8 @@ export default class AnnotationManager {
 
 					return api.addAnnotation(self.videoId(), frame, entityId, annotation.bbox);
 				})
-				.then((resultId) => {
-					annotation.resultId = resultId;
+				.then((id) => {
+					annotation.id = id;
 					self.onChange().trigger();
 				});
 		}
@@ -120,14 +147,43 @@ export default class AnnotationManager {
 
 	changeBounds(id, bounds) {
 		const self = this;
-		const annotation = self[getAnnotation](id);
+
+		self.updateAnnotation({
+			id: id,
+			bbox: bboxFromBounds(bounds),
+			jobId: null
+		});
+	}
+
+	updateAnnotation(updateObject) {
+		const self = this;
+		let annotation = self[getAnnotation](updateObject.id);
 
 		if (annotation) {
-			annotation.bbox = bboxFromBounds(bounds);
+			forOwn(updateObject, (value, key) => {
+				annotation[key] = value;
+			});
 
-			if (annotation.resultId) {
-				api.patchAnnotation(self.videoId(), annotation.resultId, annotation.bbox, annotation.entityId);
+			if (annotation.id) {
+				api.patchAnnotation(self.videoId(), annotation.id, annotation.bbox, annotation.entityId);
+
+				self.onUpdate().trigger(null, [annotation]);
+				self[cleanEntities]();
 			}
+		}
+	}
+
+	updateEntity(updateObject) {
+		const self = this;
+		let entity = self[getEntity](updateObject.id);
+
+		if (entity) {
+			forOwn(updateObject, (value, key) => {
+				entity[key] = value;
+			});
+
+			api.patchEntity(entity);
+			self.onEntitiesChange().trigger(null, [self[ENTITIES]]);
 		}
 	}
 
@@ -137,20 +193,20 @@ export default class AnnotationManager {
 			.map((annotation) => {
 				return {
 					...annotation,
-					id: annotation.resultId ? annotation.resultId.toString() : annotation.localId,
+					id: annotation.id || annotation.localId,
 					bounds: boundsFromBbox(annotation.bbox)
 				};
 			});
 	}
 
-	delete(resultId) {
+	delete(id) {
 		const self = this;
 
 		softDelete({
 			title: 'Annotation deleted',
-			value: self[ANNOTATIONS].find({resultId: resultId}),
+			value: self[ANNOTATIONS].find({id: id}),
 			onDo() {
-				self[ANNOTATIONS] = self[ANNOTATIONS].filter({resultId: {$ne: resultId}});
+				self[ANNOTATIONS] = self[ANNOTATIONS].filter({id: {$ne: id}});
 				self[logEntitiesChange]();
 			},
 			onUndo(value) {
@@ -158,7 +214,8 @@ export default class AnnotationManager {
 				self[logEntitiesChange]();
 			},
 			onCommit() {
-				api.deleteAnnotation(resultId);
+				api.deleteAnnotation(id);
+				self[cleanEntities]();
 			}
 		});
 	}
@@ -179,6 +236,7 @@ export default class AnnotationManager {
 			},
 			onCommit() {
 				api.deleteAnnotations(self.videoId());
+				self[cleanEntities]();
 			}
 		});
 	}
@@ -188,7 +246,7 @@ export default class AnnotationManager {
 		const annotation = self[getAnnotation](id);
 
 		if (annotation) {
-			api.addAnnotationJob(annotation.frame, annotation.frame + 60, annotation.resultId)
+			api.addAnnotationJob(annotation.frame, annotation.frame + 60, annotation.id)
 				.then((jobId) => {
 					if (jobId) {
 						self[JOBS].push({
@@ -200,6 +258,14 @@ export default class AnnotationManager {
 					}
 				});
 		}
+	}
+
+	categories() {
+		return this[CATEGORIES];
+	}
+
+	entities() {
+		return this[ENTITIES];
 	}
 }
 
@@ -240,6 +306,7 @@ Object.assign(AnnotationManager.prototype, {
 			api.getCategories()
 				.then((categories) => {
 					self[CATEGORIES] = categories.filter((category) => Boolean(category.name)).sort(compare('name'));
+					self.onCategoriesChange().trigger(null, [self[CATEGORIES]]);
 
 					return api.getEntities(videoId);
 				})
@@ -261,5 +328,7 @@ Object.assign(AnnotationManager.prototype, {
 	}),
 	onLoad: method.queue(),
 	onChange: method.queue(),
+	onUpdate: method.queue(),
+	onCategoriesChange: method.queue(),
 	onEntitiesChange: method.queue()
 });
