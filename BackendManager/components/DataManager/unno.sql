@@ -254,6 +254,7 @@ CREATE TABLE IF NOT EXISTS `video` (
 -- Constraints for table `annotation`
 --
 ALTER TABLE `annotation`
+  ADD CONSTRAINT `annotation_ibfk_3` FOREIGN KEY (`entity_id`) REFERENCES `entity` (`entity_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `annotation_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
   ADD CONSTRAINT `annotation_ibfk_2` FOREIGN KEY (`username`) REFERENCES `user` (`username`);
 
