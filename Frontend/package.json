@@ -19,6 +19,7 @@
 		"babel-loader": "^8.0.6",
 		"clean-webpack-plugin": "^3.0.0",
 		"copy-webpack-plugin": "^5.0.4",
+		"file-saver": "^2.0.2",
 		"hafgufa": "^0.9.8",
 		"hord": "^0.5.8",
 		"html-webpack-include-assets-plugin": "^2.0.0",

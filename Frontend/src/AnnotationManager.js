@@ -1,4 +1,5 @@
 import { throttle } from 'async-agent';
+import FileSaver from 'file-saver';
 import { softDelete } from 'hafgufa';
 import { Collection, compare } from 'hord';
 import { forOwn } from 'object-agent';
@@ -266,6 +267,41 @@ export default class AnnotationManager {
 
 	entities() {
 		return this[ENTITIES];
+	}
+
+	export(videoData) {
+		const self = this;
+
+		const blob = new Blob([JSON.stringify({
+			...videoData,
+			entities: self[ENTITIES].map((item) => {
+				return {
+					id: parseInt(item.id),
+					name: item.name,
+					category: parseInt(item.category)
+				};
+			}),
+			annotations: self[ANNOTATIONS].map((item) => {
+				return {
+					id: parseInt(item.id),
+					entityId: parseInt(item.entityId),
+					frame: item.frame,
+					bbox: item.bbox,
+					status: item.status
+				};
+			}),
+			categories: self[CATEGORIES].map((item) => {
+				return {
+					id: parseInt(item.id),
+					name: item.name,
+					parent: item.parent
+				};
+			})
+		})], {
+			encoding: 'UTF-8',
+			type: 'application/json;charset=UTF-8'
+		});
+		FileSaver.saveAs(blob, `${videoData.title}-unno-export.json`);
 	}
 }
 

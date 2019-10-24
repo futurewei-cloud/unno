@@ -1,9 +1,9 @@
 import { clear, throttle } from 'async-agent';
-import { Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { Button, HEIGHT, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import { List } from 'hord';
 import moment from 'moment';
 import { pull } from 'object-agent';
-import { HUNDRED_PERCENT, method } from 'type-enforcer';
+import { HUNDRED_PERCENT, method, PIXELS } from 'type-enforcer';
 import AnnotationListView from './AnnotationListView';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';
@@ -92,6 +92,8 @@ export default class EditView extends SplitView {
 				.height('100%')
 				.resize();
 		}
+
+		self[VIDEO_PLAYER].get('annotationList').css(HEIGHT, (self[VIDEO_PLAYER].borderHeight() - self[VIDEO_CONTROLS_HEIGHT]) + PIXELS);
 	}
 
 	[buildVideo](container) {
@@ -171,7 +173,7 @@ export default class EditView extends SplitView {
 					}
 				}
 			},
-			secondViewContent: {
+			secondViewContent: [{
 				control: AnnotationListView,
 				id: 'annotationList',
 				width: HUNDRED_PERCENT,
@@ -182,7 +184,23 @@ export default class EditView extends SplitView {
 				onMouseEnter(id) {
 					self[VIDEO_PLAYER].get('annotator').highlight(id);
 				}
-			}
+			}, {
+				control: Button,
+				label: 'Export Video Annotations',
+				icon: 'download',
+				margin: '0.5rem',
+				css: {
+					float: 'right'
+				},
+				onClick() {
+					self[ANNOTATION_MANAGER].export({
+						title: self.title(),
+						ext: self.ext(),
+						fps: self.fps(),
+						duration: self.duration()
+					});
+				}
+			}]
 		});
 
 		self[VIDEO] = self[VIDEO_PLAYER].get('mainVideo');

@@ -14,11 +14,6 @@ const supportedLanguages = {
 	Chinese: 'zh-ch'
 };
 
-const mimeTypes = {
-	'mp4': 'video/mp4',
-	'avi': 'video/x-msvideo'
-};
-
 class App {
 	constructor() {
 		const self = this;
