@@ -1,5 +1,5 @@
 import { defer } from 'async-agent';
-import { ADD_ICON, Group, VirtualList } from 'hafgufa';
+import { Group, VirtualList } from 'hafgufa';
 import { HUNDRED_PERCENT, method } from 'type-enforcer';
 import AnnotationListItem from './AnnotationListItem';
 import './AnnotationListView.less';
@@ -10,10 +10,6 @@ const ANNOTATION_MANAGER = Symbol();
 export default class AnnotationListView extends Group {
 	constructor(settings = {}) {
 		settings.title = 'Annotations';
-		settings.headingButtons = [{
-			icon: ADD_ICON,
-			label: 'Add'
-		}];
 
 		super(settings);
 
