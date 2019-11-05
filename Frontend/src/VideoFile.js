@@ -1,14 +1,4 @@
-import {
-	ContextMenuMixin,
-	Control,
-	DELETE_ICON,
-	Description,
-	EDIT_ICON,
-	Group,
-	locale,
-	OnClickMixin,
-	VIDEO_FILE_ICON
-} from 'hafgufa';
+import { ContextMenuMixin, Control, DELETE_ICON, Description, EDIT_ICON, Group, locale, OnClickMixin, VIDEO_FILE_ICON } from 'hafgufa';
 import moment from 'moment';
 import { applySettings, method } from 'type-enforcer';
 import './VideoFile.less';
@@ -64,28 +54,28 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 				singleLine: true,
 				id: LENGTH,
 				title: locale.get('videoLength') + ':',
-				width: '60%',
-				value: '-'
-			}, {
-				control: Description,
-				singleLine: true,
-				id: EXTENSION,
-				title: locale.get('videoExtension') + ':',
-				width: '39%',
-				value: '-'
-			}, {
-				control: Description,
-				singleLine: true,
-				id: ANNOTATIONS,
-				title: locale.get('entities') + ':',
-				width: '60%',
+				width: '72%',
 				value: '-'
 			}, {
 				control: Description,
 				singleLine: true,
 				id: FPS,
 				title: locale.get('fps') + ':',
-				width: '39%',
+				width: '27%',
+				value: '-'
+			}, {
+				control: Description,
+				singleLine: true,
+				id: ANNOTATIONS,
+				title: locale.get('entities') + ':',
+				width: '62%',
+				value: '-'
+			}, {
+				control: Description,
+				singleLine: true,
+				id: EXTENSION,
+				title: locale.get('videoExtension') + ':',
+				width: '37%',
 				value: '-'
 			}]);
 
@@ -104,7 +94,7 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 		const description = this[GROUP].get(LENGTH);
 
 		if (description) {
-			description.value(moment.utc(length).format('HH:mm:ss'));
+			description.value(moment.utc(length).format('HH:mm:ss.SSS'));
 		}
 	}
 

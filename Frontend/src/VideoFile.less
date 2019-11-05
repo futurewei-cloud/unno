@@ -13,11 +13,21 @@
 		background: top/100% 50% no-repeat linear-gradient(135deg, transparent 0.6rem, @groupBorderColor 0.6rem, @groupBorderColor 0.65rem, @groupBackgroundHoverColor 0.65rem), bottom/100% 50% no-repeat linear-gradient(315deg, transparent 0.6rem, @groupBorderColor 0.6rem, @groupBorderColor 0.65rem, @groupBackgroundHoverColor 0.65rem), radial-gradient(at top center, fade(@reflectionColor, 10%), fade(@reflectionColor, 4%) 30%, fade(@reflectionColor, 0%) 65%)
 	}
 
-	.description {
+	.description.single-line {
 		margin: 0 0 0.2rem;
 
 		.title-container {
 			color: @secondaryFontColor;
+		}
+
+		.heading {
+			div {
+				padding: 0 0.2rem;
+			}
+		}
+
+		> div {
+			padding: 0;
 		}
 	}
 
@@ -26,8 +36,8 @@
 			background: fade(@secondaryFontColor, 30%);
 			border-radius: 0.25rem;
 			color: @backgroundColor;
-			padding-bottom: 0.1rem;
 			margin-bottom: -0.1rem;
+			padding: 0 0.3rem 0.1rem;
 		}
 	}
 
