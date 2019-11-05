@@ -4,15 +4,25 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const ThemesPlugin = require('less-themes-webpack-plugin');
 const WebpackMildCompile = require('webpack-mild-compile').Plugin;
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
+	mode: 'production',
 	entry: './src/app.js',
-	devServer: {port: '8083'},
+	devServer: {
+		port: '8083',
+		stats: 'errors-only'
+	},
+	stats: 'errors-only',
 	output: {
 		path: path.resolve(__dirname, '../BackendManager/FrontendProd'),
 		filename: 'app.js'
 	},
 	plugins: [
+		new webpack.IgnorePlugin({
+			resourceRegExp: /^\.\/locale$/,
+			contextRegExp: /moment$/
+		}),
 		new CleanWebpackPlugin(),
 		new HtmlWebpackPlugin({
 			title: 'Unno'
@@ -52,8 +62,5 @@ module.exports = {
 				loader: 'babel-loader'
 			}
 		}]
-	},
-	stats: {
-		colors: true
 	}
 };
