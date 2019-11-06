@@ -1,9 +1,9 @@
 import { clear, throttle } from 'async-agent';
-import { Button, HEIGHT, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { Button, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import { List } from 'hord';
 import moment from 'moment';
 import { pull } from 'object-agent';
-import { HUNDRED_PERCENT, method, PIXELS } from 'type-enforcer';
+import { HUNDRED_PERCENT, method } from 'type-enforcer';
 import AnnotationListView from './AnnotationListView';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';
@@ -92,8 +92,6 @@ export default class EditView extends SplitView {
 				.height('100%')
 				.resize();
 		}
-
-		self[VIDEO_PLAYER].get('annotationList').css(HEIGHT, (self[VIDEO_PLAYER].borderHeight() - self[VIDEO_CONTROLS_HEIGHT]) + PIXELS);
 	}
 
 	[buildVideo](container) {
@@ -173,34 +171,42 @@ export default class EditView extends SplitView {
 					}
 				}
 			},
-			secondViewContent: [{
-				control: AnnotationListView,
-				id: 'annotationList',
-				width: HUNDRED_PERCENT,
-				height: HUNDRED_PERCENT,
-				padding: '0',
-				margin: '0',
-				annotationManager: self[ANNOTATION_MANAGER],
-				onMouseEnter(id) {
-					self[VIDEO_PLAYER].get('annotator').highlight(id);
-				}
-			}, {
-				control: Button,
-				label: 'Export Video Annotations',
-				icon: 'download',
-				margin: '0.5rem',
-				css: {
-					float: 'right'
+			secondViewContent: {
+				control: SplitView,
+				id: 'videoWrapper',
+				classes: 'video-wrapper',
+				orientation: SplitView.ORIENTATION.ROWS,
+				splitOffset: '-3rem',
+				firstViewContent: {
+					control: AnnotationListView,
+					id: 'annotationList',
+					width: HUNDRED_PERCENT,
+					height: HUNDRED_PERCENT,
+					padding: '0',
+					margin: '0',
+					annotationManager: self[ANNOTATION_MANAGER],
+					onMouseEnter(id) {
+						self[VIDEO_PLAYER].get('annotator').highlight(id);
+					}
 				},
-				onClick() {
-					self[ANNOTATION_MANAGER].export({
-						title: self.title(),
-						ext: self.ext(),
-						fps: self.fps(),
-						duration: self.duration()
-					});
+				secondViewContent: {
+					control: Button,
+					label: 'Export Video Annotations',
+					icon: 'download',
+					margin: '0.5rem',
+					css: {
+						float: 'right'
+					},
+					onClick() {
+						self[ANNOTATION_MANAGER].export({
+							title: self.title(),
+							ext: self.ext(),
+							fps: self.fps(),
+							duration: self.duration()
+						});
+					}
 				}
-			}]
+			}
 		});
 
 		self[VIDEO] = self[VIDEO_PLAYER].get('mainVideo');
