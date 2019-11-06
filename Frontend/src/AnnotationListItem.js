@@ -15,7 +15,6 @@ const updateCategories = Symbol();
 const updateEntities = Symbol();
 const setEntityOptions = Symbol();
 
-// TODO: add contextMenu with delete options
 export default class AnnotationListItem extends ContextMenuMixin(Control) {
 	constructor(settings = {}) {
 		super(settings);
@@ -37,7 +36,7 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 				title: 'Delete',
 				icon: DELETE_ICON,
 				onSelect() {
-					self.onDelete()(this.id());
+					self.onDelete()(self.id());
 				}
 			}]);
 

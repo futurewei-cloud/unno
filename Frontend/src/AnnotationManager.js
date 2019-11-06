@@ -207,7 +207,7 @@ export default class AnnotationManager {
 			title: 'Annotation deleted',
 			value: self[ANNOTATIONS].find({id: id}),
 			onDo() {
-				self[ANNOTATIONS] = self[ANNOTATIONS].filter({id: {$ne: id}});
+				self[ANNOTATIONS] = self[ANNOTATIONS].filter((item) => item.id !== id);
 				self[logEntitiesChange]();
 			},
 			onUndo(value) {
