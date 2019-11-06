@@ -3,12 +3,9 @@ import { applySettings, method } from 'type-enforcer';
 import api from './api';
 import VideoFile from './VideoFile';
 
-const DATA = Symbol();
-const CURRENT_VIDEO = Symbol();
-
 const updateVideoView = Symbol();
-const loadVideos = Symbol();
 const uploadVideo = Symbol();
+const selectCurrentVideo = Symbol();
 
 export default class MainMenu extends SplitView {
 	constructor(settings) {
@@ -36,14 +33,11 @@ export default class MainMenu extends SplitView {
 
 		const self = this;
 		self.isWorking(true);
-		self[DATA] = [];
-		self[loadVideos]();
 
-		applySettings(self, settings);
+		applySettings(self, settings, [], ['data']);
 
 		api.onChange(() => {
 			self.isWorking(true);
-			self[loadVideos]();
 		});
 
 		self.resize();
@@ -55,27 +49,27 @@ export default class MainMenu extends SplitView {
 		filePicker.isWorking(true);
 
 		api.uploadVideo(data, (progressEvent) => {
-			if (progressEvent.loaded < progressEvent.total) {
-				filePicker.subTitle(Math.round((progressEvent.loaded / progressEvent.total) * 100) + '%');
-			}
-			else {
-				filePicker.subTitle(locale.get('processing'));
-			}
-		})
+				if (progressEvent.loaded < progressEvent.total) {
+					filePicker.subTitle(Math.round((progressEvent.loaded / progressEvent.total) * 100) + '%');
+				}
+				else {
+					filePicker.subTitle(locale.get('processing'));
+				}
+			})
 			.then(() => {
 				filePicker.value([]).subTitle('').isWorking(false);
 				self.isWorking(true);
-				self[loadVideos]();
+				self.onUploadComplete()();
 			});
 	}
 
-	[updateVideoView]() {
+	[updateVideoView](data) {
 		const self = this;
 
-		self.firstView().content(self[DATA].map((video) => {
+		self.firstView().content(data.map((video) => {
 			return {
 				control: VideoFile,
-				id: video.id.toString(),
+				id: video.id,
 				title: video.name,
 				ext: video.ext,
 				length: video.duration,
@@ -86,40 +80,50 @@ export default class MainMenu extends SplitView {
 						control.removeClass('selected');
 					});
 
-					self.onSelect()(video, this);
+					self.onSelect()(this);
 					this.classes('selected', true);
-					self[CURRENT_VIDEO] = video.id;
 				},
 				onDelete() {
 					self.isWorking(true);
-					api.deleteVideo(video.id)
+					api.deleteVideo(this.id())
 						.then(() => {
-							self.onDelete()(video);
+							self.onDelete()(this);
 						});
 				}
 			};
 		}));
 	}
 
-	[loadVideos]() {
+	[selectCurrentVideo]() {
 		const self = this;
 
-		self[updateVideoView]();
+		if (self.currentVideo() && self.data().length) {
+			const videoFile = self.get(self.currentVideo());
 
-		return api.getVideos()
-			.then((videos) => {
-				self.isWorking(false);
-				self[DATA] = videos;
-				self[updateVideoView]();
-
-				if (self[DATA].length) {
-					self.get(self[CURRENT_VIDEO] || self[DATA][0].id.toString()).click();
-				}
-			});
+			if (videoFile) {
+				videoFile.click();
+			}
+		}
 	}
 }
 
 Object.assign(MainMenu.prototype, {
+	data: method.array({
+		init: [],
+		set(data) {
+			const self = this;
+
+			self.isWorking(false);
+			self[updateVideoView](data);
+			self[selectCurrentVideo]();
+		}
+	}),
+	currentVideo: method.string({
+		set() {
+			this[selectCurrentVideo]();
+		}
+	}),
+	onUploadComplete: method.function(),
 	onSelect: method.function(),
 	onDelete: method.function()
 });

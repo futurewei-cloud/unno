@@ -298,7 +298,7 @@ Object.assign(EditView.prototype, {
 		set(videoId) {
 			const self = this;
 
-			if (videoId !== -1) {
+			if (videoId) {
 				self[TIMELINE].isWorking(true);
 				self[ANNOTATION_MANAGER].videoId(videoId);
 			}

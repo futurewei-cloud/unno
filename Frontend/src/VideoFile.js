@@ -1,3 +1,4 @@
+import { debounce } from 'async-agent';
 import { ContextMenuMixin, Control, DELETE_ICON, Description, EDIT_ICON, Group, locale, OnClickMixin, VIDEO_FILE_ICON } from 'hafgufa';
 import moment from 'moment';
 import { applySettings, method } from 'type-enforcer';
@@ -22,6 +23,11 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 		const self = this;
 		self.addClass('video-file');
 		self[GROUP] = group;
+
+		const debouncedDelete = debounce(() => {
+			self.onDelete()();
+		}, 100);
+
 		self
 			.width('100%')
 			.onClick(() => self.onSelect()())
@@ -37,89 +43,94 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 				title: 'Delete',
 				icon: DELETE_ICON,
 				onSelect() {
-					self.onDelete()();
+					debouncedDelete();
 				}
 			}])
 			.isWorking(true);
 
 		applySettings(self, settings, ['title']);
 	}
-
-	title(title) {
-		this[GROUP]
-			.headingIcon(VIDEO_FILE_ICON)
-			.title(title)
-			.content([{
-				control: Description,
-				singleLine: true,
-				id: LENGTH,
-				title: locale.get('videoLength') + ':',
-				width: '72%',
-				value: '-'
-			}, {
-				control: Description,
-				singleLine: true,
-				id: FPS,
-				title: locale.get('fps') + ':',
-				width: '27%',
-				value: '-'
-			}, {
-				control: Description,
-				singleLine: true,
-				id: ANNOTATIONS,
-				title: locale.get('entities') + ':',
-				width: '62%',
-				value: '-'
-			}, {
-				control: Description,
-				singleLine: true,
-				id: EXTENSION,
-				title: locale.get('videoExtension') + ':',
-				width: '37%',
-				value: '-'
-			}]);
-
-		this.isWorking(false);
-	}
-
-	ext(ext) {
-		const description = this[GROUP].get(EXTENSION);
-
-		if (description) {
-			description.value(ext);
-		}
-	}
-
-	length(length) {
-		const description = this[GROUP].get(LENGTH);
-
-		if (description) {
-			description.value(moment.utc(length).format('HH:mm:ss.SSS'));
-		}
-	}
-
-	entities(entities) {
-		const description = this[GROUP].get(ANNOTATIONS);
-
-		if (description) {
-			description.value(entities + '');
-		}
-	}
-
-	fps(fps) {
-		const description = this[GROUP].get(FPS);
-
-		if (description) {
-			description.value(fps + '');
-		}
-	}
-
+	
 	isWorking(isWorking) {
 		return this[GROUP].isWorking(isWorking);
 	}
 }
 
 Object.assign(VideoFile.prototype, {
+	title: method.string({
+		set(title) {
+			this[GROUP]
+				.headingIcon(VIDEO_FILE_ICON)
+				.title(title)
+				.content([{
+					control: Description,
+					singleLine: true,
+					id: LENGTH,
+					title: locale.get('videoLength') + ':',
+					width: '72%',
+					value: '-'
+				}, {
+					control: Description,
+					singleLine: true,
+					id: FPS,
+					title: locale.get('fps') + ':',
+					width: '27%',
+					value: '-'
+				}, {
+					control: Description,
+					singleLine: true,
+					id: ANNOTATIONS,
+					title: locale.get('entities') + ':',
+					width: '62%',
+					value: '-'
+				}, {
+					control: Description,
+					singleLine: true,
+					id: EXTENSION,
+					title: locale.get('videoExtension') + ':',
+					width: '37%',
+					value: '-'
+				}]);
+
+			this.isWorking(false);
+		}
+	}),
+	ext: method.string({
+		set(ext) {
+			const description = this[GROUP].get(EXTENSION);
+
+			if (description) {
+				description.value(ext);
+			}
+		}
+	}),
+	length: method.integer({
+		set(length) {
+			const description = this[GROUP].get(LENGTH);
+
+			if (description) {
+				description.value(moment.utc(length).format('HH:mm:ss.SSS'));
+			}
+		}
+	}),
+	entities: method.integer({
+		set(entities) {
+			const description = this[GROUP].get(ANNOTATIONS);
+
+			if (description) {
+				description.value(entities + '');
+			}
+		}
+	}),
+	fps: method.integer({
+		set(fps) {
+			const description = this[GROUP].get(FPS);
+
+			if (description) {
+				description.value(fps + '');
+			}
+		}
+	}),
 	onSelect: method.function(),
 	onDelete: method.function()
 });
