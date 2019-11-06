@@ -47,10 +47,12 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 			title: 'Entity',
 			canUnselect: false,
 			onChange(value) {
-				self[ANNOTATION_MANAGER].updateAnnotation({
-					id: self.id(),
-					entityId: value[0].id
-				});
+				if (value[0].id !== self.entity()) {
+					self[ANNOTATION_MANAGER].updateAnnotation({
+						id: self.id(),
+						entityId: value[0].id
+					});
+				}
 			},
 			onEdit(item) {
 				let name = item.title;
