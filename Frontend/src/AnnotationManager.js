@@ -255,10 +255,21 @@ export default class AnnotationManager {
 							status: 'new'
 						});
 
+						annotation.jobId = jobId;
+						self.onUpdate().trigger(null, [annotation]);
+						self.onJobChange().trigger(null, [jobId, 'new']);
+
 						self[checkJobs]();
 					}
 				});
 		}
+	}
+
+	jobStatus(jobId) {
+		const self = this;
+		const job = self[JOBS].find((job) => job.id === jobId);
+
+		return job ? job.status : '';
 	}
 
 	categories() {
@@ -316,6 +327,7 @@ Object.assign(AnnotationManager.prototype, {
 
 					if (results.status !== job.status) {
 						job.status = results.status;
+						self.onJobChange().trigger(null, [job.id, job.status]);
 					}
 
 					if (results.status === 'done') {
@@ -366,5 +378,6 @@ Object.assign(AnnotationManager.prototype, {
 	onChange: method.queue(),
 	onUpdate: method.queue(),
 	onCategoriesChange: method.queue(),
-	onEntitiesChange: method.queue()
+	onEntitiesChange: method.queue(),
+	onJobChange: method.queue()
 });

@@ -38,7 +38,7 @@ export default class AnnotationListView extends Group {
 			},
 			onItemRender(control, data) {
 				control.id(data.id)
-					.isPredictable(data.jobId === null)
+					.jobId(data.jobId)
 					.entity(data.entityId);
 
 				defer(() => control.resize(true));

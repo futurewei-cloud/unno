@@ -14,6 +14,7 @@ const PREDICT_BUTTON = Symbol();
 const updateCategories = Symbol();
 const updateEntities = Symbol();
 const setEntityOptions = Symbol();
+const updatePredictButton = Symbol();
 
 export default class AnnotationListItem extends ContextMenuMixin(Control) {
 	constructor(settings = {}) {
@@ -116,7 +117,7 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 			classes: 'action-button',
 			isVisible: false,
 			onClick() {
-				this.isVisible(false);
+				this.isEnabled(false);
 				self[ANNOTATION_MANAGER].predict(self.id());
 			}
 		});
@@ -132,7 +133,12 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 			})
 			.onUpdate((annotation) => {
 				if (annotation.id === self.id()) {
-					self.isPredictable(annotation.jobId === null);
+					self.jobId(annotation.jobId);
+				}
+			})
+			.onJobChange((jobId, status) => {
+				if (jobId === self.jobId()) {
+					this[updatePredictButton](status);
 				}
 			});
 
@@ -175,12 +181,30 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 
 	[setEntityOptions]() {
 		const self = this;
-		const isPredictable = self.isPredictable();
+		const isPredictable = self.jobId() === null;
 		let currentEntityId = self.entity();
 
 		self[ENTITY_PICKER].options(self[ENTITY_OPTIONS].filter((option) => {
 			return isPredictable || option.id === currentEntityId;
 		}));
+	}
+
+	[updatePredictButton](status) {
+		const self = this;
+
+		if (status === undefined) {
+			status = self[ANNOTATION_MANAGER].jobStatus(self.id());
+		}
+		if (status === 'done') {
+			status = null;
+		}
+
+		self[PREDICT_BUTTON]
+			.isVisible(self.jobId() === null || !!status)
+			.isEnabled(!status)
+			.label(status ? 'Predicting...' : 'Predict');
+
+		self[setEntityOptions]();
 	}
 }
 
@@ -202,12 +226,13 @@ Object.assign(AnnotationListItem.prototype, {
 			self[CATEGORY_PICKER].value(category);
 
 			self[setEntityOptions]();
+			self[updatePredictButton]();
 		}
 	}),
-	isPredictable: method.boolean({
-		set(isPredictable) {
-			this[PREDICT_BUTTON].isVisible(isPredictable);
-			this[setEntityOptions]();
+	jobId: method.string({
+		other: null,
+		set() {
+			this[updatePredictButton]();
 		}
 	}),
 	onMouseEnter: method.function(),
