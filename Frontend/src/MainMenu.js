@@ -1,5 +1,5 @@
 import { FilePicker, locale, SplitView } from 'hafgufa';
-import { applySettings, method } from 'type-enforcer';
+import { applySettings, method } from 'type-enforcer-ui';
 import api from './api';
 import VideoFile from './VideoFile';
 

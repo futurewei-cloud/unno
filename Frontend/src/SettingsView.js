@@ -1,11 +1,11 @@
 import { Div, GroupedButtons, locale, Section, theme } from 'hafgufa';
 import { forOwnReduce } from 'object-agent';
-import { HUNDRED_PERCENT } from 'type-enforcer';
+import { HUNDRED_PERCENT } from 'type-enforcer-ui';
 
 export default class SettingsView extends Div {
 	constructor(settings = {}) {
 		super(settings);
-		
+
 		const languageOptions = forOwnReduce(locale.languages(), (result, abbr, lang) => {
 			result.push({
 				label: locale.get(lang.toLowerCase()),

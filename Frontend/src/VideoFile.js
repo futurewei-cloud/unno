@@ -1,7 +1,7 @@
 import { debounce } from 'async-agent';
 import { ContextMenuMixin, Control, DELETE_ICON, Description, EDIT_ICON, Group, locale, OnClickMixin, VIDEO_FILE_ICON } from 'hafgufa';
 import moment from 'moment';
-import { applySettings, method } from 'type-enforcer';
+import { applySettings, method } from 'type-enforcer-ui';
 import './VideoFile.less';
 
 const EXTENSION = 'extensionId';
@@ -50,7 +50,7 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 
 		applySettings(self, settings, ['title']);
 	}
-	
+
 	isWorking(isWorking) {
 		return this[GROUP].isWorking(isWorking);
 	}

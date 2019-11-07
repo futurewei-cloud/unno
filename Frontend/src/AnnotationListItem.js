@@ -1,7 +1,16 @@
-import { Button, ContextMenuMixin, Control, DELETE_ICON, MOUSE_ENTER_EVENT, MOUSE_LEAVE_EVENT, Picker, TextInput } from 'hafgufa';
-import Dialog from 'hafgufa/src/ui/layout/Dialog';
-import locale from 'hafgufa/src/utility/locale';
-import { applySettings, AUTO, method } from 'type-enforcer';
+import {
+	Button,
+	ContextMenuMixin,
+	Control,
+	DELETE_ICON,
+	Dialog,
+	locale,
+	MOUSE_ENTER_EVENT,
+	MOUSE_LEAVE_EVENT,
+	Picker,
+	TextInput
+} from 'hafgufa';
+import { applySettings, AUTO, method } from 'type-enforcer-ui';
 import './AnnotationListItem.less';
 
 const ANNOTATION_MANAGER = Symbol();

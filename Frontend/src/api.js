@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ajax, toast } from 'hafgufa';
 import { clone } from 'object-agent';
-import { isArray, method } from 'type-enforcer';
+import { isArray, method } from 'type-enforcer-ui';
 
 let username = 'abcd';
 const BASE_URL = 'http://10.145.83.34:5011/api/v1';

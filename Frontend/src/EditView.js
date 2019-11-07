@@ -3,7 +3,7 @@ import { Button, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 
 import { List } from 'hord';
 import moment from 'moment';
 import { pull } from 'object-agent';
-import { HUNDRED_PERCENT, method } from 'type-enforcer';
+import { HUNDRED_PERCENT, method } from 'type-enforcer-ui';
 import AnnotationListView from './AnnotationListView';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';

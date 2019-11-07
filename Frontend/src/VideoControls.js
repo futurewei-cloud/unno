@@ -1,5 +1,5 @@
 import { Button, Slider, SplitView, TextInput } from 'hafgufa';
-import { method } from 'type-enforcer';
+import { method } from 'type-enforcer-ui';
 import { MUTED_ICON, PAUSE_ICON, PLAY_ICON, STEP_BACK_ICON, STEP_FORWARD_ICON, VOLUME_ICON } from './icons';
 import './VideoControls.less';
 
@@ -73,7 +73,7 @@ export default class VideoControls extends SplitView {
 				classes: 'icon-button video-button',
 				onClick() {
 					const button = this;
-					
+
 					if (button.icon() === VOLUME_ICON) {
 						button.icon(MUTED_ICON);
 						self[VIDEO].muted(true);

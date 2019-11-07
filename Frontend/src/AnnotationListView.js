@@ -1,6 +1,6 @@
 import { defer } from 'async-agent';
 import { Group, VirtualList } from 'hafgufa';
-import { HUNDRED_PERCENT, method } from 'type-enforcer';
+import { HUNDRED_PERCENT, method } from 'type-enforcer-ui';
 import AnnotationListItem from './AnnotationListItem';
 import './AnnotationListView.less';
 

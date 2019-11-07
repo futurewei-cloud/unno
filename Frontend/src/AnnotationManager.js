@@ -3,7 +3,7 @@ import FileSaver from 'file-saver';
 import { softDelete } from 'hafgufa';
 import { Collection, compare } from 'hord';
 import { forOwn } from 'object-agent';
-import { applySettings, method, Point } from 'type-enforcer';
+import { applySettings, method, Point } from 'type-enforcer-math';
 import api from './api';
 
 const JOB_CHECK_DELAY = 2000;

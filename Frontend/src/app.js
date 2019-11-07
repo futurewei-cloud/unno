@@ -1,6 +1,6 @@
 import { defer } from 'async-agent';
 import { Container, DrawerMenu, Header, Heading, HEADING_LEVELS, Label, locale, theme } from 'hafgufa';
-import { AUTO, HUNDRED_PERCENT } from 'type-enforcer';
+import { AUTO, HUNDRED_PERCENT } from 'type-enforcer-ui';
 import api from './api';
 import './app.less';
 import EditView from './EditView';

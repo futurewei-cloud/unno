@@ -36,7 +36,7 @@ module.exports = {
 			to: ''
 		}]),
 		new ThemesPlugin({
-			themesPath: './node_modules/hafgufa/src/ui/themes/hud_01',
+			themesPath: './node_modules/hafgufa/src/themes/hud_01',
 			themes: {
 				'hud_01': {
 					include: ['light'],
