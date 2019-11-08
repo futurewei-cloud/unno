@@ -4,7 +4,9 @@
 	"description": "",
 	"main": "index.html",
 	"scripts": {
-		"build": "webpack --config webpack.config.js",
+		"clean": "rm -rf node_modules",
+		"reinstall": "npm run clean && npm install",
+		"build": "npm run reinstall && webpack --config webpack.config.js",
 		"start": "webpack-dev-server --config webpack.dev.js --open",
 		"start-prod": "webpack-dev-server --config webpack.config.js"
 	},
@@ -20,7 +22,7 @@
 		"clean-webpack-plugin": "^3.0.0",
 		"copy-webpack-plugin": "^5.0.5",
 		"file-saver": "^2.0.2",
-		"hafgufa": "^0.10.2",
+		"hafgufa": "^0.10.3",
 		"hord": "^0.5.8",
 		"html-webpack-include-assets-plugin": "^2.0.0",
 		"html-webpack-plugin": "^3.2.0",
