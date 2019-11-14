@@ -46,3 +46,18 @@ your own AI capability as you need).
 * Launch the [job manager service](BackendManager/components/JobQueueManager/README.md) to handle all AI prediction requests.
 * Build and publish the UX frontend with a web server with the [detailed instructions](Frontend/README.md)
 * Open a web browser and hit your UX host. Enjoy data annotating!
+
+## Future plans
+Unno will be kept evovling with more advanced functionalities and better user experiences.
+Things are in the roadmap to explore:
+* Functionality
+    * support arbitray polygon annotations
+    * support label the entire frame
+    * support object category suggestions
+    * support automatic scene boundary detection
+    * chain up multiple AI models' capability for advanced features
+* Experience
+    * support customized duration to predict
+    * export annotations for all videos
+    * support annotation timeline for better data visualization
+    * support multiple user accounts and collabration
