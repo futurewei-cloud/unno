@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -x
 
-PORT=5012
+PORT=8899
 
 sudo docker build -t unno_tracking .
 
