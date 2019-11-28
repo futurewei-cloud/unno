@@ -39,13 +39,13 @@ Customized AI capability can be instantiated as specific AI Functionality module
 ## Get Started
 To run the system, both backend and frontend modules should be started. 
 1. Follow [database service instructions](BackendManager) to set up fundamental data infrastructure
-1. Then start the [data manager service](BackendManager/components/DataManager)
-1. Start each of the AI Functionality modules:
-  * [tracking module](BackendFunctionalModule/tracking)
-  * you can add your own AI capability as you need, following tracking module
-1. Launch the [job manager service](BackendManager/components/JobQueueManager/README.md) to handle all AI prediction requests.
-1. Build and publish the UX frontend with a web server with the [detailed instructions](Frontend)
-1. Open a web browser and hit your UX host. Enjoy data annotating!
+2. Then start the [data manager service](BackendManager/components/DataManager)
+3. Start each of the AI Functionality modules:
+    * [tracking module](BackendFunctionalModule/tracking)
+    * you can add your own AI capability as you need, following tracking module
+4. Launch the [job manager service](BackendManager/components/JobQueueManager/README.md) to handle all AI prediction requests.
+5. Build and publish the UX frontend with a web server with the [detailed instructions](Frontend)
+6. Open a web browser and hit your UX host. Enjoy data annotating!
 
 ## Future Plans
 Unno will be kept evovling with more advanced functionalities and better user experiences.
