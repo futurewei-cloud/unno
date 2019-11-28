@@ -1,0 +1,12 @@
+version: '2'
+services:
+    demo:
+        environment:
+            CUDA_VISIBLE_DEVICES: 0
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        volumes:
+            - ./data:/data/
+        ports:
+        - "8081:5000"

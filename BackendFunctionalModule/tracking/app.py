@@ -23,7 +23,7 @@ tracker = SOTTracker(config_file, model_file)
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return "Hello from Tracking Module!"
 
 
 @app.route('/mirror', methods=['POST'])

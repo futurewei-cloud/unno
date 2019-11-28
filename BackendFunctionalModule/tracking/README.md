@@ -5,22 +5,13 @@ With given image and corresponding target location, tracking results upon an
 image set will be generated automatically and passed to a specified storage
 endpoint for data persistence.
 
-# Get started
+# Getting Started
 All dependencies are built into a Docker environment.  Build and run the docker
 image to start the service.  NOTE: model files should be downloaded and saved
 to `model` folder, models currently used are
 [here](https://github.com/STVIR/pysot/blob/master/MODEL_ZOO.md)
 ```
-# build docker image
-$ docker build -t unno_tracking .
-
-# run service in docker
-
-# for docker version > 19
-$ docker run --gpus '"device=GPU_ID"' --ipc="host" -d -p 5011:8899 -v data:/data/ unno_tracking
-
-# for older docker
-$ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --ipc="host" -d -p 5011:8899 -v data:/data/ unno_tracking
+$ bash run.sh
 ```
 
 # API Documentation
