@@ -28,37 +28,53 @@ def index():
 
 @app.route('/mirror', methods=['POST'])
 def mirror():
-    '''
-    simple returns what sent in request,
-    for testing piurpose
-    :return: request.json
-    '''
+    """ simple returns what sent in request for testing.
 
+    :return: request.json
+    """
     return jsonify(request.json), 200
 
 
 @app.route('/tracking/api/sot', methods=['POST'])
 def sot_tracking():
-    '''
+    """ the core API for tracking
+
     input query json format:
-    {'job_id':int, 'video_id':int, 'entity_id':int, 'bbox':'0.645833333333,0.388888888889,0.25,0.333333333333',
-     'start_frame':int, 'end_frame':int, 'result_api':END_POINT}
+    {
+        'job_id': int, 
+        'video_id': int, 
+        'entity_id': int, 
+        'bbox': '0.645833333333,0.388888888889,0.25,0.333333333333',
+        'start_frame': int, 
+        'end_frame': int, 
+        'result_api': END_POINT
+    }
     note: img_file should be relative path to data_root
+
     :return: tracking results in single json blob with format of
-    {'job_id': int, 'video_id': int, 'entity_id': int, 'tracking_results': {'frame_id':'0.645833333333,0.388888888889,0.25,0.333333333333',...}},
+    {
+        'job_id': int, 
+        'video_id': int, 
+        'entity_id': int, 
+        'tracking_results': 
+        {
+            'frame_id': '0.645833333333, 0.388888888889, 0.25, 0.333333333333',...
+        }
+    },
     and POST the results to result endpoint for saving.
-    '''
+    """
 
     try:
         # parse query info
         video_id = request.json['video_id']
         save_result_api = request.json['result_api']
 
-        data_path = osp.join(data_root, 'video-'+str(video_id))
-        init_img = osp.join(data_path, 'frame'+str(request.json['start_frame'])+'.jpg')
+        data_path = osp.join(data_root, 'video-' + str(video_id))
+        init_img = osp.join(data_path, 'frame' + str(request.json['start_frame']) +'.jpg')
         init_bbox = [float(_) for _ in request.json['bbox'].split(',')]
-        imglist_to_track = [osp.join(data_path, 'frame'+str(_)+'.jpg') for _ in
-                            range(request.json['start_frame']+1, request.json['end_frame'])]
+        imglist_to_track = [osp.join(data_path, 'frame' + str(_) + '.jpg') 
+                            for _ in range(request.json['start_frame'] + 1, 
+                                request.json['end_frame'])]
     except KeyError:
         abort(400)
 

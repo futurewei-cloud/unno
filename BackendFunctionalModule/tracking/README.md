@@ -17,10 +17,10 @@ $ docker build -t unno_tracking .
 # run service in docker
 
 # for docker version > 19
-$ docker run --gpus '"device=GPU_ID"' --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ unno_tracking
+$ docker run --gpus '"device=GPU_ID"' --ipc="host" -d -p 5011:8899 -v data:/data/ unno_tracking
 
 # for older docker
-$ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=GPU_ID --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ unno_tracking
+$ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --ipc="host" -d -p 5011:8899 -v data:/data/ unno_tracking
 ```
 
 # API Documentation
