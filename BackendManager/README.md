@@ -1,7 +1,7 @@
 # Prerequisite
 You need to install docker following [link](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
 
-# Set up MetadataDB (Mysql-docker):
+# Set up MetadataDB (Mysql-docker)
 [phpMyAdmin](https://www.phpmyadmin.net/) is a free software tool written in
 PHP, intended to handle the ***administration of MySQL over the Web***. phpMyAdmin
 supports a wide range of operations on MySQL and MariaDB. Frequently used
@@ -29,10 +29,10 @@ You can also login by SSH
 ssh root@localhost -p 49160
 password: admin
 ```
-# Set up RawdataDB (Minio):
+# Set up RawdataDB (Minio)
 [MinIO](https://min.io/) is High Performance Object Storage similar to AWS S3.
 We use the pre-built docker image at
-[dockerhub](https://hub.docker.com/r/minio/minio.
+[dockerhub](https://hub.docker.com/r/minio/minio).
 
 ```bash
 docker pull minio/minio

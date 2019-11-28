@@ -1,6 +1,6 @@
 from DBconnectors.SQLconnector import run_single_query, run_all_query, update_query
-from JobManager import update_job
-from FunctionManager import update_server
+from .JobManager import update_job
+from .FunctionManager import update_server
 from util import check_input_manager
 
 
