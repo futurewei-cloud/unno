@@ -12,15 +12,15 @@ to `model` folder, models currently used are
 [here](https://github.com/STVIR/pysot/blob/master/MODEL_ZOO.md)
 ```
 # build docker image
-$ docker build -t IMG_NAME .
+$ docker build -t unno_tracking .
 
 # run service in docker
 
 # for docker version > 19
-$ docker run --gpus '"device=GPU_ID"' --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ IMG_NAME
+$ docker run --gpus '"device=GPU_ID"' --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ unno_tracking
 
 # for older docker
-$ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=GPU_ID --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ IMG_NAME
+$ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=GPU_ID --ipc="host" -d -p PORT_PUBLIC:PORT_INDOCKER -v LOCAL_DATA/:/data/ unno_tracking
 ```
 
 # API Documentation
