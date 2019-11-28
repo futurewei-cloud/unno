@@ -1,7 +1,7 @@
 # Unno
-An AI-enabled, extensible and scalable video annotation platform.
+Unno is an AI-enabled, extensible and scalable video annotation platform.
 
-## Introduction
+# Introduction
 Nowadays, the massive adoption of AI technologies relies on the availability of big data, computing power,
  and deep learning algorithms. It has become a routine to pipeline a project by collecting a large amount of high 
  quality labeled data, and build a deep learning model with GPU computing. However, it is very time-consuming and costly
@@ -13,7 +13,7 @@ Unno provides a data annotation solution of building model-backed assistive anno
  design, it is flexible to extent and scale advanced AI capabilities to boost annotation efficiency and 
  improve annotation quality.
  
-### Supported features
+## Supported Features
 V1:
 * Video data import and management
 * Bounding box annotation in video
@@ -21,7 +21,7 @@ V1:
 * Model-based automatic entity tracking within video
 * Annotation result export
 
-## System overview
+## System Overview
 ![overview](unno_system_overview.png)
 
 The system is built upon individual modules, which are standalone services that can be containerized and deployed in 
@@ -38,18 +38,18 @@ Customized AI capability can be instantiated as specific AI Functionality module
 
 ## Get Started
 To run the system, both backend and frontend modules should be started. 
-* Follow [database service instructions
-](BackendManager/README.md) to set up fundamental data infrastructure first.
-* Then start the [data manager service](BackendManager/components/DataManager/README.md), and each of the AI 
-Functionality modules (currently only the [tracking module](BackendFunctionalModule/tracking/README.md), you can add 
-your own AI capability as you need).
-* Launch the [job manager service](BackendManager/components/JobQueueManager/README.md) to handle all AI prediction requests.
-* Build and publish the UX frontend with a web server with the [detailed instructions](Frontend/README.md)
-* Open a web browser and hit your UX host. Enjoy data annotating!
+1. Follow [database service instructions](BackendManager) to set up fundamental data infrastructure
+1. Then start the [data manager service](BackendManager/components/DataManager)
+1. Start each of the AI Functionality modules:
+  * [tracking module](BackendFunctionalModule/tracking)
+  * you can add your own AI capability as you need, following tracking module
+1. Launch the [job manager service](BackendManager/components/JobQueueManager/README.md) to handle all AI prediction requests.
+1. Build and publish the UX frontend with a web server with the [detailed instructions](Frontend)
+1. Open a web browser and hit your UX host. Enjoy data annotating!
 
-## Future plans
+## Future Plans
 Unno will be kept evovling with more advanced functionalities and better user experiences.
-Things are in the roadmap to explore:
+Things in the roadmap to explore:
 * Functionality
     * support arbitray polygon annotations
     * support label the entire frame
