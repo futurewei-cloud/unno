@@ -1,0 +1,13 @@
+torch==0.4.1.post2
+torchvision==0.2.2.post3
+numpy 
+pyyaml 
+yacs 
+tqdm 
+colorama 
+matplotlib
+cython
+opencv-python
+tensorboardX
+flask 
+requests

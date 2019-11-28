@@ -25,6 +25,8 @@ $ docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --ipc="host" -d -p 501
 
 # API Documentation
 
+Note that you can get the host IP by `curl ifconfig.me`
+
 * http://HOSTNAME/tracking/api/sot ['POST']
 
   NOTE:  
