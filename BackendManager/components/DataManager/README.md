@@ -1,16 +1,32 @@
-### Get started
+# Introduction
+Data manager is built on top to MySQL and MinIO. So, you need to setup these
+services ahead following instruction [here](../..). The application dependent
+API's are provided in this module
 
-adjust [configuration](configuration/config.py) before running the service
+# Getting Started
 
-start data manager service:
+Adjust [configuration](configuration/config.py) before running the service, you
+can use the default value as well, as it has already been configurated to be
+compatible with MySQL and MinIO following [here](../..).
 
-    pip install -r requirements.txt
-    python app.py
+### Start with command line
+```
+pip install -r requirements.txt
+python app.py
+```
 
-### API
+### Use Dockerfile
+```
+sudo docker build . -t unno_data_manager
+sudo docker run -d -p 5011:5011 unno_data_manager
+```
+
+# API Documentation
+Get the host ip by `curl ifconfig.me`
+
 base path: hostname:port/api/v1
 
-##### --Video
+## --Video
 * Upload video: (POST)
     * /video
         * user {String}
@@ -27,7 +43,7 @@ base path: hostname:port/api/v1
 * Get videos: (GET)
     * /video?username=abc
     * /video?video_id=123
-##### --Job
+## --Job
 * Add job: (POST) `[NOTE: when job created, 'job_id' of this result will be updated accordingly]`
     * /job
     
@@ -44,7 +60,7 @@ base path: hostname:port/api/v1
     * /job?video_id=1
     * /job?job_id=1
     
-##### --Annotation
+## --Annotation
  
 * Add result: (POST)
     * /result
@@ -70,7 +86,7 @@ base path: hostname:port/api/v1
     * /result?result_id=1
     * /result?video_id=1 `optional: (&job_id=1&entity_id=111&frame_num=5)`
 
-##### --Category
+## --Category
 * Get categories: (GET)
     * /category  `[get all existing categories] `
     * /category?sup_cat_name=NAME `[get all categories under the supper category of NAME]`
@@ -91,7 +107,7 @@ base path: hostname:port/api/v1
     * /category?name=NAME
     * /category?sup_cat_name=NAME
 
-##### --Entity
+## --Entity
  `{
     entity_id: Number,
     video_id: Number,
@@ -118,7 +134,7 @@ base path: hostname:port/api/v1
 `TODO: after frontend integration, to add foreign key of entity_id in annotation table, to enable automatic update annotations when updating entities
 `
 
-##### --User
+## --User
  
 * Add user: (POST)
     * /user

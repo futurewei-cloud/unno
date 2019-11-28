@@ -16,6 +16,11 @@ app.secret_key = "super secret key"
 CORS(app)
 
 
+@app.route('/')
+def index():
+    return "Hello from Data Manager!"
+
+
 @app.after_request
 def after_request(response):
     response.headers.add('Accept-Ranges', 'bytes')
