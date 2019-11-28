@@ -6,6 +6,7 @@ class SQLConfig:
     pw = 'lxit'
 
 class ServiceConfig:
+    # tracking module
     backend_endpoint = 'http://10.145.83.34:5011'
     result_api = backend_endpoint + '/api/v1/annotation'
 

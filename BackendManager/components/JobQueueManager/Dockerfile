@@ -7,9 +7,6 @@ RUN apt-get install -y --fix-missing python2.7-dev \
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
 
 COPY . /root/src
-
-RUN cd /root/src && \
-    pip install -r requirements.txt
-
-CMD cd /root/src && \
-    python -u app.py
+WORKDIR /root/src 
+RUN pip install -r requirements.txt
+CMD python -u app.py
