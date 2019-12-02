@@ -15,4 +15,5 @@ else
     sudo docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 --ipc="host" -d -p ${PORT}:8899 -v data:/data/ unno_tracking
 fi
 
-curl localhost:${PORT}
+echo "Test with the following command:"
+echo "curl localhost:${PORT}"
