@@ -10,8 +10,20 @@ All dependencies are built into a Docker environment.  Build and run the docker
 image to start the service.  NOTE: model files should be downloaded and saved
 to `model` folder, models currently used are
 [here](https://github.com/STVIR/pysot/blob/master/MODEL_ZOO.md)
+
+## Run with bash script
 ```
 $ bash run.sh
+```
+
+## Run with Docker compose
+```bash
+$ docker-compose up
+```
+
+## Run with Kubernetes (TODO)
+```bash
+$ kubectl apply -f unno_tracking.yaml
 ```
 
 # API Documentation
