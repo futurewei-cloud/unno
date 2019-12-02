@@ -42,11 +42,10 @@ class App {
 					.then(() => {
 						self.buildEditView();
 						self.buildHeader();
+						self.loadVideoData();
 					});
 			})
 			.languages(supportedLanguages);
-
-		self.loadVideoData();
 
 		api.onChange(() => {
 			self.loadVideoData();
@@ -60,13 +59,14 @@ class App {
 			.then((videos) => {
 				self[DATA] = videos;
 
-				if (!self[CURRENT_VIDEO]) {
+				if (!self[CURRENT_VIDEO] && videos.length !== 0) {
 					self[CURRENT_VIDEO] = videos[0].id;
 				}
 
 				if (self[MAIN_MENU]) {
 					self[MAIN_MENU].data(self[DATA])
-						.currentVideo(self[CURRENT_VIDEO]);
+						.currentVideo(self[CURRENT_VIDEO])
+						.isWorking(false);
 				}
 			});
 	}
