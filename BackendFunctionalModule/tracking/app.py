@@ -79,9 +79,17 @@ def sot_tracking():
         abort(400)
 
     # check data validity
-    for img_file in imglist_to_track:
+    num_frames = len(imglist_to_track)
+    for i, img_file in enumerate(imglist_to_track):
+        print ('checking file', img_file)
         if not osp.exists(img_file):
-            abort(400, 'image to track not available')
+            if i == 0:
+                abort(400, 'image to track not available')
+            else:
+                num_frames = i
+                break
+    imglist_to_track = imglist_to_track[:num_frames]
+
     if not osp.exists(init_img):
         abort(400, 'init image not available')
 
