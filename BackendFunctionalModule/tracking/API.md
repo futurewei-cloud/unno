@@ -2,7 +2,7 @@
 
 Note that you can get the host IP by `curl ifconfig.me`
 
-* http://HOSTNAME/tracking/api/sot ['POST']
+* http://ENDPOINT/tracking/api/sot ['POST']
 
   NOTE:  
   - Query: do POST with json blob in the format of 
@@ -21,9 +21,10 @@ Note that you can get the host IP by `curl ifconfig.me`
   
   ```
   # API call example:
+  wget https://github.com/STVIR/pysot/raw/master/demo/bag.avi
   curl -i -H "Content-Type: application/json" -X POST /
   -d '{"username":"NAME", "job_id":0,"video_id":0, "entity_id":0, "bbox":"0.64,0.39,0.25,0.33","start_frame":1,"end_frame":10, "result_api":"http://10.145.83.34:8899/mirror"}' /
-  http://HOSTNAME/tracking/api/sot
+  http://ENDPOINT/tracking/api/sot
   ```
   
   - Response: json blob of tracking results in the format of
