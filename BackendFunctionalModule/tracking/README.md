@@ -11,20 +11,29 @@ image to start the service.  NOTE: model files should be downloaded and saved
 to `model` folder, models currently used are
 [here](https://github.com/STVIR/pysot/blob/master/MODEL_ZOO.md)
 
-## Run with bash script
+## Run with bash script (Easiest)
 ```
 $ bash run.sh
 ```
+Notes: ensure the port `8899` is available, as the service end point will 
+be <host-ip-addres>:8899
+
 
 ## Run with Docker compose
 ```bash
 $ docker-compose up
 ```
+Notes: ensure the port `8899` is available, as the service end point will 
+be <host-ip-addres>:8899
 
 ## Run with Kubernetes (TODO)
 ```bash
-$ kubectl apply -f unno-tracking.yaml
+$ kubectl apply -f kube-unno-tracking.yaml
 ```
+Caveat: `kubeadm` does not support LoadBalancer natively, so we are using 
+NodePort in this case. The outcome is  you need to know of the IP address
+of the worker machine in order to access it in order to access to service, 
+something like <worker-ip-address>:30164
 
 ## API Documentation
 Check [here](API.md) for details.
