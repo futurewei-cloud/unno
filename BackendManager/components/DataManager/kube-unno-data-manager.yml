@@ -1,0 +1,43 @@
+apiVersion:  apps/v1
+kind: Deployment
+metadata:
+    name: unno-data-manager
+spec:
+    selector: 
+        matchLabels: 
+            app: unno-data-manager
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: unno-data-manager
+        spec:
+            restartPolicy: Always
+            containers:
+            - name: unno-data-manager
+              image: skyuuka/unno-data-manager
+              imagePullPolicy: IfNotPresent
+              ports:
+              - containerPort: 30165
+                protocol: TCP 
+---
+apiVersion: v1
+kind: Service
+metadata: 
+    name: unno-data-manager-service
+spec:
+    # so that we can access the service from ***outside*** the cluster 
+    type: NodePort
+    # When the node receives a request on the static port (30163)
+    # "select pods with the label 'app' set to 'unno-data-manager'"
+    # and forward the request to one of them
+    selector: 
+        app: unno-data-manager
+    ports:
+        # Three types of ports for a service
+        # nodePort - a static port assigned on each node
+        # port - port exposed internally in the cluster
+        # targetPort - the container port to send requests to
+        - nodePort: 30165
+          port: 5011
+          targetPort: 5011
