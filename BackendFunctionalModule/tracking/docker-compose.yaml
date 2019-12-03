@@ -1,11 +1,13 @@
 version: '2'
 services:
-    unno_tracking:
+    unno-tracking:
+        image: skyuuka/unno-tracking
         environment:
             CUDA_VISIBLE_DEVICES: 0
         build:
             context: .
         volumes:
-            - ./data:/data/
+            # host_path: contain_path
+            - /tmp/data:/data/
         ports:
-            - "8899:8899"
+            - "8899:30164"

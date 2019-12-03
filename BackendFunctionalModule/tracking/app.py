@@ -11,7 +11,7 @@ app = Flask('tracking')
 
 # function module configuration
 data_root = '/data'
-service_port = 8899
+service_port = 30164
 TIMEOUT_SEC = 2  # time-out in seconds for sending out results
 RETRY = 3  # re-try times for sending out results
 

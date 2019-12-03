@@ -31,3 +31,4 @@ RUN chmod a+x app.py
 ENV PYTHONPATH "/app/pysot:${PYTHONPATH}"
 
 ENTRYPOINT ["/app/tracking/app.py"]
+EXPOSE 30164

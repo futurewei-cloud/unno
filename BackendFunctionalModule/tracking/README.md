@@ -23,7 +23,7 @@ $ docker-compose up
 
 ## Run with Kubernetes (TODO)
 ```bash
-$ kubectl apply -f unno_tracking.yaml
+$ kubectl apply -f unno-tracking.yaml
 ```
 
 ## API Documentation
