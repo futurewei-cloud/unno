@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import division
+
 from flask import Flask, stream_with_context, Response, request, redirect, url_for, render_template, jsonify
 from SQLmanager.VideoManager import add_video, generate_video, get_videos, del_video, update_video
 from SQLmanager.JobManager import add_job, get_job, get_jobs, del_job, update_job

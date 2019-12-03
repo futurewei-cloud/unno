@@ -18,7 +18,7 @@ python app.py
 ### Use Dockerfile
 ```
 sudo docker build . -t skyuuka/unno-data-manager
-sudo docker run -d -p 5011:5011 skyuuka/unno-data-manager
+sudo docker run -it -p 5011:5011 skyuuka/unno-data-manager
 ```
 
 ### Using docker-compose
