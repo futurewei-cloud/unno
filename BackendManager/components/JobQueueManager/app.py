@@ -43,7 +43,7 @@ def main():
 
         for job, server in zip(jobs, servers):
             print('job %s is running on server %s' % (job, server))
-            video_id = 'video-'+str(job['video_id'])
+            video_id = 'video-' + str(job['video_id'])
             downloader_multiple(video_id, video_id)
 
             sets = [('status', 'pending')]

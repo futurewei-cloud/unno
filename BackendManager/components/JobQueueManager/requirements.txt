@@ -1,3 +1,4 @@
 requests
 minio
 mysql-connector-python
+opencv-python

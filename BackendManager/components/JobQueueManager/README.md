@@ -16,6 +16,6 @@ python app.py
 ```
 ### Use Dockerfile
 ```
-sudo docker build . -t unno_job_manager
-sudo docker run -d -p 5011:5011 unno_job_manager
+sudo docker build . -t skyuuka/unno-job-manager
+sudo docker run -it skyuuka/unno-job-manager
 ```

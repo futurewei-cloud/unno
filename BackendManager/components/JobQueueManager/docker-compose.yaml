@@ -1,0 +1,6 @@
+version: '2'
+services:
+    unno-job-manager:
+        image: skyuuka/unno-job-manager
+        build:
+            context: .
