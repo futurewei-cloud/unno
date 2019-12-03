@@ -85,7 +85,9 @@ def sot_tracking():
     if not osp.exists(init_img):
         abort(400, 'init image not available')
 
+    print ('start tracking ...')
     results = tracker.tracking(init_img, init_bbox, imglist_to_track)
+    print ('done')
 
     # generate response json
     response = request.json.copy()  # keep all query info in the response
