@@ -1,6 +1,6 @@
 version: '2'
 services:
-    unno-tracking:
+    unno-data-manager:
         image: skyuuka/unno-data-manager
         build:
             context: .
