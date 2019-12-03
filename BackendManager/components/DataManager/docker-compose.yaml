@@ -1,0 +1,8 @@
+version: '2'
+services:
+    unno-tracking:
+        image: skyuuka/unno-data-manager
+        build:
+            context: .
+        ports:
+            - "5011:5011"

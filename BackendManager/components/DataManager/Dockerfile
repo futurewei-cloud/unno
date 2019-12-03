@@ -13,3 +13,4 @@ COPY . /root/src
 WORKDIR /root/src
 RUN pip install -r requirements.txt
 CMD python -u app.py
+EXPOSE 5011
