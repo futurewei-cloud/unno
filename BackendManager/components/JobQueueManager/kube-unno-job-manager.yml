@@ -1,0 +1,19 @@
+apiVersion:  apps/v1
+kind: Deployment
+metadata:
+    name: unno-job-manager
+spec:
+    selector: 
+        matchLabels: 
+            app: unno-job-manager
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: unno-job-manager
+        spec:
+            restartPolicy: Always
+            containers:
+            - name: unno-job-manager
+              image: skyuuka/unno-job-manager
+              imagePullPolicy: IfNotPresent
