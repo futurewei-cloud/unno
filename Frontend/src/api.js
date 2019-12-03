@@ -39,7 +39,7 @@ const callAjax = (settings) => (...args) => {
 			.catch((error) => {
 				toast.error({
 					title: settings.errorTitle || '',
-					subTitle: error + ''
+					subTitle: error + ' (at ' + BASE_URL + ')'
 				});
 			})
 			.finally(() => {
