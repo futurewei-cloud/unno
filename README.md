@@ -14,7 +14,7 @@ Unno provides a data annotation solution of building model-backed assistive anno
  improve annotation quality.
  
 ## Supported Features
-V1:
+V1 Release:
 * Video data import and management
 * Bounding box annotation in video
 * Category (class) annotation and entity (identification) annotation in video

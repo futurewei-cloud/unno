@@ -38,3 +38,5 @@ We use the pre-built docker image at
 docker pull minio/minio
 docker run -d -p 9000:9000 --name unno_minio -e "MINIO_ACCESS_KEY=unno" -e "MINIO_SECRET_KEY=abcd1234" -v /tmp/unno_database:/data minio/minio server /data
 ```
+
+***Important***: please ensure to map `/tmp/unno_database` in host to `/data`, as `/tmp/unno_database` is shared by other applications as well.

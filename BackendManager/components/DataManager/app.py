@@ -64,7 +64,7 @@ def video_call():
             local_tmp_file = os.path.join('/tmp', file_name)
             video_file.save(local_tmp_file)
             username = request.form['user']
-            video_format = file_name.split('.')[-1]
+            video_format = file_name.splitext()[-1]
             video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
             video = {'video_name': video_id, 'username': username,
                      'format': video_format, 'length': 0, 'num_frames': 0}

@@ -21,7 +21,7 @@ spec:
                   limits:
                       nvidia.com/gpu: 1
               ports:
-              - containerPort: 30164
+              - containerPort: 8899
                 protocol: TCP 
               volumeMounts:
               - mountPath: /data
@@ -29,7 +29,7 @@ spec:
             volumes:
             - name: data
               hostPath:
-                  path: /tmp/data
+                  path: /tmp/unno_database
                   type: DirectoryOrCreate
 ---
 apiVersion: v1
@@ -52,4 +52,4 @@ spec:
         # targetPort - the container port to send requests to
         - nodePort: 30164
           port: 8899
-          targetPort: 30164
+          targetPort: 8899

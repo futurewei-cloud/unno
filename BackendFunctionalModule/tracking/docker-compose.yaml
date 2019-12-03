@@ -8,6 +8,6 @@ services:
             context: .
         volumes:
             # host_path: contain_path
-            - /tmp/data:/data/
+            - /tmp/unno_database:/data/
         ports:
-            - "8899:30164"
+            - "8899:8899"

@@ -6,9 +6,8 @@ class SQLConfig:
     pw = 'lxit'
 
 class ServiceConfig:
-    # tracking module
     backend_endpoint = 'http://10.145.83.34:8899'
-    result_api = backend_endpoint + '/api/v1/annotation'
+    result_api = 'http://10.145.83.34:5011/api/v1/annotation'
 
 
 class MinioConfig:
