@@ -1,5 +1,6 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
 
 from flask import Flask, stream_with_context, Response, request, redirect, url_for, render_template, jsonify
 from SQLmanager.VideoManager import add_video, generate_video, get_videos, del_video, update_video
@@ -67,7 +68,7 @@ def video_call():
             local_tmp_file = os.path.join('/tmp', file_name)
             video_file.save(local_tmp_file)
             username = request.form['user']
-            video_format = file_name.splitext()[-1]
+            video_format = os.path.splitext(file_name)[-1]
             video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
             video = {'video_name': video_id, 'username': username,
                      'format': video_format, 'length': 0, 'num_frames': 0}
