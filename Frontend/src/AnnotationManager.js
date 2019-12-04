@@ -140,7 +140,7 @@ export default class AnnotationManager {
 					return api.addAnnotation(self.videoId(), frame, entityId, annotation.bbox);
 				})
 				.then((id) => {
-					annotation.id = id;
+					annotation.id = id + '';
 					self.onChange().trigger();
 				});
 		}
