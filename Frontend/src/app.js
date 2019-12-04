@@ -57,7 +57,10 @@ class App {
 
 		return api.getVideos()
 			.then((videos) => {
-				self[DATA] = videos;
+				self[DATA] = videos.map((video) => {
+					video.name = video.name.replace(/\.$/, '');
+					return video;
+				});
 
 				if (!self[CURRENT_VIDEO] && videos.length !== 0) {
 					self[CURRENT_VIDEO] = videos[0].id;
