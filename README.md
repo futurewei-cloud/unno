@@ -38,7 +38,7 @@ Customized AI capability can be instantiated as specific AI Functionality module
 
 ## Get Started
 To run the system, both backend and frontend modules should be started. 
-1. Follow [database service instructions](BackendManager) to set up fundamental data infrastructure
+1. Follow [database service instructions](BackendManager/components/BaseDatabase) to set up fundamental data infrastructure
 2. Then start the [data manager service](BackendManager/components/DataManager)
 3. Start each of the AI Functionality modules:
     * [tracking module](BackendFunctionalModule/tracking)

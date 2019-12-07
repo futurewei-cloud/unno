@@ -1,5 +1,7 @@
-# Prerequisite
-You need to install docker following [link](https://docs.docker.com/install/linux/docker-ce/ubuntu/).
+# Introduction
+This is the very basic database you need to store videos, annotations, jobs,
+users, etc. In summary, we use using MiniIO to store video data, and MySQL to
+store meta data, such as annotations, jobs, etc.
 
 # Set up MetadataDB (Mysql-docker)
 [phpMyAdmin](https://www.phpmyadmin.net/) is a free software tool written in
@@ -16,19 +18,25 @@ docker run -d -p 49160:22 -p 49161:80 -p 49162:3306 lxitgto/mysql-phpmyadmin:v1
 # get the container id
 CONTAINER_ID=`docker container ps | grep lxitgto/mysql-phpmyadmin:v1 | awk -F" " '{print $1}'`
 echo $CONTAINER_ID
+# initialize the database
 docker cp unno.sql ${CONTAINER_ID}:/unno.sql
 docker exec -it ${CONTAINER_ID} /bin/bash
 mysql -uroot -plxit -hlocalhost < unno.sql
 ```
+
 To test, you can open http://localhost:49161/phpmyadmin in your browser with following credential:
+```bash
 username: root
 password: lxit
+```
 
 You can also login by SSH
 ```bash
 ssh root@localhost -p 49160
 password: admin
 ```
+
+
 # Set up RawdataDB (Minio)
 [MinIO](https://min.io/) is High Performance Object Storage similar to AWS S3.
 We use the pre-built docker image at
