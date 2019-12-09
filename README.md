@@ -13,6 +13,8 @@ Unno provides a data annotation solution of building model-backed assistive anno
  design, it is flexible to extent and scale advanced AI capabilities to boost annotation efficiency and 
  improve annotation quality.
  
+[demo](https://drive.google.com/file/d/1HInoAlDq1A0LYZ6hE4pCc0UBhLf0qxzL/view?usp=sharing)
+ 
 ## Supported Features
 V1 Release:
 * Video data import and management
