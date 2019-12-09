@@ -41,22 +41,22 @@ def sot_tracking():
 
     input query json format:
     {
-        'job_id': int, 
-        'video_id': int, 
-        'entity_id': int, 
+        'job_id': int,
+        'video_id': int,
+        'entity_id': int,
         'bbox': '0.645833333333,0.388888888889,0.25,0.333333333333',
-        'start_frame': int, 
-        'end_frame': int, 
+        'start_frame': int,
+        'end_frame': int,
         'result_api': END_POINT
     }
     note: img_file should be relative path to data_root
 
     :return: tracking results in single json blob with format of
     {
-        'job_id': int, 
-        'video_id': int, 
-        'entity_id': int, 
-        'tracking_results': 
+        'job_id': int,
+        'video_id': int,
+        'entity_id': int,
+        'tracking_results':
         {
             'frame_id': '0.645833333333, 0.388888888889, 0.25, 0.333333333333',...
         }
@@ -70,18 +70,19 @@ def sot_tracking():
         save_result_api = request.json['result_api']
 
         data_path = osp.join(data_root, 'video-' + str(video_id))
-        init_img = osp.join(data_path, 'frame' + str(request.json['start_frame']) +'.jpg')
+        init_img = osp.join(data_path, 'frame' +
+                            str(request.json['start_frame']) + '.jpg')
         init_bbox = [float(_) for _ in request.json['bbox'].split(',')]
-        imglist_to_track = [osp.join(data_path, 'frame' + str(_) + '.jpg') 
-                            for _ in range(request.json['start_frame'] + 1, 
-                                request.json['end_frame'])]
+        imglist_to_track = [osp.join(data_path, 'frame' + str(_) + '.jpg')
+                            for _ in range(request.json['start_frame'] + 1,
+                                           request.json['end_frame'])]
     except KeyError:
         abort(400)
 
     # check data validity
     num_frames = len(imglist_to_track)
     for i, img_file in enumerate(imglist_to_track):
-        print ('checking file', img_file)
+        print('checking file', img_file)
         if not osp.exists(img_file):
             if i == 0:
                 abort(400, 'image to track not available')
@@ -93,14 +94,14 @@ def sot_tracking():
     if not osp.exists(init_img):
         abort(400, 'init image not available')
 
-    print ('start tracking ...')
+    print('start tracking ...')
     results = tracker.tracking(init_img, init_bbox, imglist_to_track)
-    print ('done')
+    print('done')
 
     # generate response json
     response = request.json.copy()  # keep all query info in the response
-    tracking_results = {osp.basename(k).split('frame')[1].split('.')[0]: ','.join(map(str, v['bbox']))
-                        for k, v in results.items()}
+    tracking_results = {osp.basename(k).split('frame')[1].split(
+        '.')[0]: ','.join(map(str, v['bbox'])) for k, v in results.items()}
     response['tracking_results'] = tracking_results
 
     # post result to saving api
@@ -109,7 +110,11 @@ def sot_tracking():
     r = None
     while retry_num > 0:
         try:
-            r = requests.post(url=save_result_api, data=json.dumps(response), headers=headers, timeout=TIMEOUT_SEC)
+            r = requests.post(
+                url=save_result_api,
+                data=json.dumps(response),
+                headers=headers,
+                timeout=TIMEOUT_SEC)
         except requests.Timeout:
             # sending results timeout, re-try
             retry_num -= 1

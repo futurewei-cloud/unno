@@ -46,4 +46,3 @@ def update_server(server):
     conditions = [('server_id', server['server_id'])]
     print("server %s is updated!" % server['server_id'])
     return update_query('function', changes, conditions)
-

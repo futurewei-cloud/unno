@@ -1,5 +1,5 @@
 # Introduction
-This is the very basic database you need to store videos, annotations, jobs,
+This is the base database you need to store videos, annotations, jobs,
 users, etc. In summary, we use using MiniIO to store video data, and MySQL to
 store meta data, such as annotations, jobs, etc.
 

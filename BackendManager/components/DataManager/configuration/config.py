@@ -22,4 +22,3 @@ class MinioConfig:
     #host = getHostIP() + ':' + str(port)
     username = 'unno'
     pw = 'abcd1234'
-

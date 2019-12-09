@@ -20,7 +20,8 @@ def add_entity(video_id):
     return entity_id
 
 
-# TODO: set ON DELETE/UPDATE in annotation table to CASCADE to automatically changes annotations when entity changes
+# TODO: set ON DELETE/UPDATE in annotation table to CASCADE to
+# automatically changes annotations when entity changes
 def del_entity(entity):
     if 'entity_id' in entity:
         query = "DELETE FROM entity WHERE entity_id='%s'" % entity['entity_id']
@@ -46,4 +47,3 @@ def update_entity(entity):
     print("entity %s is updated!" % entity['entity_id'])
 
     return update_query('entity', changes, conditions)
-

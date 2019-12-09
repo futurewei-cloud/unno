@@ -26,7 +26,11 @@ class SOTTracker:
 
         # load model
         self.model = ModelBuilder()
-        self.model.load_state_dict(torch.load(model_file, map_location=lambda storage, loc: storage.cpu()))
+        self.model.load_state_dict(
+            torch.load(
+                model_file,
+                map_location=lambda storage,
+                loc: storage.cpu()))
         self.model.eval().to(self.device)
 
         # build tracker
@@ -37,12 +41,15 @@ class SOTTracker:
         init_frame = cv2.imread(init_img)
         height, width, channels = init_frame.shape
         # convert bbox from relative coordinates to actual values
-        init_bbox_coord = [int(init_bbox[0] * width), int(init_bbox[1] * height),
-                           int(init_bbox[2] * width), int(init_bbox[3] * height)]
+        init_bbox_coord = [int(init_bbox[0] * width),
+                           int(init_bbox[1] * height),
+                           int(init_bbox[2] * width),
+                           int(init_bbox[3] * height)]
         self.tracker.init(init_frame, init_bbox_coord)
 
         # do tracking
-        results = {_: {'polygon': None, 'mask': None, 'bbox': None} for _ in imglist_to_track}
+        results = {_: {'polygon': None, 'mask': None, 'bbox': None}
+                   for _ in imglist_to_track}
         for img in imglist_to_track:
             frame = cv2.imread(img)
             outputs = self.tracker.track(frame)
@@ -86,7 +93,13 @@ class SOTTracker:
             vis_frame = cv2.addWeighted(vis_frame, 0.77, mask, 0.23, -1)
         elif result['bbox'] is not None:
             bbox = result['bbox']
-            cv2.rectangle(vis_frame, (int(bbox[0] * width), int(bbox[1] * height)),
-                          (int((bbox[0] + bbox[2]) * width), int((bbox[1] + bbox[3]) * height)),
-                          (0, 255, 0), 3)
+            cv2.rectangle(vis_frame,
+                          (int(bbox[0] * width),
+                           int(bbox[1] * height)),
+                          (int((bbox[0] + bbox[2]) * width),
+                              int((bbox[1] + bbox[3]) * height)),
+                          (0,
+                              255,
+                              0),
+                          3)
         return vis_frame

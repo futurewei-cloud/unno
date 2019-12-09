@@ -67,4 +67,3 @@ def update_category(cat):
     print("category %s is updated!" % cat['cat_id'])
 
     return update_query('category', changes, conditions)
-

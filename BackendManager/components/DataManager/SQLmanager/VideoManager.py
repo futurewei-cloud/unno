@@ -10,7 +10,8 @@ from flask import request, send_file, Response
 
 def get_video(video):
     check_input_manager('video', video, ['video_id'])
-    query = "SELECT * FROM video WHERE status != 'deleted' AND video_id='%s'" % (video['video_id'])
+    query = "SELECT * FROM video WHERE status != 'deleted' AND video_id='%s'" % (
+        video['video_id'])
     print("Video %s is fetched!" % video['video_id'])
     return run_all_query(query)
 
@@ -58,9 +59,15 @@ def add_video(video, file_full_location):
         del_video(video)
         return
 
-    num_frames, fps, v_width, v_height = save_frames(video_id, file_full_location)
+    num_frames, fps, v_width, v_height = save_frames(
+        video_id, file_full_location)
     if num_frames > 0:
-        video = {'video_id': video_num, 'fps': fps, 'num_frames': num_frames, 'width': v_width, 'height': v_height}
+        video = {
+            'video_id': video_num,
+            'fps': fps,
+            'num_frames': num_frames,
+            'width': v_width,
+            'height': v_height}
         update_video(video)
     else:
         print("Upload frames failed!")
@@ -77,9 +84,9 @@ def del_video(video):
     # TODO: handle video file and related annotation clean up offline&separately
     #video_id = 'video-' + str(video['video_id'])
     #remove_object('videos', video_id)
-    #remove_bucket(video_id)
-    #query = "DELETE FROM video WHERE video_id=%s" % (video['video_id']
-    #return run_single_query(query)
+    # remove_bucket(video_id)
+    # query = "DELETE FROM video WHERE video_id=%s" % (video['video_id']
+    # return run_single_query(query)
 
     # DONOT physically delete video file, but mark specific video as 'deleted'
     conditions = [('video_id', video['video_id'])]
@@ -170,7 +177,7 @@ def get_range(request_headers):
         return None, None
 
     print('Requested range: %s', query_range)
-    m = re.match('bytes=(?P<start>\d+)-(?P<end>\d+)?', query_range)
+    m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', query_range)
     if m:
         start = m.group('start')
         end = m.group('end')
@@ -180,6 +187,7 @@ def get_range(request_headers):
         return start, end
     else:
         return 0, None
+
 
 def send_file_partial(file, filename):
     """
@@ -195,7 +203,7 @@ def send_file_partial(file, filename):
     size = sys.getsizeof(file)
     byte1, byte2 = 0, None
 
-    m = re.search('(\d+)-(\d*)', range_header)
+    m = re.search(r'(\d+)-(\d*)', range_header)
     g = m.groups()
 
     if g[0]:
@@ -214,6 +222,9 @@ def send_file_partial(file, filename):
                   206,
                   mimetype=mimetypes.guess_type(filename)[0],
                   direct_passthrough=True)  # "video/mp4",
-    rv.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(byte1, byte1 + length - 1, size))
+    rv.headers.add('Content-Range',
+                   'bytes {0}-{1}/{2}'.format(byte1,
+                                              byte1 + length - 1,
+                                              size))
     rv.headers.add('Accept-Ranges', 'bytes')
     return rv

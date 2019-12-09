@@ -9,7 +9,7 @@ import json
 
 from tracker import SOTTracker
 
-#torch.set_num_threads(1)
+# torch.set_num_threads(1)
 
 
 if __name__ == '__main__':

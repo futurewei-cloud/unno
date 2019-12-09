@@ -38,8 +38,12 @@ Customized AI capability can be instantiated as specific AI Functionality module
 
 ## Get Started
 To run the system, both backend and frontend modules should be started. 
-1. Follow [database service instructions](BackendManager/components/BaseDatabase) to set up fundamental data infrastructure
-2. Then start the [data manager service](BackendManager/components/DataManager)
+1. Follow [database service instructions](BackendManager/components/BaseDatabase) to set up base
+   database, including Relationtional Database (MySQL) and Key-Value storage
+   (MiniIO).
+2. Start the [data manager service](BackendManager/components/DataManager)
+   following the instruction therein. This is the only service that frontend UX
+   interacts with.
 3. Start each of the AI Functionality modules:
     * [tracking module](BackendFunctionalModule/tracking)
     * you can add your own AI capability as you need, following tracking module
@@ -48,9 +52,8 @@ To run the system, both backend and frontend modules should be started.
 6. Open a web browser and hit your UX host. Enjoy data annotating!
 
 ## Future Plans
-Unno will be kept evovling with more advanced functionalities and better user experiences.
-Things in the roadmap to explore:
-* Functionality
+Unno will be kept evovling with more advanced functionalities and better user experiences. Things in the roadmap to explore:
+* Functionalities
     * support arbitray polygon annotations
     * support label the entire frame
     * support object category suggestions

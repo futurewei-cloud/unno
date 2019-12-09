@@ -4,4 +4,3 @@ def check_input_manager(d_name, d, lst):
             raise ValueError("%s not in %s" % (l, d_name))
 
     return True
-

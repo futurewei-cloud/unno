@@ -8,11 +8,18 @@ import shutil
 
 
 def get_minio_client(api, access_key, secret_key):
-    client = Minio(api, access_key=access_key, secret_key=secret_key, secure=False)
+    client = Minio(
+        api,
+        access_key=access_key,
+        secret_key=secret_key,
+        secure=False)
     return client
 
 
-minio_client = get_minio_client(MinioConfig.host, MinioConfig.username, MinioConfig.pw)
+minio_client = get_minio_client(
+    MinioConfig.host,
+    MinioConfig.username,
+    MinioConfig.pw)
 
 
 def make_bucket(bucket_name):
@@ -88,7 +95,13 @@ def downloader_multiple(bucket_name, local_name):
     for obj in objects:
         name = obj.object_name.encode('utf-8')
         try:
-            minio_client.fget_object(obj.bucket_name, name, '/tmp/' + local_name + '/' + name)
+            minio_client.fget_object(
+                obj.bucket_name,
+                name,
+                '/tmp/' +
+                local_name +
+                '/' +
+                name)
         except ResponseError as err:
             print(err)
 
@@ -105,7 +118,10 @@ def save_frames(bucket_name, fullpath_filename):
     if image is not None:
         v_height, v_width, _ = image.shape
     count = 0
-    tmp_folder = os.path.join('/tmp', 'tmpdata_'+datetime.datetime.now().isoformat())
+    tmp_folder = os.path.join(
+        '/tmp',
+        'tmpdata_' +
+        datetime.datetime.now().isoformat())
     os.mkdir(tmp_folder)
     while success:
         img_name = "frame%d.jpg" % count
@@ -124,6 +140,8 @@ def save_frames(bucket_name, fullpath_filename):
 
 
 if __name__ == "__main__":
-    minio_client = get_minio_client(MinioConfig.host, MinioConfig.username, MinioConfig.pw)
+    minio_client = get_minio_client(
+        MinioConfig.host,
+        MinioConfig.username,
+        MinioConfig.pw)
     remove_bucket('job-1')
-

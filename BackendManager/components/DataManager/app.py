@@ -69,7 +69,8 @@ def video_call():
             video_file.save(local_tmp_file)
             username = request.form['user']
             video_format = os.path.splitext(file_name)[-1]
-            video_id = request.form['video'] + '.' + video_format if len(request.form['video']) > 0 else file_name
+            video_id = request.form['video'] + '.' + \
+                video_format if len(request.form['video']) > 0 else file_name
             video = {'video_name': video_id, 'username': username,
                      'format': video_format, 'length': 0, 'num_frames': 0}
             tmp_id = add_video(video, local_tmp_file)
@@ -84,7 +85,8 @@ def video_call():
         return redirect(url_for('upload'))
 
     elif request.method == 'PATCH':
-        if not request.args or check_input_api(request.args, ['video_id']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['video_id']) is not None:
             response = app.response_class(
                 response="Modify videos failed",
                 status=500,
@@ -114,7 +116,11 @@ def video_call():
             return generate_video(video, request.headers)
         elif 'username' in request.args:
             video = {'username': request.args['username']}
-            return json.dumps(get_videos(video), indent=4, sort_keys=True, default=str)
+            return json.dumps(
+                get_videos(video),
+                indent=4,
+                sort_keys=True,
+                default=str)
         else:
             response = app.response_class(
                 response="Get videos failed",
@@ -123,7 +129,8 @@ def video_call():
             return response
 
     elif request.method == 'DELETE':
-        if not request.args or check_input_api(request.args, ['video_id']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['video_id']) is not None:
             response = app.response_class(
                 response="Delete video failed",
                 status=500,
@@ -140,12 +147,14 @@ def video_call():
         return response
 
 
-#@app.route('/api/v1/job', methods=['GET', 'POST', 'DELETE'])
-@app.route('/api/v1/job', methods=['GET', 'POST'])  # disable delete at this time
+# @app.route('/api/v1/job', methods=['GET', 'POST', 'DELETE'])
+# disable delete at this time
+@app.route('/api/v1/job', methods=['GET', 'POST'])
 def job_call():
     if request.method == 'POST':
         job = request.json
-        if not job or check_input_api(job, ['start_frame', 'end_frame', 'annotation_id']) is not None:
+        if not job or check_input_api(
+                job, ['start_frame', 'end_frame', 'annotation_id']) is not None:
             response = app.response_class(
                 response="Insert job query is not valid!",
                 status=500,
@@ -168,7 +177,8 @@ def job_call():
                 status=200,
             )
             # update job_id in corresponding annotation info
-            annotation_update = {'job_id': job_id, 'annotation_id': annotation['annotation_id']}
+            annotation_update = {'job_id': job_id,
+                                 'annotation_id': annotation['annotation_id']}
             if update_annotation(annotation_update) is not None:
                 return response
 
@@ -179,7 +189,8 @@ def job_call():
         return response
 
     elif request.method == 'PATCH':
-        if not request.args or check_input_api(request.args, ['job_id']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['job_id']) is not None:
             response = app.response_class(
                 response="Modify job failed",
                 status=500,
@@ -196,8 +207,12 @@ def job_call():
         return response
 
     elif request.method == 'GET':
-        if not request.args or (check_input_api(request.args, ['video_id']) is not None
-                                and check_input_api(request.args, ['job_id']) is not None):
+        if not request.args or (
+            check_input_api(
+                request.args,
+                ['video_id']) is not None and check_input_api(
+                request.args,
+                ['job_id']) is not None):
             response = app.response_class(
                 response="Get jobs failed",
                 status=500,
@@ -212,7 +227,8 @@ def job_call():
             return jsonify({'jobs': get_job(job)})
 
     elif request.method == 'DELETE':
-        if not request.args or check_input_api(request.args, ['username', 'job_id']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['username', 'job_id']) is not None:
             response = app.response_class(
                 response="Delete job query is not valid",
                 status=500,
@@ -240,7 +256,8 @@ def job_call():
 def user_call():
     if request.method == 'POST':
         user = request.json
-        if not user or check_input_api(user, ['username', 'password', 'role']) is not None:
+        if not user or check_input_api(
+                user, ['username', 'password', 'role']) is not None:
             response = app.response_class(
                 response="Add user failed!",
                 status=500,
@@ -261,7 +278,8 @@ def user_call():
         return response
 
     elif request.method == 'GET':
-        if not request.args or check_input_api(request.args, ['username']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['username']) is not None:
             response = app.response_class(
                 response="Get user failed",
                 status=500,
@@ -272,7 +290,8 @@ def user_call():
         return jsonify({'jobs': get_user(user)})
 
     elif request.method == 'DELETE':
-        if not request.args or check_input_api(request.args, ['username']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['username']) is not None:
             response = app.response_class(
                 response="Delete user query is not valid",
                 status=500,
@@ -301,7 +320,8 @@ def annotation_call():
     if request.method == 'POST':
         print(request.data)
         annotations = request.json
-        if not annotations or check_input_api(annotations, ['video_id', 'entity_id', 'username']) is not None:
+        if not annotations or check_input_api(
+                annotations, ['video_id', 'entity_id', 'username']) is not None:
             response = app.response_class(
                 response="Insert annotation failed!",
                 status=500,
@@ -330,8 +350,12 @@ def annotation_call():
 
     elif request.method == 'GET':
         annotation = request.args
-        if not annotation or (check_input_api(annotation, ['annotation_id']) is not None and
-                              check_input_api(annotation, ['video_id']) is not None):
+        if not annotation or (
+            check_input_api(
+                annotation,
+                ['annotation_id']) is not None and check_input_api(
+                annotation,
+                ['video_id']) is not None):
             response = app.response_class(
                 response="Get annotation failed",
                 status=500,
@@ -355,7 +379,8 @@ def annotation_call():
         return jsonify({'annotations': get_annotations(annotation_meta)})
 
     elif request.method == 'PATCH':
-        if not request.args or check_input_api(request.args, ['annotation_id']) is not None:
+        if not request.args or check_input_api(
+                request.args, ['annotation_id']) is not None:
             response = app.response_class(
                 response="Modify annotation query is not valid",
                 status=500,
@@ -383,8 +408,12 @@ def annotation_call():
         return response
 
     elif request.method == 'DELETE':
-        if not request.args or (check_input_api(request.args, ['annotation_id']) is not None
-                                and check_input_api(request.args, ['video_id']) is not None):
+        if not request.args or (
+            check_input_api(
+                request.args,
+                ['annotation_id']) is not None and check_input_api(
+                request.args,
+                ['video_id']) is not None):
             response = app.response_class(
                 response="Delete annotation query is not valid",
                 status=500,
@@ -438,7 +467,8 @@ def category_call():
         if check_input_api(r, ['cat_id']) is None:
             return jsonify({'category': get_category(r['cat_id'])})
         if check_input_api(r, ['sup_cat_name']) is None:
-            return jsonify({'category': get_categoris(sup_cat=r['sup_cat_name'])})
+            return jsonify(
+                {'category': get_categoris(sup_cat=r['sup_cat_name'])})
 
         response = app.response_class(
             response="Get category failed!",
@@ -468,9 +498,14 @@ def category_call():
         return response
 
     elif request.method == 'DELETE':
-        if not request.args or (check_input_api(request.args, ['cat_id']) is not None
-                                and check_input_api(request.args, ['name']) is not None
-                                and check_input_api(request.args, ['sup_cat_name']) is not None):
+        if not request.args or (
+            check_input_api(
+                request.args,
+                ['cat_id']) is not None and check_input_api(
+                request.args,
+                ['name']) is not None and check_input_api(
+                request.args,
+                ['sup_cat_name']) is not None):
             response = app.response_class(
                 response="Category DELETE query is not valid",
                 status=500,
@@ -550,8 +585,12 @@ def entity_call():
         return response
 
     elif request.method == 'DELETE':
-        if not request.args or (check_input_api(request.args, ['entity_id']) is not None
-                                and check_input_api(request.args, ['video_id']) is not None):
+        if not request.args or (
+            check_input_api(
+                request.args,
+                ['entity_id']) is not None and check_input_api(
+                request.args,
+                ['video_id']) is not None):
             response = app.response_class(
                 response="Entity DELETE query is not valid",
                 status=500,

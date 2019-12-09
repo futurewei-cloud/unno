@@ -6,11 +6,13 @@ from util import check_input_manager
 
 def get_annotations(anno):
     if 'annotation_id' in anno:
-        query = "SELECT *  FROM annotation WHERE annotation_id='%s'" % (anno['annotation_id'])
+        query = "SELECT *  FROM annotation WHERE annotation_id='%s'" % (
+            anno['annotation_id'])
         print("annotation_id %s is fetched!" % anno['annotation_id'])
     else:
         check_input_manager('annotation', anno, ['video_id'])
-        query = "SELECT * FROM annotation WHERE video_id='%s'" % (anno['video_id'])
+        query = "SELECT * FROM annotation WHERE video_id='%s'" % (
+            anno['video_id'])
 
         if 'job_id' in anno:
             query += " AND job_id='%s'" % anno['job_id']
@@ -28,7 +30,9 @@ def get_annotations(anno):
 
 
 def add_annotation(anno):
-    check_input_manager('annotation', anno, ['video_id', 'frame_num', 'entity_id', 'username', 'status', 'bbox'])
+    check_input_manager(
+        'annotation', anno, [
+            'video_id', 'frame_num', 'entity_id', 'username', 'status', 'bbox'])
 
     if 'job_id' not in anno:
         anno['job_id'] = 'null'
@@ -53,9 +57,19 @@ def add_annotation(anno):
 
 
 def add_annotations(results):
-    check_input_manager('results', results, ['job_id', 'video_id', 'entity_id', 'username', 'tracking_results', 'server_id'])
+    check_input_manager('results',
+                        results,
+                        ['job_id',
+                         'video_id',
+                         'entity_id',
+                         'username',
+                         'tracking_results',
+                         'server_id'])
 
-    anno_meta = {'video_id': results['video_id'], 'entity_id': results['entity_id'], 'username': results['username']}
+    anno_meta = {
+        'video_id': results['video_id'],
+        'entity_id': results['entity_id'],
+        'username': results['username']}
 
     for k, v in results['tracking_results'].items():
         anno_info = {'frame_num': k}
@@ -67,7 +81,11 @@ def add_annotations(results):
             existing_id = existing_anno[0]['annotation_id']
             if existing_anno[0]['status'] == 'auto':
                 # update by overriding with latest annotation
-                anno = {'bbox': v, 'job_id': results['job_id'], 'status': 'auto', 'annotation_id': existing_id}
+                anno = {
+                    'bbox': v,
+                    'job_id': results['job_id'],
+                    'status': 'auto',
+                    'annotation_id': existing_id}
                 anno.update(anno_info)
                 update_annotation(anno)
             else:
@@ -89,11 +107,13 @@ def add_annotations(results):
 
 def del_annotation(anno):
     if 'annotation_id' in anno:
-        query = "DELETE FROM annotation WHERE annotation_id='%s'" % (anno['annotation_id'])
+        query = "DELETE FROM annotation WHERE annotation_id='%s'" % (
+            anno['annotation_id'])
         print("annotation_id %s is deleted!" % anno['annotation_id'])
     else:
         check_input_manager('annotation', anno, ['video_id'])
-        query = "DELETE FROM annotation WHERE video_id='%s'" % (anno['video_id'])
+        query = "DELETE FROM annotation WHERE video_id='%s'" % (
+            anno['video_id'])
 
         if 'job_id' in anno:
             query += " AND job_id='%s'" % anno['job_id']
@@ -119,4 +139,3 @@ def update_annotation(anno):
     conditions = [('annotation_id', anno['annotation_id'])]
     print("annotation %s is updated!" % anno['annotation_id'])
     return update_query('annotation', changes, conditions)
-

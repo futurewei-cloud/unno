@@ -10,11 +10,15 @@ def connect(host, port, database, user, password):
                                              user=user,
                                              password=password)
 
-        cursor = connection.cursor(prepared=False, buffered=True, dictionary=True)
+        cursor = connection.cursor(
+            prepared=False,
+            buffered=True,
+            dictionary=True)
 
         if not connection or not cursor:
             raise ValueError(
-                "Connection to MySQL cannot be established! Connection = {} and cursor = {}".format(connection, cursor))
+                "Connection to MySQL cannot be established! Connection = {} and cursor = {}".format(
+                    connection, cursor))
 
         return connection, cursor
 
@@ -35,7 +39,8 @@ def close(connection, cursor):
 
 def run_single_query(sql_query):
     try:
-        connection, cursor = connect(SQLConfig.host, SQLConfig.port, SQLConfig.db, SQLConfig.username, SQLConfig.pw)
+        connection, cursor = connect(
+            SQLConfig.host, SQLConfig.port, SQLConfig.db, SQLConfig.username, SQLConfig.pw)
     except ValueError:
         return None
 
@@ -54,7 +59,8 @@ def run_single_query(sql_query):
 
 def run_all_query(sql_query):
     try:
-        connection, cursor = connect(SQLConfig.host, SQLConfig.port, SQLConfig.db, SQLConfig.username, SQLConfig.pw)
+        connection, cursor = connect(
+            SQLConfig.host, SQLConfig.port, SQLConfig.db, SQLConfig.username, SQLConfig.pw)
     except ValueError:
         return None
 
@@ -102,9 +108,11 @@ def update_query(db, sets, conditions):
 
     if len(conditions) > 0:
         sql_condition_query += " WHERE "
-        sql_condition_query += str(conditions[0][0]) + "='" + str(conditions[0][1]) + "'"
+        sql_condition_query += str(conditions[0][0]) + \
+            "='" + str(conditions[0][1]) + "'"
         for condition in conditions[1:]:
-            sql_condition_query += " and " + str(condition[0]) + "='" + str(condition[1]) + "'"
+            sql_condition_query += " and " + \
+                str(condition[0]) + "='" + str(condition[1]) + "'"
 
     sql_update_query = "UPDATE " + db + sql_set_query + sql_condition_query
     return run_single_query(sql_update_query)

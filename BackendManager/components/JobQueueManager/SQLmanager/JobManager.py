@@ -18,6 +18,7 @@ def get_job(sql_query, connection, cursor):
         print("Failed getting job {}".format(error))
         return None
 
+
 def del_job(sql_query, connection, cursor):
     try:
         print(sql_query)
@@ -29,10 +30,11 @@ def del_job(sql_query, connection, cursor):
         print("Failed getting job {}".format(error))
         return None
 
+
 def update_job(connection, cursor, db, sets, conditions):
 
     sql_set_query = ""
-    if len(sets)==0:
+    if len(sets) == 0:
         return
     else:
         sql_set_query += " SET "
@@ -46,13 +48,14 @@ def update_job(connection, cursor, db, sets, conditions):
             else:
                 sql_set_query += ", " + str(set[0]) + "='" + str(set[1]) + "'"
 
-
     sql_condition_query = ""
-    if len(conditions)>0:
+    if len(conditions) > 0:
         sql_condition_query += " WHERE "
-        sql_condition_query += str(conditions[0][0]) + "=" + str(conditions[0][1])
+        sql_condition_query += str(conditions[0][0]) + \
+            "=" + str(conditions[0][1])
         for condition in conditions[1:]:
-            sql_condition_query += " and " + str(condition[0]) + "=" + str(condition[1])
+            sql_condition_query += " and " + \
+                str(condition[0]) + "=" + str(condition[1])
 
     sql_update_query = "UPDATE " + db + sql_set_query + sql_condition_query
     print(sql_update_query)

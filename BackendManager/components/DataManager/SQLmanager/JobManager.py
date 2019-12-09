@@ -18,7 +18,14 @@ def get_jobs(job):
 
 
 def add_job(job):
-    check_input_manager('job', job, ['username', 'entity_id', 'video_id', 'bbox', 'start_frame', 'end_frame'])
+    check_input_manager('job',
+                        job,
+                        ['username',
+                         'entity_id',
+                         'video_id',
+                         'bbox',
+                         'start_frame',
+                         'end_frame'])
 
     if 'status' not in job:
         job['status'] = 'new'
@@ -60,4 +67,3 @@ def update_job(job):
     conditions = [('job_id', job['job_id'])]
     print("Job %s is updated!" % job['job_id'])
     return update_query('job', changes, conditions)
-
