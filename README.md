@@ -13,7 +13,9 @@ Unno provides a data annotation solution of building model-backed assistive anno
  design, it is flexible to extent and scale advanced AI capabilities to boost annotation efficiency and 
  improve annotation quality.
  
-[demo](https://drive.google.com/file/d/1HInoAlDq1A0LYZ6hE4pCc0UBhLf0qxzL/view?usp=sharing)
+Demo: 
+* [dropbox](https://drive.google.com/file/d/1HInoAlDq1A0LYZ6hE4pCc0UBhLf0qxzL/view?usp=sharing)
+* 百度网盘：链接: https://pan.baidu.com/s/17dNlZ-aTFD3MzXak00uDhw 提取码: rwgk 复制这段内容后打开百度网盘手机App，操作更方便哦
  
 ## Supported Features
 V1 Release:
