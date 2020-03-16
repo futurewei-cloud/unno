@@ -69,7 +69,7 @@ export default class AnnotationListItem extends ContextMenuMixin(Control) {
 
 				let dialog = new Dialog({
 					title: locale.get('edit') + ' ' + name,
-					anchor: this.element(),
+					anchor: this.element,
 					width: '20rem',
 					height: '11rem',
 					content: {

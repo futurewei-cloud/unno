@@ -85,7 +85,7 @@ class App {
 			container: document.body,
 			content: [{
 				control: DrawerMenu,
-				menuContainer: self[MAIN_CONTAINER].element(),
+				menuContainer: self[MAIN_CONTAINER].element,
 				headerControl: MainMenu,
 				headerSettings: {
 					height: HUNDRED_PERCENT,
@@ -140,7 +140,7 @@ class App {
 				width: AUTO,
 				icon: ':',
 				title: locale.get('appTitle'),
-				subTitle: '&nbsp;'
+				subTitle: ' '
 			}, {
 				control: Label,
 				content: locale.get('appSubTitle').replace(' ', '<br>'),
@@ -148,7 +148,7 @@ class App {
 			}, {
 				control: DrawerMenu,
 				isMenuOpen: false,
-				menuContainer: self[MAIN_CONTAINER].element(),
+				menuContainer: self[MAIN_CONTAINER].element,
 				icon: 'cog',
 				label: locale.get('settings'),
 				drawerDock: 'right',

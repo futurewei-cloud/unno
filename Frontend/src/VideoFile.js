@@ -16,7 +16,7 @@ export default class VideoFile extends ContextMenuMixin(OnClickMixin(Control)) {
 		const group = new Group({
 			title: locale.get('loading')
 		});
-		settings.element = group.element();
+		settings.element = group.element;
 
 		super(settings);
 
