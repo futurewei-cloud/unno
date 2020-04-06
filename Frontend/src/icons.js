@@ -7,3 +7,5 @@ export const MUTED_ICON = '[:]';
 export const NEW_JOB_ICON = '';
 export const PENDING_JOB_ICON = '';
 export const COMPLETED_JOB_ICON = '';
+export const EDIT_RECTANGLE = '';
+export const EDIT_POLYGON = '';

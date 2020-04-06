@@ -1,5 +1,5 @@
 import { clear, throttle } from 'async-agent';
-import { Button, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
+import { Button, GroupedButtons, Slider, SplitView, Timeline, toast, VectorEditor, Video } from 'hafgufa';
 import { List } from 'hord';
 import moment from 'moment';
 import { pull } from 'object-agent';
@@ -7,6 +7,7 @@ import { HUNDRED_PERCENT, method } from 'type-enforcer-ui';
 import AnnotationListView from './AnnotationListView';
 import AnnotationManager from './AnnotationManager';
 import './EditView.less';
+import { EDIT_POLYGON, EDIT_RECTANGLE } from './icons.js';
 import VideoControls from './VideoControls';
 
 const INTERVAL_ID = Symbol();
@@ -67,7 +68,7 @@ export default class EditView extends SplitView {
 			self[VIDEO_PROPORTIONS] = self[VIDEO].borderWidth() / self[VIDEO].borderHeight();
 		}
 		if (!self[VIDEO_CONTROLS_HEIGHT]) {
-			self[VIDEO_CONTROLS_HEIGHT] = self[VIDEO_PLAYER].get('videoControls').borderHeight();
+			self[VIDEO_CONTROLS_HEIGHT] = self[VIDEO_PLAYER].get('videoControls').borderHeight() + self[VIDEO_PLAYER].get('edit-buttons').borderHeight();
 		}
 		if (!self[ANNOTATION_LIST_WIDTH]) {
 			self[ANNOTATION_LIST_WIDTH] = self[VIDEO_PLAYER].get('annotationList').borderWidth();
@@ -109,60 +110,88 @@ export default class EditView extends SplitView {
 				classes: 'video-wrapper',
 				orientation: SplitView.ORIENTATION.ROWS,
 				splitOffset: '-3rem',
-				firstViewContent: [{
-					control: Video,
-					id: 'mainVideo',
-					showControls: false,
-					attr: {
-						crossorigin: 'anonymous'
+				firstViewContent: {
+					control: SplitView,
+					id: 'videoWrapper',
+					classes: 'video-wrapper',
+					orientation: SplitView.ORIENTATION.ROWS,
+					splitOffset: '2rem',
+					firstViewContent: {
+						control: GroupedButtons,
+						id: 'edit-buttons',
+						buttons: [{
+							id: 'rectangle-button',
+							icon: EDIT_RECTANGLE,
+							alt: 'rectangle',
+							onClick() {
+								self[VIDEO_PLAYER].get('annotator').editMode('rectangle');
+							}
+						},{
+							id: 'polygon-button',
+							icon: EDIT_POLYGON,
+							alt: 'polygon',
+							onClick() {
+								self[VIDEO_PLAYER].get('annotator').editMode('polygon');
+							}
+						}],
+						value: 'rectangle-button'
 					},
-					onReady(duration) {
-						self[VIDEO_PROPORTIONS] = null;
-						self[VIDEO_PLAYER].isWorking(false);
+					secondViewContent: [{
+						control: Video,
+						id: 'mainVideo',
+						showControls: false,
+						attr: {
+							crossorigin: 'anonymous'
+						},
+						onReady(duration) {
+							self[VIDEO_PROPORTIONS] = null;
+							self[VIDEO_PLAYER].isWorking(false);
 
-						self[layoutVideo]();
-					},
-					onTimeUpdate(currentTime) {
-						self[setCurrentTime](currentTime);
+							self[layoutVideo]();
+						},
+						onTimeUpdate(currentTime) {
+							self[setCurrentTime](currentTime);
 
-						clear(self[INTERVAL_ID]);
+							clear(self[INTERVAL_ID]);
 
-						if (self[VIDEO].isPlaying) {
-							self[INTERVAL_ID] = setInterval(() => {
-								self[setCurrentTime](currentTime + self[ONE_FRAME]);
-							}, self[SLIDER].increment());
+							if (self[VIDEO].isPlaying) {
+								self[INTERVAL_ID] = setInterval(() => {
+									self[setCurrentTime](currentTime + self[ONE_FRAME]);
+								}, self[SLIDER].increment());
+							}
+						},
+						onError(error) {
+							clear(self[INTERVAL_ID]);
+							self[VIDEO_PLAYER].isWorking(false).resize();
+							toast.error({
+								title: 'Error loading video',
+								subTitle: `code: ${error.code} - ${error.message}`
+							});
+						},
+						onPause() {
+							clear(self[INTERVAL_ID]);
 						}
-					},
-					onError(error) {
-						clear(self[INTERVAL_ID]);
-						self[VIDEO_PLAYER].isWorking(false).resize();
-						toast.error({
-							title: 'Error loading video',
-							subTitle: `code: ${error.code} - ${error.message}`
-						});
-					},
-					onPause() {
-						clear(self[INTERVAL_ID]);
-					}
-				}, {
-					control: VectorEditor,
-					id: 'annotator',
-					onAdd(id, bounds) {
-						self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), bounds, id);
-					},
-					onChange(id, bounds) {
-						self[ANNOTATION_MANAGER].changeBounds(id, bounds);
-					},
-					onDeleteShape(id) {
-						self[ANNOTATION_MANAGER].delete(id);
-					},
-					onDeleteAllShapes() {
-						self[ANNOTATION_MANAGER].deleteAll();
-					},
-					onHighlight(id) {
-						self[VIDEO_PLAYER].get('annotationList').highlight(id);
-					}
-				}],
+					}, {
+						control: VectorEditor,
+						id: 'annotator',
+						editMode: 'rectangle',
+						onAdd(id, bounds) {
+							self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), bounds, id);
+						},
+						onChange(id, bounds) {
+							self[ANNOTATION_MANAGER].changeBounds(id, bounds);
+						},
+						onDeleteShape(id) {
+							self[ANNOTATION_MANAGER].delete(id);
+						},
+						onDeleteAllShapes() {
+							self[ANNOTATION_MANAGER].deleteAll();
+						},
+						onHighlight(id) {
+							self[VIDEO_PLAYER].get('annotationList').highlight(id);
+						}
+					}]
+				},
 				secondViewContent: {
 					control: VideoControls,
 					id: 'videoControls',
@@ -173,7 +202,6 @@ export default class EditView extends SplitView {
 			},
 			secondViewContent: {
 				control: SplitView,
-				id: 'videoWrapper',
 				classes: 'video-wrapper',
 				orientation: SplitView.ORIENTATION.ROWS,
 				splitOffset: '-3rem',
