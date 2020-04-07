@@ -156,6 +156,7 @@ const api = {
 		map(annotation) {
 			return {
 				bbox: annotation.bbox,
+				polygon: annotation.polygon,
 				entityId: idIn(annotation.entity_id),
 				frame: annotation.frame_num,
 				jobId: idIn(annotation.job_id),
@@ -166,13 +167,14 @@ const api = {
 	}),
 
 	addAnnotation: callAjax({
-		call(videoId, frameNum, entityId, bbox) {
+		call(videoId, frameNum, entityId, bbox, polygon) {
 			return ajax.post(BASE_URL + ANNOTATIONS, {
 				username: username,
 				video_id: idOut(videoId),
 				entity_id: idOut(entityId),
 				frame_num: frameNum,
-				bbox: bbox,
+				bbox,
+				polygon,
 				status: 'user'
 			}, {
 				withCredentials: false
@@ -185,7 +187,7 @@ const api = {
 	}),
 
 	patchAnnotation: callAjax({
-		call(videoId, id, bbox, entityId) {
+		call(videoId, id, bbox, polygon, entityId) {
 			return axios.patch(BASE_URL + ANNOTATIONS, {}, {
 				withCredentials: false,
 				params: {
@@ -193,7 +195,8 @@ const api = {
 					video_id: idOut(videoId),
 					annotation_id: idOut(id),
 					entity_id: idOut(entityId),
-					bbox: bbox,
+					bbox,
+					polygon,
 					status: 'user'
 				}
 			});

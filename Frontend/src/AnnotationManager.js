@@ -9,13 +9,21 @@ import api from './api';
 const JOB_CHECK_DELAY = 2000;
 
 const boundsFromBbox = (bbox) => {
-	bbox = bbox.split(',').map(parseFloat);
+	if (bbox) {
+		bbox = bbox.split(',').map(parseFloat);
 
-	return [new Point(bbox[0], bbox[1]), new Point(bbox[0] + bbox[2], bbox[1] + bbox[3])];
+		return [new Point(bbox[0], bbox[1]), new Point(bbox[0] + bbox[2], bbox[1] + bbox[3])];
+	}
+
+	return null;
 };
 
 const bboxFromBounds = (bounds) => {
-	return [bounds[0].x, bounds[0].y, bounds[1].x - bounds[0].x, bounds[1].y - bounds[0].y].join(',');
+	if (bounds) {
+		return [bounds[0].x, bounds[0].y, bounds[1].x - bounds[0].x, bounds[1].y - bounds[0].y].join(',');
+	}
+
+	return null;
 };
 
 const ANNOTATIONS = Symbol();
@@ -111,7 +119,7 @@ export default class AnnotationManager {
 		});
 	}
 
-	add(frame, bounds, id) {
+	add(frame, bounds, polygon, id) {
 		const self = this;
 		let annotation;
 
@@ -129,7 +137,8 @@ export default class AnnotationManager {
 					annotation = {
 						frame: frame,
 						bbox: bboxFromBounds(bounds),
-						entityId: entityId,
+						polygon: polygon.map((point) => point.toString()).join(' '),
+						entityId,
 						localId: id,
 						jobId: null
 					};
@@ -137,7 +146,7 @@ export default class AnnotationManager {
 					self[ANNOTATIONS].push(annotation);
 					self[logEntitiesChange]();
 
-					return api.addAnnotation(self.videoId(), frame, entityId, annotation.bbox);
+					return api.addAnnotation(self.videoId(), frame, entityId, annotation.bbox, annotation.polygon);
 				})
 				.then((id) => {
 					annotation.id = id + '';
@@ -146,12 +155,13 @@ export default class AnnotationManager {
 		}
 	}
 
-	changeBounds(id, bounds) {
+	changeBounds(id, bounds, polygon) {
 		const self = this;
 
 		self.updateAnnotation({
 			id: id,
 			bbox: bboxFromBounds(bounds),
+			polygon: polygon.map((point) => point.toString()).join(' '),
 			jobId: null
 		});
 	}
@@ -166,7 +176,7 @@ export default class AnnotationManager {
 			});
 
 			if (annotation.id) {
-				api.patchAnnotation(self.videoId(), annotation.id, annotation.bbox, annotation.entityId);
+				api.patchAnnotation(self.videoId(), annotation.id, annotation.bbox, annotation.polygon, annotation.entityId);
 
 				self.onUpdate().trigger(null, [annotation]);
 				self[cleanEntities]();
@@ -298,6 +308,7 @@ export default class AnnotationManager {
 					entityId: parseInt(item.entityId),
 					frame: item.frame,
 					bbox: item.bbox,
+					polygon: item.polygon,
 					status: item.status
 				};
 			}),

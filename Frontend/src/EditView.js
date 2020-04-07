@@ -175,11 +175,21 @@ export default class EditView extends SplitView {
 						control: VectorEditor,
 						id: 'annotator',
 						editMode: 'rectangle',
-						onAdd(id, bounds) {
-							self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), bounds, id);
+						onAdd(id, type, data) {
+							if (type === 'rectangle') {
+								self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), data, null, id);
+							}
+							else if (type === 'polygon') {
+								self[ANNOTATION_MANAGER].add(self[getCurrentFrame](), null, data, id);
+							}
 						},
-						onChange(id, bounds) {
-							self[ANNOTATION_MANAGER].changeBounds(id, bounds);
+						onChange(id, type, data) {
+							if (type === 'rectangle') {
+								self[ANNOTATION_MANAGER].changeBounds(id, data);
+							}
+							else if (type === 'polygon') {
+								self[ANNOTATION_MANAGER].changeBounds(id, null, data);
+							}
 						},
 						onDeleteShape(id) {
 							self[ANNOTATION_MANAGER].delete(id);
