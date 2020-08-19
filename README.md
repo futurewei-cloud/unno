@@ -1,7 +1,9 @@
 # Unno
-Unno is an AI-enabled, extensible and scalable video annotation platform.
+Unno is an AI-enabled, extensible and scalable video annotation platform. 
 
-# Introduction
+## Introduction
+Unno is an open-source project conducted by the Futurewei Cloud Enterprise Intelligence (Cloud-EI) team. The goal of Cloud-EI team is to provide inclusive AI: afordable, effective, and reliable for companies, research groups and communities. 
+
 Nowadays, the massive adoption of AI technologies relies on the availability of big data, computing power,
  and deep learning algorithms. It has become a routine to pipeline a project by collecting a large amount of high 
  quality labeled data, and build a deep learning model with GPU computing. However, it is very time-consuming and costly
@@ -13,9 +15,24 @@ Unno provides a data annotation solution of building model-backed assistive anno
  design, it is flexible to extent and scale advanced AI capabilities to boost annotation efficiency and 
  improve annotation quality.
  
-Demo: 
+#### Demo: 
 * [dropbox](https://drive.google.com/file/d/1HInoAlDq1A0LYZ6hE4pCc0UBhLf0qxzL/view?usp=sharing)
 * 百度网盘：链接: https://pan.baidu.com/s/17dNlZ-aTFD3MzXak00uDhw 提取码: rwgk 复制这段内容后打开百度网盘手机App，操作更方便哦
+
+#### Join the Community
+Feel free to communicate with us via: 
+
+ - [Issues](https://github.com/futurewei-cloud/cloud-ei-research/issues): bug reports, feature requests, etc.
+ - [Slack]() and [Stackoverflow](https://stackoverflow.com/questions/tagged/futurewei-cloud-ei)
+ - [Wiki](https://github.com/futurewei-cloud/cloud-ei-research/wiki): design documents
+ - Blog and newsletter: [Medium](https://medium.com/)
+ 
+ #### Attend the Planning Meeting
+ - [Monthly Zoom Meeting](https://futurewei.zoom.us/j/3502105016
+) - The first Friday of each month, 2:00 PM - 3:00 PM Pacific Time
+ - [The Next Zoom Meeting](https://futurewei.zoom.us/j/96595033234?pwd=b29GUStzUHI0ZVZHWEx5R0JvWkgxZz09) - 8/20/2020 6:30 PM - 8:30 PM Pacific Time
+ - Materials [pdf link](https://www.dropbox.com/s/vvpr28lwg3llgeu/Project_Summary_July2020_v6-Reviewed.pdf?dl=0)
+
  
 ## Supported Features
 V1 Release:
