@@ -31,7 +31,10 @@ Feel free to communicate with us via:
  - [Monthly Zoom Meeting](https://futurewei.zoom.us/j/3502105016
 ) - The first Friday of each month, 2:00 PM - 3:00 PM Pacific Time
  - [The Next Zoom Meeting](https://futurewei.zoom.us/j/96595033234?pwd=b29GUStzUHI0ZVZHWEx5R0JvWkgxZz09) - 8/20/2020 6:30 PM - 8:30 PM Pacific Time
- - Materials [pdf link](https://www.dropbox.com/s/vvpr28lwg3llgeu/Project_Summary_July2020_v6-Reviewed.pdf?dl=0)
+ - Materials 
+    * [pdf link](https://www.dropbox.com/s/vvpr28lwg3llgeu/Project_Summary_July2020_v6-Reviewed.pdf?dl=0) (Dropbox)
+    * [meeting summary](https://docs.google.com/document/d/1dHzWM8FlewazCD95frZUEF2UkrHVomf0NKVV7J6qGfQ/edit#) (Google Doc)
+    * [meeting recording](https://www.youtube.com/playlist?list=PL_7gYB_Le9d0BDyCIPhMv__7v0a32Cris) (YouTube)
 
  
 ## Supported Features
