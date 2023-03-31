@@ -1,3 +1,5 @@
+"This Project has been archived by the owner, who is no longer providing support.  The project remains available to authorized users on a "read only" basis."
+
 # Unno
 Unno is an AI-enabled, extensible and scalable video annotation platform. 
 
